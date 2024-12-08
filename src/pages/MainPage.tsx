@@ -1,10 +1,10 @@
 import React from "react";
-import Background from "../components/main/Background";
+import Banner from "../components/main/Banner";
 
 const MainPage: React.FC = () => {
   return (
     <div>
-      <Background />
+      <Banner />
     </div>
   );
 };
