@@ -3,6 +3,7 @@ import Banner from "../components/main/Banner";
 import SkillsSection from "../components/main/SkillsSection";
 import ProjectsSection from "../components/main/ProjectsSection";
 import AboutSection from "../components/main/AboutSection";
+import ContractSection from "../components/main/ContractSection";
 
 const MainPage: React.FC = () => {
   return (
@@ -11,6 +12,7 @@ const MainPage: React.FC = () => {
       <AboutSection />
       <SkillsSection />
       <ProjectsSection />
+      <ContractSection />
     </div>
   );
 };
