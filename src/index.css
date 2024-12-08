@@ -4,8 +4,10 @@
 
 :root {
   --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 10, 0, 31;
-  --background-end-rgb: 0, 0, 0;
+  --background-start-rgb: 23, 23, 23;
+  --background-end-rgb: 17, 24, 39;
+  --primary-color: 59, 130, 246;
+  --secondary-color: 236, 72, 153;
 }
 
 body {
@@ -23,6 +25,6 @@ html {
 }
 
 ::selection {
-  background: #00a3ff;
+  background: rgb(var(--primary-color));
   color: white;
 }
