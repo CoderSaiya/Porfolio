@@ -1,7 +1,7 @@
 import MainPage from "./pages/MainPage";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import Navbar from "./components/main/NavBar";
+import Navbar from "./components/main/Navbar";
 
 function App() {
   return (
