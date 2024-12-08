@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import Background from "../components/main/Background";
 
 const MainPage: React.FC = () => {
   return (
-    <div>MainPage</div>
-  )
-}
+    <div>
+      <Background />
+    </div>
+  );
+};
 
-export default MainPage
+export default MainPage;
