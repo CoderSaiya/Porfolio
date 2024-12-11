@@ -1,4 +1,6 @@
 using BE_Portfolio.Data;
+using BE_Portfolio.Services;
+using BE_Portfolio.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -10,6 +12,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<ISkill, SkillService>();
+builder.Services.AddScoped<IProject, ProjectService>();
 
 builder.Services.AddDbContext<PortfolioDbContext>(options =>
     options.UseSqlServer(
