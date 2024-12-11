@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BE_Portfolio.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class SkillController : Controller
     {
         private readonly ISkill _skillService;
