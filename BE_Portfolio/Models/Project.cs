@@ -18,4 +18,5 @@ public partial class Project
     public string? Description { get; set; }
 
     public string ImageUrl { get; set; } = null!;
+    public virtual ICollection<ProjectTag> ProjectTags { get; set; } = new HashSet<ProjectTag>();
 }
