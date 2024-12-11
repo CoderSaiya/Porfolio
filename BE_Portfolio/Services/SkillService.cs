@@ -14,12 +14,12 @@ namespace BE_Portfolio.Services
             _context = context;
         }
 
-        public async Task<List<Skill>> GetSkill()
+        public async Task<List<Skill>?> GetSkill()
         {
             var skillList = await _context.Skills.ToListAsync();
             if (skillList.Any())
             {
-                throw new Exception("List empty!!");
+                return null;
             }
             return skillList;
         }
