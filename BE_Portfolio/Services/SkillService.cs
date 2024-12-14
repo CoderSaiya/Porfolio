@@ -17,7 +17,7 @@ namespace BE_Portfolio.Services
         public async Task<List<Skill>?> GetSkill()
         {
             var skillList = await _context.Skills.ToListAsync();
-            if (skillList.Any())
+            if (!skillList.Any())
             {
                 return null;
             }

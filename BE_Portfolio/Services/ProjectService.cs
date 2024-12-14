@@ -32,7 +32,7 @@ namespace BE_Portfolio.Services
            })
            .ToListAsync();
 
-            if (projectsWithTags.Any())
+            if (!projectsWithTags.Any())
             {
                 return null;
             }
