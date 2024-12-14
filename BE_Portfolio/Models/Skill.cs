@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BE_Portfolio.Models;
 
+[Table("Skills")]
 public partial class Skill
 {
     public int Id { get; set; }

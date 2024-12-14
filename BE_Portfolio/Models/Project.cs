@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BE_Portfolio.Models;
 
+[Table("Projects")]
 public partial class Project
 {
     public int Id { get; set; }

@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BE_Portfolio.Models;
 
+[Table("ProjectTags")]
 public partial class ProjectTag
 {
-    public int? ProjectId { get; set; }
+    public int Id { get; set; }
+
+    public int ProjectId { get; set; }
 
     public string Tag { get; set; } = null!;
 
