@@ -15,13 +15,13 @@ export const api = createApi({
     getProjectWithTag: builder.query<ProjectWithTagType[], void>({
       query: () => ({
         url: "Project",
-        method: "POST",
+        method: "GET",
       }),
     }),
     getSkills: builder.query<SkillType[], void>({
       query: () => ({
         url: "Skill",
-        method: "POST",
+        method: "GET",
       }),
     }),
   }),
