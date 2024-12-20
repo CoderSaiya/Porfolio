@@ -1,40 +1,39 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { useGetProjectWithTagQuery } from "../../apis/api";
 
-const projects = [
-  {
-    title: "E-commerce Platform",
-    description: "A full-stack e-commerce solution using .NET Core and React.",
-    image: "/placeholder.svg?height=300&width=400",
-    tags: [".NET", "React", "SQL Server", "Azure"],
-  },
-  {
-    title: "Mobile Fitness App",
-    description:
-      "Cross-platform mobile app for fitness tracking using React Native.",
-    image: "/placeholder.svg?height=300&width=400",
-    tags: ["React Native", "Firebase", "Redux"],
-  },
-  {
-    title: "Task Management System",
-    description: "Enterprise task management system with real-time updates.",
-    image: "./asassets/react.svg",
-    tags: [".NET", "SignalR", "React", "SQL Server"],
-  },
-  {
-    title: "AI-powered Chatbot",
-    description:
-      "Intelligent chatbot for customer support using .NET and Azure AI.",
-    image: "/placeholder.svg?height=300&width=400",
-    tags: [".NET", "Azure AI", "React", "TypeScript"],
-  },
-];
+export const ProjectsSection = () => {
+  const { data: projects, isLoading, isError } = useGetProjectWithTagQuery();
 
-export function ProjectsSection() {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
+
+  if (isLoading) {
+    return (
+      <section id="projects" className="py-20 bg-gray-900">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Loading Projects...
+          </h2>
+        </div>
+      </section>
+    );
+  }
+
+  if (isError || !projects) {
+    return (
+      <section id="projects" className="py-20 bg-gray-900">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Failed to Load Projects
+          </h2>
+          <p className="text-gray-400">Please try again later.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="projects" className="py-20 bg-gray-900">
@@ -61,7 +60,7 @@ export function ProjectsSection() {
               className="bg-gray-800 rounded-lg overflow-hidden shadow-lg"
             >
               <img
-                src={project.image}
+                src={project.imageUrl}
                 alt={project.title}
                 className="w-full h-48 object-cover"
               />
@@ -69,7 +68,10 @@ export function ProjectsSection() {
                 <h3 className="text-2xl font-bold text-white mb-2">
                   {project.title}
                 </h3>
-                <p className="text-gray-400 mb-4">{project.description}</p>
+                <p
+                  className="text-gray-400 mb-4"
+                  dangerouslySetInnerHTML={{ __html: project.description }}
+                ></p>
                 <div className="flex flex-wrap gap-2">
                   {project.tags.map((tag) => (
                     <span
@@ -87,6 +89,6 @@ export function ProjectsSection() {
       </div>
     </section>
   );
-}
+};
 
 export default ProjectsSection;
