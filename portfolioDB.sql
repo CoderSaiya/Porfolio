@@ -41,23 +41,23 @@ CREATE TABLE ProjectTags
 INSERT INTO Projects (Title, Platform, Position, NumOfMember, Description, ImageUrl)
 VALUES
 	('Manage Student Application', 'Window Form', 'Back-end', 1, 
-	 'A project running on Winform to manage student scores, built according to MVC model. Using web socket to transmit score changes in real-time, using big query to save student score information.\n\nlink Github: https://github.com/CoderSaiya/BTL_LTM',
+	 'A project running on Winform to manage student scores, built according to MVC model. Using web socket to transmit score changes in real-time, using big query to save student score information. <br/><br/>link Github: <a href="https://github.com/CoderSaiya/BTL_LTM">https://github.com/CoderSaiya/BTL_LTM<a/>',
 	 '/manage_score.png'),
 
 	('Goods Exchange', 'Web', 'Supporter for Front-end and Back-end', 7, 
-	 'This project is the frontend for the Goods Exchange system between UTH students. The project is developed using ReactJS, Typescript, Tailwind, Redux, SockJs - Socket, Tippy, and UI library for frontend and Spring Boots Java for backend.\n\nlink Github BE: https://github.com/UTH-group/Goods_Exchange_Application\nlink Github FE: https://github.com/UTH-group/FE',
+	 'This project is the frontend for the Goods Exchange system between UTH students. The project is developed using ReactJS, Typescript, Tailwind, Redux, SockJs - Socket, Tippy, and UI library for frontend and Spring Boots Java for backend.<br/><br/>link Github BE: <a href="https://github.com/UTH-group/Goods_Exchange_Application">https://github.com/UTH-group/Goods_Exchange_Application<a/> <br/>link Github FE: <a href="https://github.com/UTH-group/FE">https://github.com/UTH-group/FE<a/>',
 	 '/goods.png'),
 
 	('Freelance Marketplace', 'Web', 'Sub-leader, Main FE + BE', 5, 
-	 'Freelance Marketplace is an online platform that connects freelancers with clients who need services. This system makes the collaboration process safe, transparent and efficient, from posting projects, selecting freelancers, to payments and reviews.\n\nlink Github BE: https://github.com/CoderSaiya/BE_XDPMHDT\nlink Github FE: https://github.com/CoderSaiya/FE_XDPMHDT',
+	 'Freelance Marketplace is an online platform that connects freelancers with clients who need services. This system makes the collaboration process safe, transparent and efficient, from posting projects, selecting freelancers, to payments and reviews.<br/><br/>link Github BE: <a href="https://github.com/CoderSaiya/BE_XDPMHDT">https://github.com/CoderSaiya/BE_XDPMHDT<a/> <br/>link Github FE: <a href="https://github.com/CoderSaiya/FE_XDPMHDT">https://github.com/CoderSaiya/FE_XDPMHDT<a/>',
 	 '/freelance.png'),
 
 	('Movie Streaming', 'Web + Mobile App', 'Main FE + BE', 1, 
-	 'MovieStream is a comprehensive microservices-based movie streaming platform built with .NET 8.0, designed to provide a scalable and high-performance movie streaming experience.\n\nlink Github: https://github.com/CoderSaiya/MovieStream',
+	 'MovieStream is a comprehensive microservices-based movie streaming platform built with .NET 8.0, designed to provide a scalable and high-performance movie streaming experience.<br/><br/>link Github: <a href="https://github.com/CoderSaiya/MovieStream">https://github.com/CoderSaiya/MovieStream<a/>',
 	 '/movie_stream.png'),
 
 	('Booking Movie Ticket', 'Mobile App', 'Main FE + BE', 1, 
-	 'Booking Movie Ticket is a convenient and quick process of booking movie tickets, helping users choose their favorite movies, suitable showtimes, and ideal seats. Through applications or websites, users can look up information, book tickets online, and pay easily without having to queue at the theater, providing a modern and time-saving experience.\n\nlink Github: https://github.com/CoderSaiya/MovieTicket',
+	 'Booking Movie Ticket is a convenient and quick process of booking movie tickets, helping users choose their favorite movies, suitable showtimes, and ideal seats. Through applications or websites, users can look up information, book tickets online, and pay easily without having to queue at the theater, providing a modern and time-saving experience.<br/><br/>link Github: <a href="https://github.com/CoderSaiya/MovieTicket">https://github.com/CoderSaiya/MovieTicket<a/>',
 	 '/movie_ticket.png');
 
 INSERT INTO ProjectTags(ProjectId, Tag)
