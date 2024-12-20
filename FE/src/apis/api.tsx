@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { ProjectWithTagType, SkillType, ResponseType } from "../types";
+import { ProjectWithTagType, SkillType } from "../types";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -12,10 +12,10 @@ export const api = createApi({
   reducerPath: "api",
   baseQuery: baseQuery,
   endpoints: (builder) => ({
-    getProjectWithTag: builder.query<ResponseType<ProjectWithTagType[]>, void>({
+    getProjectWithTag: builder.query<ProjectWithTagType[], void>({
       query: () => "Project",
     }),
-    getSkills: builder.query<ResponseType<SkillType[]>, void>({
+    getSkills: builder.query<SkillType[], void>({
       query: () => ({
         url: "Skill",
         method: "GET",
