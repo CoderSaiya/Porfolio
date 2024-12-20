@@ -1,19 +1,24 @@
 export interface ProjectType {
-    Id: number,
-    Title: string,
-    Platform: string,
-    Position: string,
-    NumOfMember: number,
-    Description: string,
-    ImageUrl: string,
+    id: number,
+    title: string,
+    platform: string,
+    position: string,
+    numOfMember: number,
+    description: string,
+    imageUrl: string,
 }
 
 export interface ProjectWithTagType extends ProjectType {
-    Tags: string[]
+    tags: string[]
 }
 
 export interface SkillType {
-    Id: number,
-    NameSkill: string,
-    Level: number,
+    id: number,
+    nameSkill: string,
+    level: number,
+}
+
+export interface ResponseType<T> {
+    data: T,
+    status: string;
 }
