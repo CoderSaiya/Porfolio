@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useGetProjectWithTagQuery } from "../../apis/api";
+import { Briefcase, Globe, Users } from "lucide-react";
 
 export const ProjectsSection = () => {
   const { data: projects, isLoading, isError } = useGetProjectWithTagQuery();
@@ -60,7 +61,7 @@ export const ProjectsSection = () => {
               className="bg-gray-800 rounded-lg overflow-hidden shadow-lg"
             >
               <img
-                src={project.imageUrl}
+                src={`imgs${project.imageUrl}`}
                 alt={project.title}
                 className="w-full h-48 object-cover"
               />
@@ -72,6 +73,20 @@ export const ProjectsSection = () => {
                   className="text-gray-400 mb-4"
                   dangerouslySetInnerHTML={{ __html: project.description }}
                 ></p>
+                <div className="flex flex-wrap items-center mb-4 text-sm text-gray-300">
+                  <div className="flex items-center mr-4 mb-2">
+                    <Globe className="w-4 h-4 mr-1 text-blue-400" />
+                    <span>{project.platform}</span>
+                  </div>
+                  <div className="flex items-center mr-4 mb-2">
+                    <Briefcase className="w-4 h-4 mr-1 text-blue-400" />
+                    <span>{project.position}</span>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    <Users className="w-4 h-4 mr-1 text-blue-400" />
+                    <span>{project.numOfMember} members</span>
+                  </div>
+                </div>{" "}
                 <div className="flex flex-wrap gap-2">
                   {project.tags.map((tag) => (
                     <span
