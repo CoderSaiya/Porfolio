@@ -22,3 +22,14 @@ export interface ResponseType<T> {
     data: T,
     status: string;
 }
+
+export interface Point {
+    x: number;
+    y: number;
+    opacity: number;
+  }
+
+export interface MousePosition {
+    x: number;
+    y: number;
+  }
