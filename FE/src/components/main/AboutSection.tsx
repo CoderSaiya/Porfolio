@@ -1,7 +1,23 @@
 import { motion } from "framer-motion";
 import { TypingAnimation } from "./TypingAnimation";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { useEffect } from "react";
 
 const AboutSection = () => {
+  useEffect(() => {
+    const initAOS = () => {
+      AOS.init({
+        once: true,
+        offset: 10,
+      });
+    };
+
+    initAOS();
+    window.addEventListener("resize", initAOS);
+    return () => window.removeEventListener("resize", initAOS);
+  }, []);
+
   return (
     <section id="about" className="py-20 bg-gray-800">
       <div className="container mx-auto px-4">
@@ -32,7 +48,7 @@ const AboutSection = () => {
             <h3 className="text-2xl font-semibold text-white mb-4">
               Education
             </h3>
-            <ul className="space-y-4">
+            <ul className="space-y-4" data-aos="fade-right">
               <li>
                 <h4 className="text-xl text-blue-400">
                   Information Technology
@@ -51,7 +67,7 @@ const AboutSection = () => {
             <h3 className="text-2xl font-semibold text-white mb-4">
               Professional Info
             </h3>
-            <ul className="space-y-2 text-gray-300">
+            <ul className="space-y-2 text-gray-300" data-aos="fade-left">
               <li>• Expertise in .NET, React, and mobile app development</li>
               <li>• Strong problem-solving and analytical skills</li>
               <li>• Excellent communicator and team collaborator</li>
