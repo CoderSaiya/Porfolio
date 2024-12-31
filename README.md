@@ -2,7 +2,7 @@
 
 A full-stack portfolio application built with React, .NET API, and SQL Server.
 
-![Main Page](#imgs/main-page.png)
+![Main Page](./imgs/main-page.png)
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
