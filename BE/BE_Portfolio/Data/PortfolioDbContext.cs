@@ -1,4 +1,4 @@
-﻿using BE_Portfolio.Models;
+﻿using BE_Portfolio.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BE_Portfolio.Data;
@@ -9,12 +9,6 @@ public partial class PortfolioDbContext : DbContext
         : base(options)
     {
     }
-
-    public virtual DbSet<Project> Projects { get; set; }
-
-    public virtual DbSet<ProjectTag> ProjectTags { get; set; }
-
     public virtual DbSet<Skill> Skills { get; set; }
-
-    
+    public virtual DbSet<SkillCategory> SkillCategories { get; set; }
 }
