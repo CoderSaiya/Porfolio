@@ -1,8 +1,10 @@
 using BE_Portfolio.Data;
+using BE_Portfolio.Models.Commons;
+using BE_Portfolio.Repositories;
+using BE_Portfolio.Repositories.Interfaces;
 using BE_Portfolio.Services;
 using BE_Portfolio.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +15,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<ISkill, SkillService>();
-builder.Services.AddScoped<IProject, ProjectService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<ISkillRepository, SkillRepository>();
+
+builder.Services.AddScoped<ISkillService, SkillService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 builder.Services.AddDbContext<PortfolioDbContext>(options =>
     options.UseSqlServer(
@@ -40,12 +47,16 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins("http://localhost:3000")
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
     });
 });
+
+builder.Services.Configure<MongoDbSettings>(
+    builder.Configuration.GetSection("MongoDBSettings"));
+builder.Services.AddSingleton<MongoDbContext>();
 
 var app = builder.Build();
 
@@ -57,8 +68,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors();
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
