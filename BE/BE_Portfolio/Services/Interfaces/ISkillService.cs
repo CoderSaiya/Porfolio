@@ -4,6 +4,6 @@ namespace BE_Portfolio.Services.Interfaces
 {
     public interface ISkill
     {
-        public Task<List<Skill>?> GetSkill();
+        public Task<IEnumerable<Skill>> GetSkillsList();
     }
 }

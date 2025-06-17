@@ -4,6 +4,6 @@ namespace BE_Portfolio.Services.Interfaces
 {
     public interface IProject
     {
-        public Task<List<ProjectsWithTag>?> GetProjects();
+        public Task<IEnumerable<ProjectsWithTag>> GetProjectsWithTags();
     }
 }
