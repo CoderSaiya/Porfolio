@@ -1,9 +1,13 @@
 ﻿using BE_Portfolio.DTOs;
+using BE_Portfolio.Models.Documents;
 
 namespace BE_Portfolio.Services.Interfaces
 {
-    public interface IProject
+    public interface IProjectService
     {
-        public Task<IEnumerable<ProjectsWithTag>> GetProjectsWithTags();
+        Task<ProjectsResponse?> GetByIdAsync(string id);
+        Task<IEnumerable<ProjectsResponse>> GetAllAsync();
+        Task<Project> CreateAsync(CreateProjectDto dto);
+        Task DeleteAsync(string id);
     }
 }
