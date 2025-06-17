@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using BE_Portfolio.Models.Commons;
 
-namespace BE_Portfolio.Models;
+namespace BE_Portfolio.Models.Entities;
 
 [Table("Skills")]
 public class Skill : BaseEntity

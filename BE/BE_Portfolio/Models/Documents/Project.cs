@@ -1,20 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using BE_Portfolio.Models.Commons;
+using MongoDB.Bson.Serialization.Attributes;
 
-namespace BE_Portfolio.Models;
+namespace BE_Portfolio.Models.Documents;
 
-[Table("Projects")]
-public class Project : BaseEntity
+public class Project : BaseDocument
 {
+    [BsonElement("title")]
     public string Title { get; set; } = null!;
+
+    [BsonElement("platform")]
     public string Platform { get; set; } = null!;
+
+    [BsonElement("position")]
     public string Position { get; set; } = null!;
+
+    [BsonElement("numOfMember")]
     public int NumOfMember { get; set; }
+
+    [BsonElement("description")]
     public string? Description { get; set; }
+
+    [BsonElement("link")]
     public string? Link { get; set; }
+
+    [BsonElement("demo")]
     public string? Demo { get; set; }
-    public string ImageUrl { get; set; } = null!;
-    public virtual ICollection<ProjectTag> ProjectTags { get; set; } = new HashSet<ProjectTag>();
+
+    [BsonElement("imageData")]
+    public byte[] ImageData { get; set; } = [];
+    
+    [BsonElement("tags")]
+    public List<string> Tags { get; set; } = new();
 }
