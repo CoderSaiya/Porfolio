@@ -1,0 +1,132 @@
+<section id="contact" class="contact">
+  <div class="container">
+    <div class="contact__wrap slide-in-diagonal">
+
+      <!-- MÀN HÌNH CHÍNH (hiện khi CHƯA gửi) -->
+      <ng-container *ngIf="!submitted; else thanksTpl">
+        <div class="contact__header">
+          <span class="badge badge--secondary">Liên hệ</span>
+          <h2 class="contact__title">Hãy <span class="accent">Kết Nối</span></h2>
+          <div class="contact__underline underline-gradient"></div>
+          <p class="contact__subtitle">Tôi luôn sẵn sàng thảo luận về các cơ hội hợp tác mới và các dự án thú vị</p>
+        </div>
+
+        <div class="contact__grid">
+          <div class="contact__info">
+            <h3 class="contact__infoTitle">Thông tin liên hệ</h3>
+            <div class="contact__infoList">
+              <div class="contact__infoItem stagger-animation" *ngFor="let info of contactInfo; index as i" [style.--stagger]="i">
+                <div class="contact__infoIcon"><lucide-icon [name]="info.icon"></lucide-icon></div>
+                <div>
+                  <div class="contact__infoLabel">{{ info.label }}</div>
+                  <a [href]="info.href" class="contact__infoLink">{{ info.value }}</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="contact__social">
+              <h4 class="contact__socialTitle">Kết nối với tôi</h4>
+              <div class="contact__socialList">
+                <a *ngFor="let social of socialLinks; index as i"
+                   [href]="social.href"
+                   class="contact__socialBtn custom-card-hover stagger-animation"
+                   [style.--stagger]="i"
+                   [attr.aria-label]="social.label">
+                  <lucide-icon [name]="social.icon"></lucide-icon>
+                </a>
+              </div>
+            </div>
+
+            <div class="contact__availability card">
+              <div class="contact__dot"></div>
+              <span class="contact__availabilityText">Sẵn sàng cho dự án mới</span>
+              <p class="contact__availabilityNote">Hiện tại tôi đang tìm kiếm các cơ hội hợp tác mới. Hãy liên hệ để thảo luận về dự án của bạn!</p>
+            </div>
+          </div>
+
+          <div class="contact__form card" [attr.aria-busy]="loading">
+            <h3 class="contact__formTitle">Gửi tin nhắn</h3>
+
+            <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+              <div class="form__row">
+                <div class="form__field">
+                  <label for="name">Họ tên *</label>
+                  <input id="name" class="input" formControlName="name" placeholder="Nhập họ tên của bạn"
+                         [class.invalid]="form.get('name')?.touched && form.get('name')?.invalid"/>
+                  <small class="error" *ngIf="form.get('name')?.touched && form.get('name')?.hasError('required')">
+                    Vui lòng nhập họ tên
+                  </small>
+                </div>
+                <div class="form__field">
+                  <label for="email">Email *</label>
+                  <input id="email" type="email" class="input" formControlName="email" placeholder="your.email@example.com"
+                         [class.invalid]="form.get('email')?.touched && form.get('email')?.invalid"/>
+                  <small class="error" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">
+                    Vui lòng nhập email
+                  </small>
+                  <small class="error" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
+                    Email không hợp lệ
+                  </small>
+                </div>
+              </div>
+
+              <div class="form__field">
+                <label for="subject">Chủ đề *</label>
+                <input id="subject" class="input" formControlName="subject" placeholder="Chủ đề tin nhắn"
+                       [class.invalid]="form.get('subject')?.touched && form.get('subject')?.invalid"/>
+                <small class="error" *ngIf="form.get('subject')?.touched && form.get('subject')?.hasError('required')">
+                  Vui lòng nhập chủ đề
+                </small>
+              </div>
+
+              <div class="form__field">
+                <label for="message">Tin nhắn *</label>
+                <textarea id="message" rows="5" class="textarea" formControlName="message" placeholder="Nội dung tin nhắn của bạn..."
+                          [class.invalid]="form.get('message')?.touched && form.get('message')?.invalid"></textarea>
+                <small class="error" *ngIf="form.get('message')?.touched && form.get('message')?.hasError('required')">
+                  Vui lòng nhập nội dung
+                </small>
+              </div>
+
+              <div *ngIf="error" class="form__error">
+                <lucide-icon name="AlertTriangle"></lucide-icon>
+                {{ error }}
+              </div>
+
+              <button type="submit" class="btn btn--accent contact__submit" [disabled]="loading || form.invalid">
+                <ng-container *ngIf="!loading; else loadingTpl">
+                  <lucide-icon name="Send"></lucide-icon> Gửi Tin Nhắn
+                </ng-container>
+              </button>
+
+              <ng-template #loadingTpl>
+                <lucide-icon name="Loader2" class="spin"></lucide-icon> Đang gửi...
+              </ng-template>
+            </form>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- MÀN HÌNH CẢM ƠN (hiện khi ĐÃ gửi) -->
+      <ng-template #thanksTpl>
+        <div class="thankyou card">
+          <div class="thankyou__icon"><lucide-icon name="CheckCircle2"></lucide-icon></div>
+          <h3 class="thankyou__title">Cảm ơn bạn đã liên hệ!</h3>
+          <p class="thankyou__text">
+            Mình đã nhận được tin nhắn của bạn và sẽ phản hồi sớm nhất.
+            <span *ngIf="successId">Mã tham chiếu: <b>{{ successId }}</b>.</span>
+          </p>
+          <div class="thankyou__actions">
+            <a class="btn" (click)="newMessage()"><lucide-icon name="MailPlus"></lucide-icon> Gửi thêm tin nhắn</a>
+            <a class="btn btn--ghost" href="#home"><lucide-icon name="Home"></lucide-icon> Về trang chủ</a>
+          </div>
+        </div>
+      </ng-template>
+
+    </div>
+  </div>
+
+  <div class="contact__footer">
+    <p>© 2025 Nhật Cường. Được thiết kế với ❤️ và .NET</p>
+  </div>
+</section>

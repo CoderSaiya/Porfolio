@@ -1,0 +1,16 @@
+.loading { position: fixed; inset: 0; z-index: 50; background: var(--background); display:grid; place-items:center; gap: 2rem; text-align:center; }
+.loading__spinner { position: relative; width: 8rem; height: 8rem; margin-inline:auto; }
+.loading__ring { position:absolute; inset:0; border-radius: 50%; border-style: solid; border-color: var(--muted);
+  &--outer { border-width: 4px; }
+  &--accent { border-width: 4px; border-color: var(--accent) transparent transparent transparent; animation: spin 1s linear infinite; }
+  &--secondary { inset: .5rem; border-width: 2px; border-color: var(--secondary) transparent transparent transparent; animation: spin 1.5s linear infinite reverse; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading__dot { position:absolute; inset: 0; display:grid; place-items:center; }
+.loading__dot::before { content: ''; width: 2rem; height: 2rem; background: var(--accent); border-radius: 50%; animation: pulse-glow 2s ease-in-out infinite; }
+.loading__bar { width: 16rem; margin-inline:auto; }
+.loading__barTop { display:flex; justify-content: space-between; font-size: .875rem; color: var(--muted-foreground); margin-bottom: .4rem; }
+.loading__track { width:100%; background: var(--muted); border-radius: 999px; height: .5rem; overflow:hidden; }
+.loading__progress { height:100%; background: linear-gradient(90deg, var(--accent), var(--secondary)); border-radius: inherit; transition: width .3s ease; }
+.loading__text h2 { font-weight: 800; margin: .25rem 0; }
+.loading__text p { color: var(--muted-foreground); }

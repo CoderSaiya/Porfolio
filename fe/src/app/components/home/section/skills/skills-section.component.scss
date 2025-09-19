@@ -1,0 +1,101 @@
+.skills {
+  padding: 5rem 0;
+}
+.skills__wrap {
+  transition: all 1s;
+  opacity: 0;
+
+  &.slide-in-diagonal {
+    opacity: 1;
+  }
+}
+.skills__header {
+  text-align:center;
+  margin-bottom: 4rem;
+}
+.skills__title {
+  font-size: clamp(2.25rem,4vw,3rem);
+  margin: .75rem 0 1rem;
+}
+.accent {
+  color: var(--accent);
+}
+.skills__underline { }
+
+.skills__grid {
+  display:grid;
+  gap: 1.25rem;
+  grid-template-columns: 1fr;
+  @media (min-width: 768px){
+    grid-template-columns: repeat(2,1fr);
+  }
+  @media (min-width: 1024px){
+    grid-template-columns: repeat(3,1fr);
+  }
+}
+.skills__extra {
+  margin-top: 4rem;
+  text-align:center;
+}
+.skills__chips {
+  display:flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  justify-content:center;
+  margin-top: 1rem;
+}
+.skills__chip {
+  border: 1px solid var(--border);
+  padding: .5rem .9rem;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.skillcard {
+  padding: 1.25rem;
+  border-radius: 16px;
+  background: color-mix(in oklab, var(--card) 90%, transparent);
+  border: 1px solid var(--border);
+}
+.skillcard__title {
+  display:flex;
+  align-items:center;
+  gap: .75rem;
+  margin-bottom: 1rem;
+}
+.skillcard__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display:grid;
+  place-items:center;
+}
+.skillcard__list {
+  display:flex;
+  flex-direction: column;
+  gap: .9rem;
+}
+
+.skillbar__label {
+  font-weight: 600;
+}
+.skillbar__dots {
+  display:flex;
+  align-items:center;
+  gap: .4rem;
+}
+.skillbar__dot {
+  width: 32px;
+  height: 8px;
+  border-radius: 8px;
+  background: var(--muted);
+  transition: background 1s;
+}
+.skillbar__dot--on {
+  background: linear-gradient(90deg, var(--accent), var(--secondary));
+}
+.skillbar__level {
+  color: var(--muted-foreground);
+  font-size: .75rem;
+  margin-left: .5rem;
+}

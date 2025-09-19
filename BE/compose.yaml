@@ -1,0 +1,61 @@
+﻿version: "2.4"
+
+services:
+  rabbitmq-portfolio:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-portfolio
+    volumes:
+      - ./rabbitmq/etc/definitions.json:/etc/rabbitmq/definitions.json
+      - ./rabbitmq/etc/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbitmq@my-rabbit
+      - ./rabbitmq/logs:/var/log/rabbitmq/log
+    ports:
+      - 5673:5673
+      - 15673:15673
+    healthcheck:
+      test: [ "CMD-SHELL", "rabbitmq-diagnostics -q ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 30
+    mem_limit: 512m
+    mem_reservation: 256m
+    cpus: 0.75
+    restart: unless-stopped
+    
+  api-portfolio:
+    build:
+      context: .
+      dockerfile: BE_Portfolio/Dockerfile
+    container_name: api-portfolio
+    environment:
+      - ASPNETCORE_URLS=http://+:8082
+      - ASPNETCORE_ENVIRONMENT=Development
+      - COMPlus_GCHeapHardLimitPercent=50
+      - DOTNET_EnableDiagnostics=0
+    ports:
+      - "5002:8082"
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    mem_limit: 512m
+    mem_reservation: 256m
+    cpus: 0.75
+    restart: unless-stopped
+    
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - api
+    mem_limit: 128m
+    mem_reservation: 64m
+    cpus: 0.25
+    restart: unless-stopped
+
+volumes:
+  mssql_data:

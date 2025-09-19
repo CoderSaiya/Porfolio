@@ -1,0 +1,21 @@
+<div *ngIf="isLoading" class="loading">
+  <div class="loading__spinner">
+    <div class="loading__ring loading__ring--outer"></div>
+    <div class="loading__ring loading__ring--accent"></div>
+    <div class="loading__ring loading__ring--secondary"></div>
+    <div class="loading__dot"></div>
+  </div>
+
+  <div class="loading__bar">
+    <div class="loading__barTop">
+      <span>Loading Portfolio</span>
+      <span>{{ progress | number:'1.0-0' }}%</span>
+    </div>
+    <div class="loading__track"><div class="loading__progress" [style.width.%]="progress"></div></div>
+  </div>
+
+  <div class="loading__text">
+    <h2>Nhật Cường</h2>
+    <p>.NET Backend Developer</p>
+  </div>
+</div>
