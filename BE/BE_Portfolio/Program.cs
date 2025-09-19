@@ -1,10 +1,7 @@
-using BE_Portfolio.Data;
-using BE_Portfolio.Models.Commons;
-using BE_Portfolio.Repositories;
-using BE_Portfolio.Repositories.Interfaces;
-using BE_Portfolio.Services;
-using BE_Portfolio.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using BE_Portfolio.Configuration;
+using BE_Portfolio.Persistence.Data;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,52 +10,51 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-builder.Services.AddScoped<ISkillRepository, SkillRepository>();
-
-builder.Services.AddScoped<ISkillService, SkillService>();
-builder.Services.AddScoped<IProjectService, ProjectService>();
-
-builder.Services.AddDbContext<PortfolioDbContext>(options =>
-    options.UseSqlServer(
-        connectionString: builder.Configuration["ConnectionStrings:DefaultConnection"],
-        sqlServerOptionsAction: sqlOptions =>
-        {
-            sqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30),
-                errorNumbersToAdd: null);
-        }),
-    contextLifetime: ServiceLifetime.Scoped,
-    optionsLifetime: ServiceLifetime.Singleton
-);
-
-builder.WebHost.ConfigureKestrel(options =>
+builder.Services.AddSwaggerGen(c =>
 {
-    options.ListenAnyIP(5000);
-    options.ListenAnyIP(5001, listenOptions => listenOptions.UseHttps());
+    c.SwaggerDoc("v1", new OpenApiInfo {
+        Title = "Portfolio API", Version = "v1",
+        Description = "API cho portfolio (.NET + MongoDB). Hỗ trợ upload ảnh WebP, Data URL, contact form."
+    });
+
+    // Bật [SwaggerOperation] annotations
+    c.EnableAnnotations();
+
+    // XML comments
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (System.IO.File.Exists(xmlPath)) c.IncludeXmlComments(xmlPath);
 });
+
+// builder.WebHost.ConfigureKestrel(options =>
+// {
+//     options.ListenAnyIP(8082);
+// });
 
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        policy.WithOrigins("http://localhost:4200")
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
     });
 });
 
-builder.Services.Configure<MongoDbSettings>(
-    builder.Configuration.GetSection("MongoDBSettings"));
-builder.Services.AddSingleton<MongoDbContext>();
+builder.Services.AddSettings(builder.Configuration);
+builder.Services.AddMongoDbContext(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var mongo = scope.ServiceProvider.GetRequiredService<IMongoDbContext>();
+    // await mongo.EnsureIndexesAsync();
+    // await mongo.EnsureSeedAsync();
+    // await ImageSeeder.SeedProjectImagesAsync(scope.ServiceProvider);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

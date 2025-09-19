@@ -1,0 +1,124 @@
+/* You can add global styles to this file, and also import other style files */
+:root {
+  //--bg: #0b0b0e;
+  //--card: #111216;
+  //--border: #23242a;
+  //--muted: #a1a1aa;
+  //--foreground: #f3f4f6;
+  //--accent: #7c3aed; /* violet */
+  //--accent-contrast: #ffffff;
+  //--secondary: #22d3ee; /* cyan */
+  //--primary: #3b82f6; /* blue */
+  //--success: #22c55e;
+  --background: oklch(0.98 0.005 240);
+  --foreground: oklch(0.1 0 0);
+  --card: oklch(0.97 0.005 240);
+  --card-foreground: oklch(0.15 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.1 0 0);
+  --primary: oklch(0.1 0 0);
+  --primary-foreground: oklch(0.98 0.005 240);
+  --secondary: oklch(0.65 0.15 270);
+  --secondary-foreground: oklch(0.98 0.005 240);
+  --muted: oklch(0.95 0.005 240);
+  --muted-foreground: oklch(0.35 0 0);
+  --accent: oklch(0.35 0.15 270);
+  --accent-foreground: oklch(0.98 0.005 240);
+  --destructive: oklch(0.6 0.2 25);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.9 0.005 240);
+  --input: oklch(0.97 0.005 240);
+  --ring: oklch(0.65 0.15 270);
+  --chart-1: oklch(0.55 0.2 260);
+  --chart-2: oklch(0.7 0.15 200);
+  --chart-3: oklch(0.6 0.18 140);
+  --chart-4: oklch(0.65 0.2 320);
+  --chart-5: oklch(0.75 0.15 60);
+  --radius: 0.75rem;
+  // Option
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.2 0 0);
+  --sidebar-primary: oklch(0.65 0.15 270);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.55 0.2 260);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.9 0.005 240);
+  --sidebar-ring: oklch(0.65 0.15 270);
+}
+
+/* ===== Base ===== */
+* { box-sizing: border-box; border-color: var(--border); outline-color: color-mix(in oklab, var(--ring) 50%, transparent); }
+html, body { height: 100%; }
+body { margin: 0; background: var(--background); color: var(--foreground); font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial; }
+
+/* Container */
+.container { max-width: 1120px; margin-inline: auto; padding-inline: 24px; }
+
+/* ===== Reusable UI ===== */
+.card {
+  background: color-mix(in oklab, var(--card) 90%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  &--secondary {
+    background: color-mix(in oklab, var(--secondary) 18%, transparent);
+    color: var(--foreground);
+  }
+  &--featured {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    font-size: .75rem;
+    padding: 4px 8px;
+    border-radius: 8px;
+  }
+}
+
+.btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+  padding:.9rem 1.4rem; border-radius:16px; font-weight:700; cursor:pointer;
+  border:1px solid transparent; transition: all .25s ease;
+  &--accent { background: var(--accent); color: var(--accent-foreground); }
+  &--accent:hover { filter: brightness(1.06); transform: translateY(-2px); }
+  &--outline { background: transparent; color: var(--accent); border-color: var(--accent); }
+  &--outline:hover { background: var(--accent); color: var(--accent-foreground); transform: translateY(-2px); }
+}
+
+.input, .textarea {
+  width: 100%; background: var(--input); color: var(--foreground);
+  border: 1px solid var(--border); border-radius: 10px; padding: .7rem .9rem;
+  outline: none; transition: box-shadow .2s, border-color .2s;
+  &:focus { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 30%, transparent); }
+}
+
+/* ===== Animations ===== */
+@keyframes float { 0%,100%{ transform: translateY(0) rotate(0); } 50%{ transform: translateY(-20px) rotate(180deg); } }
+@keyframes pulse-glow { 0%,100%{ box-shadow: 0 0 20px rgba(139,92,246,.3); } 50%{ box-shadow: 0 0 40px rgba(139,92,246,.6); } }
+@keyframes slide-in-diagonal { 0%{ transform: translateX(-100px) translateY(50px) rotate(-10deg); opacity:0; } 100%{ transform: none; opacity:1; } }
+@keyframes typewriter { from{ width:0; } to{ width:100%; } }
+@keyframes blink { 50%{ border-color: transparent; } }
+@keyframes morph {
+  0%,100%{ border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  50%{ border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+}
+
+/* Utility classes (giữ nguyên tên) */
+.float-animation { animation: float 6s ease-in-out infinite; }
+.pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.slide-in-diagonal { animation: slide-in-diagonal .8s ease-out forwards; }
+.typewriter { overflow:hidden; border-right:3px solid; white-space:nowrap; animation: typewriter 3s steps(40) 1s forwards, blink 1s step-end infinite; }
+.morph-shape { animation: morph 8s ease-in-out infinite; }
+.custom-card-hover { transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.custom-card-hover:hover { transform: translateY(-8px) rotate(2deg) scale(1.02); }
+.stagger-animation { animation-delay: calc(var(--stagger, 0) * .1s); }
+
+/* Helper */
+.accent { color: var(--accent); }
+.underline-gradient { width: 96px; height: 4px; margin: 0 auto; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--secondary)); }

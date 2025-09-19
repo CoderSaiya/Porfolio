@@ -1,0 +1,41 @@
+<section id="hero" class="hero">
+  <div class="hero__shapes">
+    <div class="hero__shape hero__shape--accent morph-shape"></div>
+    <div class="hero__shape hero__shape--secondary morph-shape" style="animation-delay:2s"></div>
+    <div class="hero__shape hero__shape--primary morph-shape" style="animation-delay:4s"></div>
+  </div>
+
+  <div class="container hero__container slide-in-diagonal">
+    <div class="hero__greeting">
+      <p class="hero__hello">Xin chào, tôi là</p>
+      <h1 class="hero__name"><span>Nhật Cường</span></h1>
+    </div>
+
+    <div class="hero__type">
+      <h2 class="hero__role typewriter">.NET Backend Developer</h2>
+    </div>
+
+    <p class="hero__desc">
+      Quan tâm các kiến trúc/khái niệm như RESTful, Clean Architecture, logging & monitoring cơ bản;
+      sẵn sàng học thêm về microservices, message queue (RabbitMQ) và cloud khi tham gia dự án thực tế.
+    </p>
+
+    <div class="hero__cta">
+      <button class="btn btn--accent" (click)="scrollTo('projects')">Xem Dự Án</button>
+      <button class="btn btn--outline" (click)="scrollTo('contact')">Liên Hệ Ngay</button>
+    </div>
+
+    <div class="hero__social">
+      <a class="hero__socialBtn stagger-animation" [style.--stagger]="0" href="https://github.com/CoderSaiya" aria-label="GitHub"><lucide-icon name="Github"></lucide-icon></a>
+      <a class="hero__socialBtn stagger-animation" [style.--stagger]="1" href="https://www.linkedin.com/in/nhat-cuong" aria-label="LinkedIn"><lucide-icon name="Linkedin"></lucide-icon></a>
+      <a class="hero__socialBtn stagger-animation" [style.--stagger]="2" href="mailto:nhatcuongdev.contacts@gmail.com" aria-label="Email"><lucide-icon name="Mail"></lucide-icon></a>
+    </div>
+  </div>
+
+  <div class="hero__scroll">
+    <span>Cuộn xuống</span>
+    <button class="hero__scrollBtn float-animation" (click)="scrollTo('about')">
+      <lucide-icon name="ArrowDown"></lucide-icon>
+    </button>
+  </div>
+</section>
