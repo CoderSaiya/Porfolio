@@ -1,0 +1,28 @@
+.nav--desktop { position: fixed; top: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 40; display:none;
+  @media (min-width: 768px){ display:block; }
+}
+.nav__wrap { background: color-mix(in oklab, var(--card) 80%, transparent); backdrop-filter: blur(10px);
+  border: 1px solid var(--border); border-radius: 999px; padding: .5rem 1rem; box-shadow: 0 8px 24px rgba(0,0,0,.15);
+  display:flex; gap:.5rem;
+}
+.nav__btn { padding: .5rem 1rem; border-radius: 999px; font-weight: 600; color: var(--foreground);
+  background: transparent; border: none; cursor: pointer;
+}
+.nav__btn:hover { background: var(--muted); color: var(--accent); }
+.nav__btn--active { background: var(--accent); color: var(--accent-foreground); box-shadow: 0 6px 14px rgba(0,0,0,.2); }
+
+.nav--mobile { position: fixed; top: 1rem; right: 1rem; z-index: 40; display:block;
+  @media (min-width: 768px){ display:none; }
+}
+.nav__toggle { background: color-mix(in oklab, var(--card) 80%, transparent); border: 1px solid var(--border); color: var(--foreground);
+  border-radius: 12px; padding: .5rem; display:grid; place-items:center;
+}
+.nav__sheet { position:absolute; top: 3rem; right: 0; min-width: 200px;
+  background: color-mix(in oklab, var(--card) 92%, transparent);
+  border: 1px solid var(--border); border-radius: 16px; padding: .5rem; box-shadow: 0 12px 28px rgba(0,0,0,.25);
+}
+.nav__sheetBtn { width:100%; text-align:left; display:flex; align-items:center; gap:.6rem; padding: .75rem 1rem;
+  border-radius: 12px; background: transparent; color: var(--foreground); border: none;
+}
+.nav__sheetBtn:hover { background: var(--muted); color: var(--accent); }
+.nav__sheetBtn--active { background: var(--accent); color: var(--accent-foreground); }

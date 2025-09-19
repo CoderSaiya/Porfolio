@@ -1,0 +1,64 @@
+<section id="about" class="about" #sectionRef>
+  <div class="container">
+    <div class="about__wrap" [class.slide-in-diagonal]="isVisible">
+      <div class="about__header">
+        <span class="badge badge--secondary">Giới thiệu</span>
+        <h2 class="about__title">Về <span class="about__accent">Tôi</span></h2>
+        <div class="about__underline underline-gradient"></div>
+      </div>
+
+      <div class="about__grid">
+        <div class="about__left">
+          <div class="about__figure">
+            <div class="about__photo custom-card-hover">
+              <img src="/imgs/avatar.png" alt="Nhật Cường - .NET Developer" />
+            </div>
+
+            <div class="about__chip pulse-glow">.NET</div>
+          </div>
+
+          <div class="about__stats">
+            <div
+              class="about__stat card custom-card-hover stagger-animation"
+              *ngFor="let s of stats; index as i"
+              [style.--stagger]="i"
+            >
+              <lucide-icon [name]="s.icon" class="about__statIcon" />
+              <div class="about__statValue">{{ s.value }}</div>
+              <div class="about__statLabel">{{ s.label }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="about__right">
+          <h3 class="about__lead">Đam mê tạo ra những giải pháp công nghệ tối ưu</h3>
+          <p class="about__desc">
+            Ứng viên Backend .NET (Intern/Fresher) đam mê xây dựng hệ thống vững và có khả năng mở rộng;
+            đã thực hiện một số dự án cá nhân/đồ án với C#, ASP.NET Core Web API, EF Core, LINQ và SQL Server
+            (làm quen Docker/Git).
+          </p>
+
+          <div class="about__skills">
+            <h4 class="about__skillsTitle">Chuyên môn chính:</h4>
+            <div class="about__skillsGrid">
+              <div
+                class="about__skill stagger-animation"
+                *ngFor="let skill of ['ASP.NET Core','Entity Framework','SQL Server','Azure Cloud','Docker','Microservices','REST APIs','Clean Architecture']; index as i"
+                [style.--stagger]="i"
+              >
+                <span class="about__skillDot"></span>
+                <span class="about__skillText">{{ skill }}</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="about__desc about__desc--mt">
+            Tôi luôn theo đuổi việc học hỏi các công nghệ mới và áp dụng các best practices để đảm bảo code
+            quality cao nhất. Mục tiêu của tôi là tạo ra những sản phẩm không chỉ hoạt động tốt mà còn dễ bảo trì
+            và mở rộng trong tương lai.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

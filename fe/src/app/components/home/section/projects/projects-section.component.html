@@ -1,0 +1,73 @@
+<section id="projects" class="projects" #sectionRef>
+  <div class="container">
+    <div class="projects__wrap" [class.slide-in-diagonal]="isVisible">
+      <div class="projects__header">
+        <span class="badge badge--secondary">Dự án</span>
+        <h2 class="projects__title">Dự Án <span class="accent">Nổi Bật</span></h2>
+        <div class="projects__underline underline-gradient"></div>
+        <p class="projects__subtitle">Những dự án tôi đã tham gia phát triển, từ startup đến enterprise scale</p>
+      </div>
+
+      <div class="projects__grid">
+        <article class="project card custom-card-hover stagger-animation"
+                 *ngFor="let p of projects; index as i"
+                 [style.--stagger]="i"
+                 [class.project--featured]="p.highlight">
+          <div class="project__media">
+            <img [src]="p.thumb"
+                 [attr.loading]="'lazy'"
+                 [attr.decoding]="'async'"
+                 (error)="onImgError($event, p.title)"
+                 alt="{{p.title}}">
+            <div class="badge badge--featured" *ngIf="p.highlight">Featured</div>
+          </div>
+
+          <div class="project__body">
+            <h3 class="project__title">{{ p.title }}</h3>
+            <p class="project__desc">{{ p.description }}</p>
+
+            <div class="project__meta">
+              <div class="project__metaItem">
+                <lucide-icon name="Calendar"></lucide-icon>
+                <span>{{ p.duration }} tháng</span>
+              </div>
+              <div class="project__metaItem">
+                <lucide-icon name="Users"></lucide-icon>
+                <span>{{ p.teamSize }} thành viên</span>
+              </div>
+            </div>
+
+            <div class="project__stack">
+              <h4>Công nghệ:</h4>
+              <div class="project__chips">
+                <span *ngFor="let t of p.technologies" class="project__chip">{{ t }}</span>
+              </div>
+            </div>
+
+            <div class="project__features">
+              <h4>Tính năng chính:</h4>
+              <ul class="project__featuresGrid">
+                <li *ngFor="let f of p.features">
+                  <span class="project__dot"></span>{{ f }}
+                </li>
+              </ul>
+            </div>
+
+            <div class="project__actions">
+              <a [href]="p.github" target="_blank" rel="noopener" class="project__btn project__btn--ghost">
+                <lucide-icon name="Github"></lucide-icon>Code
+              </a>
+              <a [href]="p.demo" target="_blank" rel="noopener" class="project__btn project__btn--accent">
+                <lucide-icon name="ExternalLink"></lucide-icon>Demo
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="projects__more">
+        <button class="btn btn--outline">Xem Thêm Dự Án</button>
+      </div>
+    </div>
+  </div>
+</section>

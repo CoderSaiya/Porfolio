@@ -1,0 +1,30 @@
+<nav class="nav nav--desktop">
+  <div class="nav__wrap">
+    <button
+      *ngFor="let item of navItems"
+      (click)="scrollTo(item.id)"
+      class="nav__btn"
+      [class.nav__btn--active]="activeSection===item.id"
+    >
+      {{ item.label }}
+    </button>
+  </div>
+</nav>
+
+<nav class="nav nav--mobile">
+  <button class="nav__toggle" (click)="isOpen=!isOpen">
+    <lucide-icon [name]="isOpen ? 'X' : 'Menu'"></lucide-icon>
+  </button>
+  <div class="nav__sheet" *ngIf="isOpen">
+    <button
+      *ngFor="let item of navItems; index as i"
+      (click)="scrollTo(item.id)"
+      class="nav__sheetBtn stagger-animation"
+      [style.--stagger]="i"
+      [class.nav__sheetBtn--active]="activeSection===item.id"
+    >
+      <lucide-icon [name]="item.icon"></lucide-icon>
+      <span>{{ item.label }}</span>
+    </button>
+  </div>
+</nav>
