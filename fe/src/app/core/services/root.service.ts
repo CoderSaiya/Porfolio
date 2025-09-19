@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {environment} from '../../../enviroments/enviroment';
+import {environment} from '../../../environments/environment';
 import {map} from 'rxjs';
 
 export interface Profile {
