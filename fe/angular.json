@@ -18,7 +18,7 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "aot": true,
-            "outputPath": "dist/fe",
+            "outputPath": "dist/angular-portfolio",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
