@@ -1,7 +1,7 @@
-import {inject, Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
-import {map} from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { map } from 'rxjs';
 
 export interface Profile {
   fullName: string;
@@ -42,8 +42,8 @@ export interface Project {
   title: string;
   description: string;
   highlight: boolean;
-  duration? : number | null;
-  teamSize? : number | null;
+  duration?: number | null;
+  teamSize?: number | null;
   technologies: string[];
   features: string[];
   thumb?: string | null;
@@ -88,6 +88,7 @@ export class RootService {
   getProjectDetail(slug: string) {
     return this.http
       .get<ProjectDetail>(`${this.apiUrl}/projects/${slug}`)
+      .pipe(map(p => this.normalizeProjectDetail(p)));
   }
 
   getProjectImageUrl(id: string, variant: 'thumb' | 'full' = 'thumb'): string {

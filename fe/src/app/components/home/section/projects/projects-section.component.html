@@ -11,7 +11,7 @@
       <!-- Bento Grid -->
       <div class="projects__grid" *ngIf="!loading && projects.length > 0">
         <article class="project-card stagger-animation" *ngFor="let p of projects; index as i; trackBy: trackById"
-          [style.--stagger]="i" [class.project-card--large]="i === 0" (click)="navigateToProject(p.slug)">
+          [style.--stagger]="i" (click)="navigateToProject(p.slug)">
           <div class="project-card__image">
             <img [src]="p.thumb" [attr.loading]="i < 2 ? 'eager' : 'lazy'" [attr.decoding]="'async'"
               (error)="onImgError($event, p.title)" [alt]="p.title" />

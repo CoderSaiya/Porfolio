@@ -7,6 +7,7 @@
 .breadcrumb-section {
     padding: 2rem 0 1rem;
     background: var(--background-secondary);
+    border-bottom: 1px solid var(--border);
 }
 
 .breadcrumb {
@@ -63,6 +64,7 @@
         position: absolute;
         inset: 0;
         overflow: hidden;
+        background: var(--muted);
 
         img {
             width: 100%;
@@ -76,9 +78,16 @@
         position: absolute;
         inset: 0;
         background: linear-gradient(to top,
-                rgba(10, 10, 10, 0.95) 0%,
+                var(--background) 0%,
                 rgba(10, 10, 10, 0.7) 50%,
                 transparent 100%);
+
+        [data-theme="light"] & {
+            background: linear-gradient(to top,
+                    var(--background) 0%,
+                    rgba(255, 255, 255, 0.7) 50%,
+                    transparent 100%);
+        }
     }
 
     &__content {
@@ -95,6 +104,11 @@
         font-weight: 700;
         color: var(--foreground);
         margin: 0;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+        [data-theme="light"] & {
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
     }
 
     &__desc {
@@ -102,6 +116,11 @@
         color: var(--foreground-secondary);
         max-width: 800px;
         line-height: 1.6;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+        [data-theme="light"] & {
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        }
     }
 }
 
