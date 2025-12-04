@@ -33,7 +33,8 @@ export interface SkillCategories {
 
 interface SkillItem {
   name: string;
-  level: number;
+  icon?: string; // Lucide icon name
+  level?: number; // Optional, not used in new UI
 }
 
 export interface Project {
