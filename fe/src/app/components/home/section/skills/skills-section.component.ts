@@ -11,8 +11,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, Server, Database, Cloud, Code, Wrench, GitBranch } from 'lucide-angular';
-import {RootService, SkillCategories} from '../../../../core/services/root.service';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import { RootService, SkillCategories } from '../../../../core/services/root.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -36,9 +36,7 @@ export class SkillsSectionComponent implements OnInit, OnDestroy {
   error: string | null = null;
 
   skillCategories: SkillCategories[] = [];
-  extraTech = ['RabbitMQ','Elasticsearch','MongoDB','GraphQL','gRPC','FluentValidation','MediatR','Serilog','NLog','HealthChecks','OpenAPI'];
-
-  levelLabel(l:number){ return l>=90?'Expert': l>=80?'Advanced': l>=70?'Intermediate':'Beginner'; }
+  extraTech = ['RabbitMQ', 'Elasticsearch', 'MongoDB', 'GraphQL', 'gRPC', 'FluentValidation', 'MediatR', 'Serilog', 'NLog', 'HealthChecks', 'OpenAPI'];
 
   ngOnInit() {
     this.observer = new IntersectionObserver(([entry]) => {
@@ -67,7 +65,8 @@ export class SkillsSectionComponent implements OnInit, OnDestroy {
         complete: () => this.loading = false
       });
   }
-  ngOnDestroy(): void { this.observer?.disconnect(); }
 
-  protected readonly Math = Math;
+  ngOnDestroy(): void {
+    this.observer?.disconnect();
+  }
 }

@@ -25,10 +25,11 @@
 
 .skills__grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 2rem;
   grid-template-columns: 1fr;
+  margin-bottom: 3rem;
 
-  @media (min-width: 768px) {
+  @media (min-width: 640px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -37,14 +38,122 @@
   }
 }
 
+// Category Card
+.skill-category {
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(10px);
+  transition: all var(--transition-base);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    lucide-icon {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--foreground);
+  }
+
+  &__items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+  }
+}
+
+// Skill Item
+.skill-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.75rem 1rem;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+  cursor: default;
+
+  &:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+
+    .skill-item__icon lucide-icon {
+      color: var(--accent-foreground);
+    }
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    lucide-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--accent);
+      transition: color var(--transition-base);
+    }
+  }
+
+  &__name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--foreground);
+    transition: color var(--transition-base);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &:hover &__name {
+    color: var(--accent-foreground);
+  }
+}
+
+// Extra Tech
 .skills__extra {
-  margin-top: 4rem;
+  margin-top: 3rem;
   text-align: center;
 
   h3 {
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
+    color: var(--foreground);
   }
 }
 
@@ -63,6 +172,7 @@
   border-radius: var(--radius-md);
   font-weight: 600;
   font-size: 0.9375rem;
+  color: var(--foreground);
   transition: all var(--transition-base);
 
   &:hover {
@@ -73,77 +183,16 @@
   }
 }
 
-.skillcard {
-  padding: 1.75rem;
-  border-radius: var(--radius-lg);
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: all var(--transition-base);
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
-  }
+// Animations
+.stagger-animation {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.skillcard__title {
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
-  margin-bottom: 1.5rem;
-
-  h3 {
-    font-size: 1.25rem;
-    font-weight: 700;
-  }
-}
-
-.skillcard__icon {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-md);
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-}
-
-.skillcard__list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.skillbar__label {
-  font-weight: 600;
-  font-size: 0.9375rem;
-  margin-bottom: 0.5rem;
-  color: var(--foreground);
-}
-
-.skillbar__dots {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.skillbar__dot {
-  width: 32px;
-  height: 8px;
-  border-radius: var(--radius-sm);
-  background: var(--muted);
-  transition: background 1s;
-}
-
-.skillbar__dot--on {
-  background: linear-gradient(90deg, var(--accent), var(--secondary));
-  box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
-}
-
-.skillbar__level {
-  color: var(--foreground-secondary);
-  font-size: 0.8125rem;
-  margin-left: 0.5rem;
-  font-weight: 500;
+.slide-in-diagonal .stagger-animation {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: calc(var(--stagger, 0) * 100ms + 200ms);
 }
