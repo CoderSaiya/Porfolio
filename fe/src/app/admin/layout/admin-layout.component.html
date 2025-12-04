@@ -1,0 +1,25 @@
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <h2 class="logo">Portfolio <span class="accent">Admin</span></h2>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a *ngFor="let item of menuItems" [routerLink]="item.route" routerLinkActive="active" class="nav-item">
+                <lucide-icon [name]="item.icon"></lucide-icon>
+                <span>{{ item.label }}</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button (click)="logout()" class="logout-btn">
+                <lucide-icon name="LogOut"></lucide-icon>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <main class="admin-content">
+        <router-outlet></router-outlet>
+    </main>
+</div>

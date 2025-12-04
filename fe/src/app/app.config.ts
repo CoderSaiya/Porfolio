@@ -10,7 +10,8 @@ import {
   ArrowDown, Menu, X, Code, User, Briefcase,
   ExternalLink, Users,
   Server, Database, Cloud, Wrench, GitBranch, CheckCircle2, Loader2, MailPlus, Home,
-  Shield, AlertCircle, ArrowRight
+  Shield, AlertCircle, ArrowRight,
+  Plus, Edit, Trash2, AlertTriangle, FolderOpen, FolderGit2, LayoutDashboard, LogOut
 } from 'lucide-angular';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 
@@ -28,7 +29,8 @@ export const appConfig: ApplicationConfig = {
         ExternalLink, Users,
         Server, Database, Cloud, Wrench, GitBranch,
         Loader2, CheckCircle2, MailPlus, Home,
-        Shield, AlertCircle, ArrowRight
+        Shield, AlertCircle, ArrowRight,
+        Plus, Edit, Trash2, AlertTriangle, FolderOpen, FolderGit2, LayoutDashboard, LogOut
       })
     ),
   ],

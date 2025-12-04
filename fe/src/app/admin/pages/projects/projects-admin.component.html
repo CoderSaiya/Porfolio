@@ -1,0 +1,106 @@
+<div class="projects-admin">
+    <div class="page-header">
+        <div>
+            <h1>Projects <span class="accent">Management</span></h1>
+            <p class="subtitle">Create, edit, and manage your portfolio projects</p>
+        </div>
+        <a routerLink="/admin/projects/new" class="btn btn--primary">
+            <lucide-icon name="Plus"></lucide-icon>
+            New Project
+        </a>
+    </div>
+
+    <div class="error-banner" *ngIf="error">
+        <lucide-icon name="AlertCircle"></lucide-icon>
+        {{ error }}
+    </div>
+
+    <div class="projects-table card" *ngIf="!loading">
+        <table *ngIf="projects.length > 0">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Slug</th>
+                    <th>Highlight</th>
+                    <th>Duration</th>
+                    <th>Team</th>
+                    <th>Technologies</th>
+                    <th class="actions-col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let project of projects">
+                    <td class="title-col">
+                        <div class="project-title">
+                            <img *ngIf="project.imageUrl" [src]="project.imageUrl" alt="{{project.title}}"
+                                class="project-thumb" />
+                            <span>{{ project.title }}</span>
+                        </div>
+                    </td>
+                    <td><code class="slug">{{ project.slug }}</code></td>
+                    <td>
+                        <span class="badge" [class.badge--highlight]="project.highlight">
+                            {{ project.highlight ? 'Yes' : 'No' }}
+                        </span>
+                    </td>
+                    <td>{{ project.duration }} months</td>
+                    <td>{{ project.teamSize }} {{ project.teamSize === 1 ? 'person' : 'people' }}</td>
+                    <td>
+                        <div class="tech-tags">
+                            <span class="tech-tag" *ngFor="let tech of project.technologies.slice(0, 3)">{{ tech
+                                }}</span>
+                            <span class="tech-tag more" *ngIf="project.technologies.length > 3">
+                                +{{ project.technologies.length - 3 }}
+                            </span>
+                        </div>
+                    </td>
+                    <td class="actions-col">
+                        <div class="actions">
+                            <a [routerLink]="['/admin/projects/edit', project.id]" class="btn btn--icon btn--ghost"
+                                title="Edit">
+                                <lucide-icon name="Edit"></lucide-icon>
+                            </a>
+                            <button (click)="confirmDelete(project)" class="btn btn--icon btn--ghost btn--danger"
+                                title="Delete">
+                                <lucide-icon name="Trash2"></lucide-icon>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="empty-state" *ngIf="projects.length === 0">
+            <lucide-icon name="FolderOpen" [size]="48"></lucide-icon>
+            <h3>No projects yet</h3>
+            <p>Get started by creating your first project</p>
+            <a routerLink="/admin/projects/new" class="btn btn--primary">
+                <lucide-icon name="Plus"></lucide-icon>
+                Create Project
+            </a>
+        </div>
+    </div>
+
+    <div class="loading-state" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Loading projects...</p>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" *ngIf="projectToDelete" (click)="cancelDelete()">
+    <div class="modal card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <lucide-icon name="AlertTriangle" class="warning-icon"></lucide-icon>
+            <h2>Delete Project</h2>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete <strong>{{ projectToDelete.title }}</strong>?</p>
+            <p class="warning-text">This action cannot be undone.</p>
+        </div>
+        <div class="modal-actions">
+            <button (click)="cancelDelete()" class="btn btn--outline">Cancel</button>
+            <button (click)="deleteProject()" class="btn btn--danger">Delete</button>
+        </div>
+    </div>
+</div>
