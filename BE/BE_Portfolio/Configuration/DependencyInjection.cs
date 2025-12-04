@@ -4,8 +4,10 @@ using BE_Portfolio.Persistence.Data;
 using BE_Portfolio.Persistence.Repositories;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
 using BE_Portfolio.Services;
+using BE_Portfolio.Services.Auth;
 using BE_Portfolio.Services.Background;
 using BE_Portfolio.Services.Interfaces;
+using BE_Portfolio.Services.TwoFactor;
 
 namespace BE_Portfolio.Configuration;
 
@@ -16,6 +18,12 @@ public static class DependencyInjection
         services.Configure<MongoDbSettings>(config.GetSection("MongoDBSettings"));
         services.Configure<RabbitMqSettings>(config.GetSection("RabbitMqSettings"));
         services.Configure<MailSettings>(config.GetSection("MailSettings"));
+        
+        // Add JWT and Cookie settings as singletons
+        var jwtSettings = config.GetSection("JwtSettings").Get<JwtSettings>();
+        var cookieSettings = config.GetSection("CookieSettings").Get<CookieSettings>();
+        services.AddSingleton(jwtSettings!);
+        services.AddSingleton(cookieSettings!);
         
         return services;
     }
@@ -32,18 +40,28 @@ public static class DependencyInjection
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+        // Repositories
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IContactMessageRepository, ContactMessageRepository>();
         services.AddScoped<IProfileRepository, ProfileRepository>();
         services.AddScoped<IImageRepository, ImageRepository>();
         services.AddScoped<ISkillRepository, SkillRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         
+        // Services
         services.AddScoped<PortfolioService>();
         services.AddScoped<ContactService>();
         
+        // Authentication services
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<ITwoFactorService, TwoFactorService>();
+        
+        // Email services
         services.AddSingleton<IMailSender, EmailSender>();
         services.AddSingleton<IEmailQueue, RabbitMqEmailPublisher>();
         
+        // Background services
         services.AddHostedService<RabbitMqListener>();
         
         return services;
