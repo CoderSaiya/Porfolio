@@ -18,7 +18,7 @@ public class MongoDbContext : IMongoDbContext
     }
 
     public IMongoCollection<Profile> Profiles
-        => _db.GetCollection<Profile>(CollectionNames.Profiles);
+        => _db.GetCollection<Profile>(CollectionNames.PortfolioProfile);
 
     public IMongoCollection<Project> Projects
         => _db.GetCollection<Project>(CollectionNames.Projects);
@@ -31,6 +31,9 @@ public class MongoDbContext : IMongoDbContext
 
     public IMongoCollection<Image> Images 
         => _db.GetCollection<Image>(CollectionNames.Images);
+
+    public IMongoCollection<User> Users
+        => _db.GetCollection<User>(CollectionNames.Users);
 
     public async Task EnsureSeedAsync(CancellationToken ct = default)
     {
@@ -88,7 +91,7 @@ public class MongoDbContext : IMongoDbContext
     [Obsolete("Obsolete")]
     public async Task EnsureIndexesAsync(CancellationToken ct = default)
     {
-        var profiles = _db.GetCollection<Profile>(CollectionNames.Profiles);
+        var profiles = _db.GetCollection<Profile>(CollectionNames.PortfolioProfile);
         if (await profiles.CountDocumentsAsync(_ => true, cancellationToken: ct) == 0)
         {
             await profiles.InsertOneAsync(new Profile

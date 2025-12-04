@@ -1,0 +1,77 @@
+<div class="login-container">
+    <div class="login-card card">
+        <div class="login-header">
+            <h1 class="login-title">Admin <span class="accent">Login</span></h1>
+            <div class="underline-gradient"></div>
+        </div>
+
+        <!-- Username/Password Form -->
+        <form *ngIf="!showTwoFactor" [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input id="username" type="text" formControlName="username" class="form-input"
+                    placeholder="Enter your username"
+                    [class.error]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" />
+                <span class="error-message"
+                    *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+                    Username is required
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" type="password" formControlName="password" class="form-input"
+                    placeholder="Enter your password"
+                    [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" />
+                <span class="error-message"
+                    *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+                    Password is required
+                </span>
+            </div>
+
+            <div class="error-banner" *ngIf="error && !showTwoFactor">
+                <lucide-icon name="AlertCircle"></lucide-icon>
+                {{ error }}
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--block" [disabled]="loading || loginForm.invalid">
+                <span *ngIf="!loading">Login</span>
+                <span *ngIf="loading" class="spinner"></span>
+            </button>
+        </form>
+
+        <!-- 2FA Verification Form -->
+        <form *ngIf="showTwoFactor" [formGroup]="twoFactorForm" (ngSubmit)="onVerify2FA()" class="login-form">
+            <div class="two-factor-info">
+                <lucide-icon name="Shield"></lucide-icon>
+                <p>Enter the 6-digit code from your authenticator app</p>
+                <span class="username-badge">{{ username }}</span>
+            </div>
+
+            <div class="form-group">
+                <label for="code">Verification Code</label>
+                <input id="code" type="text" formControlName="code" class="form-input code-input" placeholder="000000"
+                    maxlength="6"
+                    [class.error]="twoFactorForm.get('code')?.invalid && twoFactorForm.get('code')?.touched" />
+                <span class="error-message"
+                    *ngIf="twoFactorForm.get('code')?.invalid && twoFactorForm.get('code')?.touched">
+                    6-digit code required
+                </span>
+            </div>
+
+            <div class="error-banner" *ngIf="error && showTwoFactor">
+                <lucide-icon name="AlertCircle"></lucide-icon>
+                {{ error }}
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--block" [disabled]="loading || twoFactorForm.invalid">
+                <span *ngIf="!loading">Verify</span>
+                <span *ngIf="loading" class="spinner"></span>
+            </button>
+
+            <button type="button" class="btn btn--outline btn--block" (click)="showTwoFactor = false; error = null">
+                Back to Login
+            </button>
+        </form>
+    </div>
+</div>
