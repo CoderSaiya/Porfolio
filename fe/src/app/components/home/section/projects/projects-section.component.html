@@ -8,65 +8,44 @@
         <p class="projects__subtitle">Những dự án tôi đã tham gia phát triển, từ startup đến enterprise scale</p>
       </div>
 
-      <div class="projects__grid">
-        <article class="project card custom-card-hover stagger-animation"
-                 *ngFor="let p of projects; index as i"
-                 [style.--stagger]="i"
-                 [class.project--featured]="p.highlight">
-          <div class="project__media">
-            <img [src]="p.thumb"
-                 [attr.loading]="'lazy'"
-                 [attr.decoding]="'async'"
-                 (error)="onImgError($event, p.title)"
-                 alt="{{p.title}}">
-            <div class="badge badge--featured" *ngIf="p.highlight">Featured</div>
+      <!-- Bento Grid -->
+      <div class="projects__grid" *ngIf="!loading && projects.length > 0">
+        <article class="project-card stagger-animation" *ngFor="let p of projects; index as i; trackBy: trackById"
+          [style.--stagger]="i" [class.project-card--large]="i === 0" (click)="navigateToProject(p.slug)">
+          <div class="project-card__image">
+            <img [src]="p.thumb" [attr.loading]="i < 2 ? 'eager' : 'lazy'" [attr.decoding]="'async'"
+              (error)="onImgError($event, p.title)" [alt]="p.title" />
+            <div class="project-card__overlay"></div>
           </div>
 
-          <div class="project__body">
-            <h3 class="project__title">{{ p.title }}</h3>
-            <p class="project__desc">{{ p.description }}</p>
-
-            <div class="project__meta">
-              <div class="project__metaItem">
-                <lucide-icon name="Calendar"></lucide-icon>
-                <span>{{ p.duration }} tháng</span>
-              </div>
-              <div class="project__metaItem">
-                <lucide-icon name="Users"></lucide-icon>
-                <span>{{ p.teamSize }} thành viên</span>
-              </div>
-            </div>
-
-            <div class="project__stack">
-              <h4>Công nghệ:</h4>
-              <div class="project__chips">
-                <span *ngFor="let t of p.technologies" class="project__chip">{{ t }}</span>
-              </div>
-            </div>
-
-            <div class="project__features">
-              <h4>Tính năng chính:</h4>
-              <ul class="project__featuresGrid">
-                <li *ngFor="let f of p.features">
-                  <span class="project__dot"></span>{{ f }}
-                </li>
-              </ul>
-            </div>
-
-            <div class="project__actions">
-              <a [href]="p.github" target="_blank" rel="noopener" class="project__btn project__btn--ghost">
-                <lucide-icon name="Github"></lucide-icon>Code
-              </a>
-              <a [href]="p.demo" target="_blank" rel="noopener" class="project__btn project__btn--accent">
-                <lucide-icon name="ExternalLink"></lucide-icon>Demo
-              </a>
+          <div class="project-card__content">
+            <div class="badge badge--featured" *ngIf="p.highlight">Nổi bật</div>
+            <h3 class="project-card__title">{{ p.title }}</h3>
+            <p class="project-card__desc" *ngIf="i === 0">{{ p.description }}</p>
+            <div class="project-card__tags" *ngIf="i === 0">
+              <span *ngFor="let tech of p.technologies.slice(0, 3)" class="tech-tag">{{ tech }}</span>
             </div>
           </div>
         </article>
       </div>
 
-      <div class="projects__more">
-        <button class="btn btn--outline">Xem Thêm Dự Án</button>
+      <!-- Loading State -->
+      <div *ngIf="loading" class="projects__loading">
+        <div class="spinner"></div>
+        <p>Đang tải dự án...</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="error && !loading" class="projects__error">
+        <p>{{ error }}</p>
+      </div>
+
+      <!-- View All Button -->
+      <div class="projects__more" *ngIf="!loading && projects.length > 0">
+        <button class="btn btn--outline" (click)="navigateToProjects()">
+          Xem Tất Cả Dự Án
+          <lucide-icon name="ArrowRight"></lucide-icon>
+        </button>
       </div>
     </div>
   </div>

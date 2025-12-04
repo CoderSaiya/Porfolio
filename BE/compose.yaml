@@ -1,4 +1,4 @@
-﻿version: "2.4"
+﻿name: portfolio
 
 services:
   rabbitmq-portfolio:
@@ -10,8 +10,8 @@ services:
       - ./rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbitmq@my-rabbit
       - ./rabbitmq/logs:/var/log/rabbitmq/log
     ports:
-      - 5673:5673
-      - 15673:15673
+      - 5672:5672
+      - 15672:15672
     healthcheck:
       test: [ "CMD-SHELL", "rabbitmq-diagnostics -q ping" ]
       interval: 10s
@@ -35,23 +35,21 @@ services:
     ports:
       - "5002:8082"
     depends_on:
-      db:
-        condition: service_healthy
-      rabbitmq:
+      rabbitmq-portfolio:
         condition: service_healthy
     mem_limit: 512m
     mem_reservation: 256m
     cpus: 0.75
     restart: unless-stopped
     
-  cloudflared:
+  cloudflared-portfolio:
     image: cloudflare/cloudflared:latest
-    container_name: cloudflared
+    container_name: cloudflared-portfolio
     command: tunnel run
     environment:
       - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
     depends_on:
-      - api
+      - api-portfolio
     mem_limit: 128m
     mem_reservation: 64m
     cpus: 0.25

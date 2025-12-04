@@ -1,240 +1,294 @@
 .contact {
-  padding: 5rem 0;
+  padding: 6rem 0;
+  background: var(--background);
 }
+
 .contact__wrap {
   transition: all 1s;
   opacity: 1;
 }
+
 .contact__header {
-  text-align:center;
+  text-align: center;
   margin-bottom: 4rem;
 }
+
 .contact__title {
-  font-size: clamp(2.25rem,4vw,3rem);
-  margin: .75rem 0 1rem;
+  font-size: clamp(2.25rem, 4vw, 3rem);
+  margin: 0.75rem 0 1rem;
+  font-weight: 700;
 }
-.accent {
-  color: var(--accent);
-}
+
 .contact__subtitle {
   margin-top: 1.25rem;
-  color: var(--muted-foreground);
+  color: var(--foreground-secondary);
   max-width: 720px;
   margin-inline: auto;
+  font-size: 1.0625rem;
 }
 
 .contact__grid {
-  display:grid;
+  display: grid;
   gap: 3rem;
   grid-template-columns: 1fr;
 
-  @media (min-width: 1024px){
+  @media (min-width: 1024px) {
     grid-template-columns: 1fr 1fr;
   }
 }
 
 .contact__infoTitle {
   font-size: 1.5rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--foreground);
 }
+
 .contact__infoList {
-  display:flex;
+  display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
 }
+
 .contact__infoItem {
-  display:flex;
-  align-items:center;
+  display: flex;
+  align-items: center;
   gap: 1rem;
 }
+
 .contact__infoIcon {
-  background: color-mix(in oklab, var(--accent) 15%, transparent);
-  border-radius: 12px;
-  padding: .75rem;
+  background: rgba(6, 182, 212, 0.15);
+  border-radius: var(--radius-md);
+  padding: 0.875rem;
   color: var(--accent);
-  display:grid;
-  place-items:center;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
 }
+
 .contact__infoLabel {
-  font-size: .875rem;
-  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  color: var(--foreground-secondary);
 }
+
 .contact__infoLink {
   color: var(--foreground);
   font-weight: 600;
   text-decoration: none;
-  transition: color .2s;
-}
-.contact__infoLink:hover {
-  color: var(--accent);
+  transition: color var(--transition-base);
+
+  &:hover {
+    color: var(--accent);
+  }
 }
 
 .contact__socialTitle {
-  margin: 1.5rem 0 .75rem;
+  margin: 2rem 0 1rem;
   font-weight: 700;
+  color: var(--foreground);
 }
+
 .contact__socialList {
-  display:flex;
-  gap: .75rem;
+  display: flex;
+  gap: 0.75rem;
 }
+
 .contact__socialBtn {
   border: 1px solid var(--border);
   background: var(--card);
   color: var(--foreground);
-  border-radius: 12px;
-  padding: .6rem;
-  transition: all .25s;
-  display:grid;
-  place-items:center;
-}
-.contact__socialBtn:hover {
-  background: var(--accent);
-  color: var(--accent-foreground);
-  transform: translateY(-2px);
+  border-radius: var(--radius-md);
+  padding: 0.75rem;
+  transition: all var(--transition-base);
+  display: grid;
+  place-items: center;
+
+  &:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
 }
 
 .contact__availability {
-  padding: 1.25rem;
-  margin-top: 1rem;
-  background: color-mix(in oklab, var(--accent) 8%, var(--card));
-  border-radius: 14px;
-  border: none;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  background: var(--card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
+
 .contact__dot {
   width: 10px;
   height: 10px;
-  background: #22c55e;
-  border-radius: 999px;
-  display:inline-block;
-  margin-right: .5rem;
+  background: var(--success);
+  border-radius: var(--radius-full);
+  display: inline-block;
+  margin-right: 0.5rem;
   animation: pulse-glow 2s ease-in-out infinite;
 }
+
 .contact__availabilityText {
   font-weight: 700;
+  color: var(--foreground);
 }
+
 .contact__availabilityNote {
-  color: var(--muted-foreground);
-  font-size: .9rem;
-  margin-top: .5rem;
+  color: var(--foreground-secondary);
+  font-size: 0.9375rem;
+  margin-top: 0.75rem;
+  line-height: 1.6;
 }
 
 .contact__form {
   padding: 2rem;
-  border-radius: 16px;
-  background: color-mix(in oklab, var(--card) 80%, transparent);
-  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
+
 .contact__formTitle {
   font-size: 1.5rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--foreground);
 }
-.form {
-  display:flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-.form__row {
-  display:grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
 
-  @media (min-width: 768px){
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form__row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+
+  @media (min-width: 768px) {
     grid-template-columns: 1fr 1fr;
   }
 }
+
 .form__field {
-  display:flex;
+  display: flex;
   flex-direction: column;
-  gap: .5rem;
-}
-label {
-  font-size: .9rem;
-  font-weight: 600;
-}
-.contact__submit {
-  width: 100%;
-  margin-top: .5rem;
+  gap: 0.5rem;
 }
 
-/* ===== Loading / spinner ===== */
+label {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.contact__submit {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* Loading / spinner */
 .spin {
   animation: spin 1s linear infinite;
   vertical-align: middle;
 }
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
+
 .btn[disabled] {
-  opacity: .7;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
-/* ===== Error/invalid ===== */
-.input.invalid, .textarea.invalid {
-  border: 1px solid #ef4444 !important;
-  box-shadow: 0 0 0 3px color-mix(in oklab, #ef4444 15%, transparent);
-}
-.error {
-  color: #ef4444;
-  font-size: .8rem;
+/* Error/invalid states */
+.input.invalid,
+.textarea.invalid {
+  border: 1px solid var(--error) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
 }
 
-/* lỗi chung của form */
+.error {
+  color: var(--error);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
 .form__error {
   display: flex;
   align-items: center;
-  gap: .5rem;
-  background: color-mix(in oklab, #ef4444 10%, var(--card));
-  border: 1px solid color-mix(in oklab, #ef4444 40%, transparent);
-  color: #ef4444;
-  padding: .75rem;
-  border-radius: 12px;
+  gap: 0.5rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--error);
+  padding: 0.875rem;
+  border-radius: var(--radius-md);
 }
 
-/* ===== Thank you view ===== */
+/* Thank you view */
 .thankyou {
   padding: clamp(2rem, 4vw, 3rem);
   text-align: center;
-  border-radius: 16px;
-  background: color-mix(in oklab, var(--card) 80%, transparent);
-  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  border: 1px solid var(--card-border);
   margin: 0 auto;
   max-width: 720px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
+
 .thankyou__icon {
   font-size: 3rem;
-  color: #22c55e;
+  color: var(--success);
   display: grid;
   place-items: center;
-}
-.thankyou__title {
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  margin: .75rem 0;
-  font-weight: 800;
-}
-.thankyou__text {
-  color: var(--muted-foreground);
   margin-bottom: 1rem;
 }
+
+.thankyou__title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin: 0.75rem 0;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.thankyou__text {
+  color: var(--foreground-secondary);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
 .thankyou__actions {
   display: flex;
-  gap: .75rem;
+  gap: 0.75rem;
   justify-content: center;
   flex-wrap: wrap;
 }
+
 .btn--ghost {
   background: transparent;
   border: 1px solid var(--border);
+  color: var(--foreground);
+
+  &:hover {
+    background: var(--muted);
+  }
 }
 
 .contact__footer {
   margin-top: 5rem;
   padding-top: 2rem;
   border-top: 1px solid var(--border);
-  text-align:center;
-  color: var(--muted-foreground);
+  text-align: center;
+  color: var(--foreground-secondary);
+  font-size: 0.9375rem;
 }

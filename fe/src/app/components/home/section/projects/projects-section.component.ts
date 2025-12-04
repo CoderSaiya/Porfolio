@@ -11,6 +11,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { Project, RootService } from '../../../../core/services/root.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -25,6 +26,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class ProjectsSectionComponent implements OnInit, AfterViewInit, OnDestroy {
   private svc = inject(RootService);
   private destroyRef = inject(DestroyRef);
+  private router = inject(Router);
   private zone = inject(NgZone);
   private cdr = inject(ChangeDetectorRef);
 
@@ -40,7 +42,7 @@ export class ProjectsSectionComponent implements OnInit, AfterViewInit, OnDestro
   error: string | null = null;
 
   ngOnInit() {
-    this.svc.getProjects(true, 8)
+    this.svc.getProjects(true, 6)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: items => this.projects = items,
@@ -186,6 +188,14 @@ export class ProjectsSectionComponent implements OnInit, AfterViewInit, OnDestro
 
   fullImageOf(p: Project) {
     return this.svc.getProjectImageUrl(p.id, 'full');
+  }
+
+  navigateToProjects() {
+    this.router.navigate(['/projects']);
+  }
+
+  navigateToProject(slug: string) {
+    this.router.navigate(['/projects', slug]);
   }
 
   trackById = (_: number, p: Project) => p.id;

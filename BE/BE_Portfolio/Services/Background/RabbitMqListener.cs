@@ -29,7 +29,7 @@ public class RabbitMqListener : BackgroundService
         _factory = new ConnectionFactory
         {
             HostName = _settings.HostName,
-            Port = 5673,
+            Port = 5672,
             UserName = _settings.UserName,
             Password = _settings.Password,
             VirtualHost = "/",

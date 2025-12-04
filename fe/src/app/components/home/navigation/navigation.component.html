@@ -1,28 +1,43 @@
 <nav class="nav nav--desktop">
   <div class="nav__wrap">
-    <button
-      *ngFor="let item of navItems"
-      (click)="scrollTo(item.id)"
-      class="nav__btn"
-      [class.nav__btn--active]="activeSection===item.id"
-    >
+    <button *ngFor="let item of navItems" (click)="scrollTo(item.id)" class="nav__btn"
+      [class.nav__btn--active]="activeSection===item.id">
       {{ item.label }}
     </button>
+
+    <div class="nav__actions">
+      <a href="https://www.buymeacoffee.com/codersaiya" target="_blank" class="nav__coffee"
+        aria-label="Buy me a coffee">
+        <lucide-icon name="Coffee"></lucide-icon>
+        <span>Coffee</span>
+      </a>
+
+      <button class="nav__themeToggle" (click)="toggleTheme()" aria-label="Toggle theme">
+        <lucide-icon [name]="themeService.isDark() ? 'Sun' : 'Moon'"></lucide-icon>
+      </button>
+    </div>
   </div>
 </nav>
 
 <nav class="nav nav--mobile">
-  <button class="nav__toggle" (click)="isOpen=!isOpen">
-    <lucide-icon [name]="isOpen ? 'X' : 'Menu'"></lucide-icon>
-  </button>
+  <div class="nav__mobileTop">
+    <a href="https://www.buymeacoffee.com/codersaiya" target="_blank" class="nav__coffee nav__coffee--mobile"
+      aria-label="Buy me a coffee">
+      <lucide-icon name="Coffee"></lucide-icon>
+    </a>
+
+    <button class="nav__themeToggle" (click)="toggleTheme()" aria-label="Toggle theme">
+      <lucide-icon [name]="themeService.isDark() ? 'Sun' : 'Moon'"></lucide-icon>
+    </button>
+
+    <button class="nav__toggle" (click)="isOpen=!isOpen">
+      <lucide-icon [name]="isOpen ? 'X' : 'Menu'"></lucide-icon>
+    </button>
+  </div>
   <div class="nav__sheet" *ngIf="isOpen">
-    <button
-      *ngFor="let item of navItems; index as i"
-      (click)="scrollTo(item.id)"
-      class="nav__sheetBtn stagger-animation"
-      [style.--stagger]="i"
-      [class.nav__sheetBtn--active]="activeSection===item.id"
-    >
+    <button *ngFor="let item of navItems; index as i" (click)="scrollTo(item.id)"
+      class="nav__sheetBtn stagger-animation" [style.--stagger]="i"
+      [class.nav__sheetBtn--active]="activeSection===item.id">
       <lucide-icon [name]="item.icon"></lucide-icon>
       <span>{{ item.label }}</span>
     </button>
