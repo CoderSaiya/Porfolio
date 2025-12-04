@@ -17,6 +17,9 @@ services:
       interval: 10s
       timeout: 3s
       retries: 30
+      start_period: 30s
+    networks:
+      - portfolio-network
     mem_limit: 512m
     mem_reservation: 256m
     cpus: 0.75
@@ -37,6 +40,8 @@ services:
     depends_on:
       rabbitmq-portfolio:
         condition: service_healthy
+    networks:
+      - portfolio-network
     mem_limit: 512m
     mem_reservation: 256m
     cpus: 0.75
@@ -50,10 +55,16 @@ services:
       - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
     depends_on:
       - api-portfolio
+    networks:
+      - portfolio-network
     mem_limit: 128m
     mem_reservation: 64m
     cpus: 0.25
     restart: unless-stopped
+
+networks:
+  portfolio-network:
+    driver: bridge
 
 volumes:
   mssql_data:
