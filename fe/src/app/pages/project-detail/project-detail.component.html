@@ -1,0 +1,129 @@
+<section class="project-detail">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state container">
+        <div class="spinner"></div>
+        <p>Đang tải thông tin dự án...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="error-state container">
+        <lucide-icon name="AlertCircle"></lucide-icon>
+        <h2>Không tìm thấy dự án</h2>
+        <p>{{ error }}</p>
+        <button class="btn btn--accent" (click)="navigateToProjects()">
+            <lucide-icon name="ArrowLeft"></lucide-icon>
+            Quay lại danh sách
+        </button>
+    </div>
+
+    <!-- Project Content -->
+    <div *ngIf="project && !loading" class="project-content">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-section">
+            <div class="container">
+                <nav class="breadcrumb">
+                    <a routerLink="/" class="breadcrumb__link">
+                        <lucide-icon name="Home"></lucide-icon>
+                        Trang chủ
+                    </a>
+                    <lucide-icon name="ChevronRight" class="breadcrumb__separator"></lucide-icon>
+                    <a routerLink="/projects" class="breadcrumb__link">Dự án</a>
+                    <lucide-icon name="ChevronRight" class="breadcrumb__separator"></lucide-icon>
+                    <span class="breadcrumb__current">{{ project.title }}</span>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Hero Image -->
+        <div class="project-hero">
+            <div class="project-hero__image">
+                <img [src]="project.image || project.thumb" [alt]="project.title" (error)="onImgError($event)" />
+                <div class="project-hero__overlay"></div>
+            </div>
+            <div class="container project-hero__content">
+                <div class="badge badge--featured" *ngIf="project.highlight">Nổi bật</div>
+                <h1 class="project-hero__title">{{ project.title }}</h1>
+                <p class="project-hero__desc">{{ project.description }}</p>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container project-body">
+            <div class="project-main">
+                <!-- Metadata -->
+                <div class="project-section card">
+                    <h2 class="section-title">Thông tin dự án</h2>
+                    <div class="meta-grid">
+                        <div class="meta-item" *ngIf="project.duration">
+                            <div class="meta-item__icon">
+                                <lucide-icon name="Calendar"></lucide-icon>
+                            </div>
+                            <div class="meta-item__content">
+                                <span class="meta-item__label">Thời gian</span>
+                                <span class="meta-item__value">{{ project.duration }} tháng</span>
+                            </div>
+                        </div>
+                        <div class="meta-item" *ngIf="project.teamSize">
+                            <div class="meta-item__icon">
+                                <lucide-icon name="Users"></lucide-icon>
+                            </div>
+                            <div class="meta-item__content">
+                                <span class="meta-item__label">Quy mô</span>
+                                <span class="meta-item__value">{{ project.teamSize }} thành viên</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technologies -->
+                <div class="project-section card">
+                    <h2 class="section-title">
+                        <lucide-icon name="Code"></lucide-icon>
+                        Công nghệ sử dụng
+                    </h2>
+                    <div class="tech-grid">
+                        <span *ngFor="let tech of project.technologies" class="tech-tag">
+                            {{ tech }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="project-section card" *ngIf="project.features && project.features.length > 0">
+                    <h2 class="section-title">
+                        <lucide-icon name="Sparkles"></lucide-icon>
+                        Tính năng chính
+                    </h2>
+                    <ul class="features-list">
+                        <li *ngFor="let feature of project.features">
+                            <lucide-icon name="CheckCircle2"></lucide-icon>
+                            <span>{{ feature }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="project-actions">
+                    <a *ngIf="project.github" [href]="project.github" target="_blank" rel="noopener noreferrer"
+                        class="btn btn--outline">
+                        <lucide-icon name="Github"></lucide-icon>
+                        Xem mã nguồn
+                    </a>
+                    <a *ngIf="project.demo" [href]="project.demo" target="_blank" rel="noopener noreferrer"
+                        class="btn btn--accent">
+                        <lucide-icon name="ExternalLink"></lucide-icon>
+                        Xem Demo
+                    </a>
+                </div>
+
+                <!-- Back Button -->
+                <div class="back-section">
+                    <button class="btn btn--ghost" (click)="goBack()">
+                        <lucide-icon name="ArrowLeft"></lucide-icon>
+                        Quay lại
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

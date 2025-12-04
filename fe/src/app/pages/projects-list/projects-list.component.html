@@ -1,0 +1,114 @@
+<section class="projects-page">
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <div class="breadcrumb">
+                <a routerLink="/" class="breadcrumb__link">
+                    <lucide-icon name="Home"></lucide-icon>
+                    Trang chủ
+                </a>
+                <lucide-icon name="ChevronRight" class="breadcrumb__separator"></lucide-icon>
+                <span class="breadcrumb__current">Dự án</span>
+            </div>
+
+            <h1 class="page-title">
+                Dự Án & <span class="accent">Sản Phẩm</span>
+            </h1>
+            <p class="page-subtitle">
+                Khám phá các dự án tôi đã tham gia phát triển, từ startup đến enterprise scale
+            </p>
+        </div>
+
+        <!-- Search & Filters -->
+        <div class="filters-section">
+            <div class="search-box">
+                <lucide-icon name="Search"></lucide-icon>
+                <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()"
+                    placeholder="Tìm kiếm dự án..." class="search-input" />
+                <button *ngIf="searchQuery" (click)="clearFilters()" class="search-clear">
+                    <lucide-icon name="X"></lucide-icon>
+                </button>
+            </div>
+
+            <div class="filter-chips">
+                <button class="filter-chip" [class.filter-chip--active]="showFeaturedOnly" (click)="toggleFeatured()">
+                    <lucide-icon name="Star"></lucide-icon>
+                    Nổi bật
+                </button>
+
+                <button class="filter-chip"
+                    [class.filter-chip--active]="selectedTechnology === null && !showFeaturedOnly"
+                    (click)="selectTechnology(null)">
+                    Tất cả
+                </button>
+
+                <button *ngFor="let tech of allTechnologies" class="filter-chip"
+                    [class.filter-chip--active]="selectedTechnology === tech" (click)="selectTechnology(tech)">
+                    {{ tech }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-state">
+            <div class="spinner"></div>
+            <p>Đang tải dự án...</p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="error && !loading" class="error-state">
+            <lucide-icon name="AlertCircle"></lucide-icon>
+            <p>{{ error }}</p>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && !error && filteredProjects.length === 0" class="empty-state">
+            <lucide-icon name="FolderSearch"></lucide-icon>
+            <h3>Không tìm thấy dự án</h3>
+            <p>Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</p>
+            <button class="btn btn--outline" (click)="clearFilters()">Xóa bộ lọc</button>
+        </div>
+
+        <!-- Projects Grid -->
+        <div *ngIf="!loading && filteredProjects.length > 0" class="projects-grid">
+            <article *ngFor="let project of filteredProjects; trackBy: trackById"
+                class="project-card card custom-card-hover" (click)="navigateToProject(project.slug)">
+                <div class="project-card__media">
+                    <img [src]="project.thumb" [alt]="project.title" loading="lazy" decoding="async"
+                        (error)="onImgError($event, project.title)" />
+                    <div class="badge badge--featured" *ngIf="project.highlight">Nổi bật</div>
+                </div>
+
+                <div class="project-card__body">
+                    <h3 class="project-card__title">{{ project.title }}</h3>
+                    <p class="project-card__desc">{{ project.description }}</p>
+
+                    <div class="project-card__meta" *ngIf="project.duration || project.teamSize">
+                        <div class="project-card__metaItem" *ngIf="project.duration">
+                            <lucide-icon name="Calendar"></lucide-icon>
+                            <span>{{ project.duration }} tháng</span>
+                        </div>
+                        <div class="project-card__metaItem" *ngIf="project.teamSize">
+                            <lucide-icon name="Users"></lucide-icon>
+                            <span>{{ project.teamSize }} người</span>
+                        </div>
+                    </div>
+
+                    <div class="project-card__tech">
+                        <span *ngFor="let tech of project.technologies.slice(0, 4)" class="tech-badge">
+                            {{ tech }}
+                        </span>
+                        <span *ngIf="project.technologies.length > 4" class="tech-badge tech-badge--more">
+                            +{{ project.technologies.length - 4 }}
+                        </span>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <!-- Results Count -->
+        <div *ngIf="!loading && filteredProjects.length > 0" class="results-count">
+            Hiển thị {{ filteredProjects.length }} / {{ projects.length }} dự án
+        </div>
+    </div>
+</section>

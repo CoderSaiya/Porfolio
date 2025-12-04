@@ -1,6 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Menu, X, Code, User, Briefcase, Mail } from 'lucide-angular';
+import { LucideAngularModule, Menu, X, Code, User, Briefcase, Mail, Sun, Moon, Coffee } from 'lucide-angular';
+import { ThemeService } from '../../../core/services/theme.service';
 
 interface NavItem { id: string; label: string; icon: string; }
 
@@ -23,6 +24,8 @@ export class NavigationComponent {
     { id: 'contact', label: 'Liên hệ', icon: 'Mail' },
   ];
 
+  constructor(public themeService: ThemeService) { }
+
   @HostListener('window:scroll')
   onScroll() {
     if (typeof document === 'undefined') return;
@@ -40,5 +43,9 @@ export class NavigationComponent {
     if (typeof document === 'undefined') return;
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     this.isOpen = false;
+  }
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
   }
 }

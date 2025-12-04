@@ -1,39 +1,58 @@
 .about {
-  padding: 5rem 0;
-  background: color-mix(in oklab, var(--card) 15%, transparent);
+  padding: 6rem 0;
+  background: var(--background-secondary);
+  position: relative;
 
   &__wrap {
     transition: all 1s ease;
     opacity: 0;
-    &.slide-in-diagonal { opacity: 1; }
+
+    &.slide-in-diagonal {
+      opacity: 1;
+    }
   }
 
-  &__header { text-align: center; margin-bottom: 4rem; }
-  &__title { font-size: clamp(2.25rem, 4vw, 3rem); margin: .75rem 0 1rem; }
-  &__accent { color: var(--accent); }
-  &__underline { /* đã có lớp underline-gradient ở global */ }
+  &__header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  &__title {
+    font-size: clamp(2.25rem, 4vw, 3rem);
+    margin: 0.75rem 0 1rem;
+    font-weight: 700;
+  }
+
+  &__accent {
+    color: var(--accent);
+  }
 
   &__grid {
-    display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: center;
-    @media (min-width: 1024px){ grid-template-columns: 1fr 1fr; }
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: center;
+
+    @media (min-width: 1024px) {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   &__figure {
     position: relative;
     width: max-content;
-    margin: 0 auto 2rem; // giống "space-y-8" ở Next
+    margin: 0 auto 2rem;
   }
 
   &__photo {
     width: 320px;
     height: 320px;
-    border-radius: 24px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    background: linear-gradient(
-        135deg,
-        color-mix(in oklab, var(--accent) 20%, transparent),
-        color-mix(in oklab, var(--secondary) 20%, transparent)
-    );
+    background: linear-gradient(135deg,
+        rgba(6, 182, 212, 0.15),
+        rgba(139, 92, 246, 0.15));
+    border: 1px solid var(--card-border);
 
     img {
       width: 100%;
@@ -51,46 +70,116 @@
     height: 96px;
     background: var(--accent);
     color: var(--accent-foreground);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 800;
     font-size: 1.25rem;
-    letter-spacing: .5px;
+    letter-spacing: 0.5px;
     z-index: 2;
     pointer-events: none;
+    box-shadow: var(--shadow-glow);
   }
 
   &__stats {
     margin-top: 2rem;
-    display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
   }
 
   &__stat {
-    text-align:center; padding: 1.25rem; border-radius: 14px;
-    background: color-mix(in oklab, var(--card) 70%, transparent);
-    border: 1px solid var(--border);
+    text-align: center;
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all var(--transition-base);
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
   }
 
   &__statIcon {
-    width: 32px; height: 32px; color: var(--accent);
-    margin: 0 auto 8px; display:block;
+    width: 32px;
+    height: 32px;
+    color: var(--accent);
+    margin: 0 auto 0.75rem;
+    display: block;
   }
 
-  &__statValue { font-size: 1.5rem; font-weight: 800; }
-  &__statLabel { font-size: .875rem; color: var(--muted-foreground); }
+  &__statValue {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 0.25rem;
+  }
 
-  &__lead { font-weight: 800; font-size: 1.5rem; margin-bottom: .75rem; }
+  &__statLabel {
+    font-size: 0.875rem;
+    color: var(--foreground-secondary);
+  }
+
+  &__lead {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--foreground);
+  }
+
   &__desc {
-    color: var(--muted-foreground); line-height: 1.75;
-    &--mt { margin-top: 1rem; }
+    color: var(--foreground-secondary);
+    line-height: 1.75;
+    font-size: 1.0625rem;
+
+    &--mt {
+      margin-top: 1.5rem;
+    }
   }
 
-  &__skills { margin-top: 1rem; }
-  &__skillsTitle { font-weight: 700; margin-bottom: .5rem; }
-  &__skillsGrid { display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .75rem; }
-  &__skill { display:flex; align-items:center; gap:.5rem; }
-  &__skillDot { width: 8px; height: 8px; border-radius: 999px; background: var(--accent); display:inline-block; }
-  &__skillText { color: var(--muted-foreground); }
+  &__skills {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+  }
+
+  &__skillsTitle {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--foreground);
+  }
+
+  &__skillsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  &__skill {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+  }
+
+  &__skillDot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-full);
+    background: var(--accent);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  &__skillText {
+    color: var(--foreground-secondary);
+    font-size: 0.9375rem;
+  }
 }

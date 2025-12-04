@@ -22,7 +22,7 @@ public sealed class RabbitMqEmailPublisher : IEmailQueue, IAsyncDisposable
         _logger = logger;
         _factory = new ConnectionFactory {
             HostName = _cfg.HostName,
-            Port = 5673,
+            Port = 5672,
             UserName = _cfg.UserName,
             Password = _cfg.Password,
             VirtualHost = "/",
