@@ -1,0 +1,96 @@
+<div class="messages-admin card">
+    <div class="page-header">
+        <h1>Hộp Thư Tin Nhắn</h1>
+        <button *ngIf="selectedIds.size > 0" (click)="bulkDelete()" class="btn btn--danger">
+            <lucide-icon [img]="TrashIcon"></lucide-icon>
+            Xóa Đã Chọn ({{selectedIds.size}})
+        </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-bar card">
+        <div class="search-wrapper">
+            <lucide-icon [img]="SearchIcon"></lucide-icon>
+            <input type="text" [(ngModel)]="filter.searchTerm" (keyup.enter)="onSearch()"
+                placeholder="Tìm kiếm theo tên, email hoặc tiêu đề...">
+        </div>
+
+        <select (change)="onStatusChange($any($event.target).value)">
+            <option value="all">Tất Cả Trạng Thái</option>
+            <option value="0">Chưa Đọc</option>
+            <option value="1">Đã Đọc</option>
+        </select>
+    </div>
+
+    <!-- Table -->
+    <div class="messages-table">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 50px;">
+                        <input type="checkbox" (change)="toggleAll($event)">
+                    </th>
+                    <th>Trạng Thái</th>
+                    <th>Người Gửi</th>
+                    <th>Tiêu Đề</th>
+                    <th>Ngày</th>
+                    <th class="actions-col">Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let msg of messages">
+                    <td>
+                        <input type="checkbox" [checked]="selectedIds.has(msg.id)" (change)="toggleSelection(msg.id)">
+                    </td>
+                    <td>
+                        <span class="status-badge" [class.unread]="msg.status === 0" [class.read]="msg.status === 1">
+                            {{ msg.status === 0 ? 'Chưa Đọc' : 'Đã Đọc' }}
+                        </span>
+                    </td>
+                    <td class="sender-col">
+                        <div class="sender-name">{{ msg.name }}</div>
+                        <div class="sender-email">{{ msg.email }}</div>
+                    </td>
+                    <td class="subject-col">
+                        <div class="subject-text">{{ msg.subject }}</div>
+                    </td>
+                    <td>{{ msg.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                    <td class="actions-col">
+                        <div class="row-actions">
+                            <button (click)="markAsRead(msg.id, msg.status === 0)" class="btn btn--icon btn--ghost"
+                                [title]="msg.status === 0 ? 'Đánh Dấu Đã Đọc' : 'Đánh Dấu Chưa Đọc'">
+                                <lucide-icon [img]="msg.status === 0 ? MailOpenIcon : MailIcon"></lucide-icon>
+                            </button>
+                            <a [routerLink]="['/admin/messages', msg.id]" class="btn btn--icon btn--ghost"
+                                title="Xem Chi Tiết">
+                                <lucide-icon [img]="EyeIcon"></lucide-icon>
+                            </a>
+                            <button (click)="deleteMessage(msg.id)" class="btn btn--icon btn--ghost btn--danger"
+                                title="Xóa">
+                                <lucide-icon [img]="TrashIcon"></lucide-icon>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr *ngIf="messages.length === 0 && !loading">
+                    <td colspan="6" class="empty-state">
+                        Không tìm thấy tin nhắn nào.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="total > 0">
+        <div class="pagination-info">
+            Hiển thị {{ (filter.page - 1) * filter.pageSize + 1 }} đến {{ Math.min(filter.page * filter.pageSize, total)
+            }} trong tổng số {{ total }} kết quả
+        </div>
+        <div class="pagination-buttons">
+            <button *ngFor="let p of pages" (click)="onPageChange(p)" [class.active]="p === filter.page">
+                {{ p }}
+            </button>
+        </div>
+    </div>
+</div>

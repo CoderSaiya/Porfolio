@@ -1,0 +1,253 @@
+@import '../../styles/admin-shared';
+
+.profile-admin {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        animation: slideDown 0.3s ease-out;
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--foreground);
+        }
+    }
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 1.5rem;
+
+        @media (max-width: 968px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .avatar-section {
+        .avatar-card {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            margin-bottom: 1.5rem;
+
+            .avatar-wrapper {
+                position: relative;
+                width: 150px;
+                height: 150px;
+                margin: 0 auto 1rem;
+                cursor: pointer;
+                border-radius: 50%;
+                overflow: hidden;
+                border: 4px solid var(--border);
+                transition: all var(--transition-base);
+
+                &:hover {
+                    border-color: var(--accent);
+                    transform: scale(1.05);
+
+                    .avatar-overlay {
+                        opacity: 1;
+                    }
+                }
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+
+                .avatar-overlay {
+                    position: absolute;
+                    inset: 0;
+                    background: rgba(0, 0, 0, 0.6);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    opacity: 0;
+                    transition: opacity var(--transition-base);
+
+                    lucide-icon {
+                        width: 32px;
+                        height: 32px;
+                        color: white;
+                    }
+                }
+
+                input[type="file"] {
+                    display: none;
+                }
+            }
+
+            .avatar-hint {
+                font-size: 0.875rem;
+                color: var(--foreground-secondary);
+                margin: 0;
+            }
+        }
+    }
+
+    .stats-card {
+        padding: 1.5rem;
+
+        h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin: 0 0 1.5rem 0;
+            color: var(--foreground);
+        }
+
+        .stat-group {
+            margin-bottom: 1.25rem;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            label {
+                display: block;
+                font-size: 0.875rem;
+                font-weight: 500;
+                color: var(--foreground-secondary);
+                margin-bottom: 0.5rem;
+            }
+
+            input {
+                @extend .form-input;
+            }
+        }
+    }
+
+    .info-section {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+
+        .info-card {
+            padding: 1.5rem;
+
+            h3 {
+                font-size: 1.125rem;
+                font-weight: 700;
+                margin: 0 0 1.5rem 0;
+                color: var(--foreground);
+            }
+
+            .form-group {
+                margin-bottom: 1.25rem;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+
+                label {
+                    display: block;
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    color: var(--foreground-secondary);
+                    margin-bottom: 0.5rem;
+                }
+
+                input,
+                textarea {
+                    @extend .form-input;
+                }
+            }
+        }
+    }
+
+    .social-links-card {
+        padding: 1.5rem;
+
+        .social-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+
+            h3 {
+                font-size: 1.125rem;
+                font-weight: 700;
+                margin: 0;
+                color: var(--foreground);
+            }
+
+            button {
+                padding: 0.5rem;
+                background: transparent;
+                border: none;
+                color: var(--accent);
+                cursor: pointer;
+                border-radius: var(--radius-md);
+                transition: all var(--transition-base);
+
+                &:hover {
+                    background: var(--muted);
+                }
+
+                lucide-icon {
+                    width: 20px;
+                    height: 20px;
+                }
+            }
+        }
+
+        .social-links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+
+            .social-link-item {
+                display: flex;
+                gap: 0.75rem;
+                align-items: flex-start;
+
+                select {
+                    width: 150px;
+                    padding: 0.75rem 1rem;
+                    background: var(--input-bg);
+                    border: 1px solid var(--input-border);
+                    border-radius: var(--radius-md);
+                    color: var(--foreground);
+                    font-size: 0.875rem;
+                    cursor: pointer;
+                    transition: all var(--transition-base);
+
+                    &:focus {
+                        outline: none;
+                        border-color: var(--accent);
+                        background: var(--background);
+                    }
+                }
+
+                input {
+                    flex: 1;
+                    @extend .form-input;
+                }
+
+                button {
+                    padding: 0.75rem;
+                    background: transparent;
+                    border: none;
+                    color: var(--error);
+                    cursor: pointer;
+                    border-radius: var(--radius-md);
+                    transition: all var(--transition-base);
+
+                    &:hover {
+                        background: rgba(239, 68, 68, 0.1);
+                    }
+
+                    lucide-icon {
+                        width: 20px;
+                        height: 20px;
+                    }
+                }
+            }
+        }
+    }
+}

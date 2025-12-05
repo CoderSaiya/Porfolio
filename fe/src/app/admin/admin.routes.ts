@@ -29,6 +29,18 @@ export const ADMIN_ROUTES: Routes = [
             {
                 path: 'skills',
                 loadComponent: () => import('./pages/skills/skills-admin.component').then(m => m.SkillsAdminComponent)
+            },
+            {
+                path: 'profile',
+                loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent)
+            },
+            {
+                path: 'messages',
+                loadComponent: () => import('./pages/messages/messages.component').then(m => m.MessagesComponent)
+            },
+            {
+                path: 'messages/:id',
+                loadComponent: () => import('./pages/messages/message-detail/message-detail.component').then(m => m.MessageDetailComponent)
             }
         ]
     }

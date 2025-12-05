@@ -123,4 +123,23 @@ public class PortfolioController(PortfolioService svc) : Controller
         await svc.DeleteProjectImageAsync(objId, vv, ct);
         return NoContent();
     }
+    [HttpGet("profile/image/{variant:alpha}")]
+    [SwaggerOperation(Summary = "Lấy ảnh profile", Description = "Trả file bytes (image/webp) của profile avatar.")]
+    [Produces("image/webp", "image/jpeg", "image/png")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any, NoStore = false)]
+    public async Task<IActionResult> GetProfileImageFile(
+        [FromRoute] string variant,
+        CancellationToken ct)
+    {
+        if (!Enum.TryParse<ImageVariant>(variant, true, out var vv))
+            vv = ImageVariant.Thumb;
+
+        var res = await svc.GetProfileImageBytesAsync(vv, ct);
+        if (res is null) return NotFound();
+
+        var (bytes, mime) = res.Value;
+        return File(bytes, mime);
+    }
 }

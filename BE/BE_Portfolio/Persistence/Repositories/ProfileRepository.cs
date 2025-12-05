@@ -21,4 +21,7 @@ public class ProfileRepository(IMongoDbContext ctx) : IProfileRepository
                 IsUpsert = true
             },
             ct);
+
+    public Task<Profile?> GetProfileAsync(CancellationToken ct = default) => GetAsync(ct);
+    public Task UpdateProfileAsync(Profile doc, CancellationToken ct = default) => UpsertAsync(doc, ct);
 }
