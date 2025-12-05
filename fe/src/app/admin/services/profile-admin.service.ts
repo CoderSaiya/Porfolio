@@ -37,7 +37,7 @@ export interface Profile {
     providedIn: 'root'
 })
 export class ProfileAdminService {
-    private apiUrl = `${environment.apiUrl}/admin/profile`;
+    private apiUrl = `${environment.apiUrl}/api/admin/profile`;
 
     constructor(private http: HttpClient) { }
 
