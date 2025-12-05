@@ -18,7 +18,7 @@ export class ProjectAdminService {
     }
 
     getProject(id: string): Observable<ProjectAdmin> {
-        return this.http.get<ProjectAdmin>(`${environment.apiUrl}/api/portfolio/projects/${id}`, {
+        return this.http.get<ProjectAdmin>(`${this.API_URL}/${id}`, {
             withCredentials: true
         });
     }
