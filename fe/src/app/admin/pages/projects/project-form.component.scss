@@ -1,5 +1,8 @@
+@import '../../styles/admin-shared';
+
 .project-form {
     max-width: 900px;
+    animation: slideDown 0.3s ease-out;
 
     .page-header {
         margin-bottom: 2rem;
@@ -30,7 +33,11 @@
         margin: 0 0 1.5rem 0;
         color: var(--foreground);
         padding-bottom: 0.75rem;
-        border-bottom: 1px solid var(--border);
+        border-bottom: 2px solid var(--border);
+        background: linear-gradient(to right, var(--accent), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
     .section-header {
@@ -39,18 +46,12 @@
         align-items: center;
         margin-bottom: 1.5rem;
         padding-bottom: 0.75rem;
-        border-bottom: 1px solid var(--border);
+        border-bottom: 2px solid var(--border);
 
         h2 {
             margin: 0;
             padding: 0;
             border: none;
-        }
-
-        .btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
     }
 }
@@ -87,37 +88,18 @@
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
+    transition: color var(--transition-fast);
+
+    &:hover {
+        color: var(--accent);
+    }
 
     input[type="checkbox"] {
         width: 18px;
         height: 18px;
         cursor: pointer;
+        accent-color: var(--accent);
     }
-}
-
-.form-input {
-    padding: 0.75rem 1rem;
-    background: var(--background);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    color: var(--foreground);
-    font-size: 0.875rem;
-    transition: all var(--transition-base);
-
-    &:focus {
-        outline: none;
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
-    }
-
-    &::placeholder {
-        color: var(--foreground-secondary);
-    }
-}
-
-textarea.form-input {
-    resize: vertical;
-    min-height: 100px;
 }
 
 .dynamic-list {
@@ -129,18 +111,10 @@ textarea.form-input {
         display: flex;
         gap: 0.75rem;
         align-items: center;
+        animation: slideDown 0.2s ease-out;
 
         .form-input {
             flex: 1;
-        }
-
-        .btn--icon {
-            padding: 0.75rem;
-
-            lucide-icon {
-                width: 18px;
-                height: 18px;
-            }
         }
     }
 }
@@ -152,20 +126,4 @@ textarea.form-input {
     margin-top: 2.5rem;
     padding-top: 2rem;
     border-top: 1px solid var(--border);
-}
-
-.spinner {
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--accent-foreground);
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-    display: inline-block;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
 }

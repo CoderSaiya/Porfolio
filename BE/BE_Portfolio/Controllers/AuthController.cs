@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using BE_Portfolio.DTOs.Admin;
 using BE_Portfolio.DTOs.Auth;
 using BE_Portfolio.Persistence.Repositories;
 using BE_Portfolio.Services.Auth;
@@ -25,6 +27,25 @@ public class AuthController : ControllerBase
         _twoFactorService = twoFactorService;
     }
 
+    [HttpGet("me")]
+    [Authorize]
+    public IActionResult Me()
+    {
+        var username = User.FindFirst(ClaimTypes.Name)?.Value;
+        var role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+        if (username == null)
+            return Unauthorized();
+
+        var user = new AuthUserDto
+        {
+            Username = username,
+            Role = role ?? "User"
+        };
+
+        return Ok(user);
+    }
+    
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDTO request, CancellationToken ct)
     {
