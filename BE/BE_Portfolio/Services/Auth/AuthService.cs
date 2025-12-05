@@ -35,7 +35,7 @@ public class AuthService : IAuthService
         _cookieSettings = cookieSettings;
     }
 
-    public async Task<LoginResponseDTO> LoginAsync(string username, string password, CancellationToken ct = default)
+    public async Task<LoginResponseDTO> LoginAsync(string username, string password, HttpResponse response, CancellationToken ct = default)
     {
         var user = await _userRepo.GetByUsernameAsync(username, ct);
         
@@ -44,7 +44,7 @@ public class AuthService : IAuthService
             throw new UnauthorizedAccessException("Invalid credentials");
         }
 
-        // If 2FA is enabled, return temp token
+        // Nếu bật 2FA → chỉ trả temp token, chưa set cookie
         if (user.TwoFactorEnabled)
         {
             var tempToken = GenerateTempToken(user);
@@ -56,8 +56,16 @@ public class AuthService : IAuthService
             );
         }
 
-        // If 2FA is not enabled, this shouldn't happen in production
-        // but we can handle it by returning success without 2FA
+        // Nếu KHÔNG bật 2FA → login full luôn: tạo token + set cookie
+        var accessToken = GenerateAccessToken(user);
+        var refreshToken = GenerateRefreshToken();
+
+        var refreshTokenExpiry = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays);
+        await _userRepo.UpdateRefreshTokenAsync(user.Id.ToString(), refreshToken, refreshTokenExpiry, ct);
+        await _userRepo.UpdateLastLoginAsync(user.Id.ToString(), ct);
+
+        SetAuthCookies(response, accessToken, refreshToken);
+        
         return new LoginResponseDTO(
             RequiresTwoFactor: false,
             TempToken: null,

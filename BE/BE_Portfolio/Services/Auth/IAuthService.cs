@@ -6,7 +6,7 @@ namespace BE_Portfolio.Services.Auth;
 
 public interface IAuthService
 {
-    Task<LoginResponseDTO> LoginAsync(string username, string password, CancellationToken ct = default);
+    Task<LoginResponseDTO> LoginAsync(string username, string password,HttpResponse response, CancellationToken ct = default);
     Task<bool> Verify2FAAndSetCookiesAsync(string tempToken, string code, HttpResponse response, CancellationToken ct = default);
     Task<bool> RefreshTokenAsync(string refreshToken, HttpResponse response, CancellationToken ct = default);
     string GenerateAccessToken(User user);
