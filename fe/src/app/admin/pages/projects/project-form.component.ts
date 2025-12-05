@@ -1,14 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { ProjectAdminService } from '../../services/project-admin.service';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
     selector: 'app-project-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+    imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, RouterModule],
     templateUrl: './project-form.component.html',
     styleUrls: ['./project-form.component.scss']
 })
@@ -41,7 +41,7 @@ export class ProjectFormComponent implements OnInit {
             features: this.fb.array([])
         });
 
-        if (this.isEdit) {
+        if (this.isEdit && this.projectId) {
             this.loadProject();
         }
     }
@@ -74,14 +74,59 @@ export class ProjectFormComponent implements OnInit {
         const title = this.form.get('title')?.value || '';
         const slug = title
             .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '') // Remove Vietnamese accents
+            .replace(/đ/g, 'd')
+            .replace(/Đ/g, 'D')
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/^-+|-+$/g, '');
         this.form.patchValue({ slug });
     }
 
     loadProject() {
-        // Load from list or make API call
-        // For now, placeholder
+        if (!this.projectId) return;
+
+        this.loading = true;
+        this.projectService.getProject(this.projectId).subscribe({
+            next: (project) => {
+                // Clear existing arrays
+                this.technologies.clear();
+                this.features.clear();
+
+                // Patch basic values
+                this.form.patchValue({
+                    title: project.title,
+                    slug: project.slug,
+                    description: project.description,
+                    highlight: project.highlight,
+                    duration: project.duration,
+                    teamSize: project.teamSize,
+                    github: project.github,
+                    demo: project.demo
+                });
+
+                // Add technologies
+                if (project.technologies && project.technologies.length > 0) {
+                    project.technologies.forEach((tech: string) => {
+                        this.technologies.push(this.fb.control(tech, Validators.required));
+                    });
+                }
+
+                // Add features
+                if (project.features && project.features.length > 0) {
+                    project.features.forEach((feature: string) => {
+                        this.features.push(this.fb.control(feature, Validators.required));
+                    });
+                }
+
+                this.loading = false;
+            },
+            error: (err) => {
+                this.error = 'Không thể tải dữ liệu dự án';
+                this.loading = false;
+                console.error(err);
+            }
+        });
     }
 
     onSubmit() {
@@ -106,7 +151,7 @@ export class ProjectFormComponent implements OnInit {
                 this.router.navigate(['/admin/projects']);
             },
             error: (err) => {
-                this.error = 'Failed to save project';
+                this.error = 'Không thể lưu dự án';
                 this.loading = false;
                 console.error(err);
             }
