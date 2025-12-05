@@ -18,7 +18,7 @@ public class MongoDbContext : IMongoDbContext
     }
 
     public IMongoCollection<Profile> Profiles
-        => _db.GetCollection<Profile>(CollectionNames.PortfolioProfile);
+        => _db.GetCollection<Profile>(CollectionNames.Profile);
 
     public IMongoCollection<Project> Projects
         => _db.GetCollection<Project>(CollectionNames.Projects);
@@ -86,12 +86,18 @@ public class MongoDbContext : IMongoDbContext
                     .Ascending(x => x.Variant),
                 new CreateIndexOptions { Name = "ux_owner_variant", Unique = true }),
             cancellationToken: ct);
+        
+        var users = _db.GetCollection<User>(CollectionNames.Users);
+        var userIndexes = new List<CreateIndexModel<User>>
+        {
+            
+        };
     }
     
     [Obsolete("Obsolete")]
     public async Task EnsureIndexesAsync(CancellationToken ct = default)
     {
-        var profiles = _db.GetCollection<Profile>(CollectionNames.PortfolioProfile);
+        var profiles = _db.GetCollection<Profile>(CollectionNames.Profile);
         if (await profiles.CountDocumentsAsync(_ => true, cancellationToken: ct) == 0)
         {
             await profiles.InsertOneAsync(new Profile
@@ -280,7 +286,29 @@ public class MongoDbContext : IMongoDbContext
                 },
             ], cancellationToken: ct);
         }
+
+        var users = _db.GetCollection<User>(CollectionNames.Users);
+        if (await users.CountDocumentsAsync(_ => true, cancellationToken: ct) == 0)
+        {
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword("admin", 12);
+            
+            await users.InsertOneAsync(new User
+            {
+                Username = "admin",
+                Email = "admin@gmail.com",
+                PasswordHash = hashedPassword,
+                Role = "Admin",
+                CreatedAt = DateTime.UtcNow,
+                LastLoginAt = DateTime.UtcNow,
+                RefreshToken = null,
+                RefreshTokenExpiryTime = null,
+                TwoFactorEnabled = false,
+                TwoFactorSecret = null,
+                RecoveryCodes = new List<string>()
+            }, cancellationToken: ct);
+        }
     }
+
     private static string ThumbRoute(ObjectId id) => $"/api/portfolio/projects/{id}/image/thumb";
     private static string FullRoute (ObjectId id) => $"/api/portfolio/projects/{id}/image/full";
 }

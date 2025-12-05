@@ -1,5 +1,6 @@
 using BE_Portfolio.DTOs.Admin;
 using BE_Portfolio.Models.Documents;
+using BE_Portfolio.Models.ValueObjects;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -98,8 +99,9 @@ public class ProjectAdminController : ControllerBase
             if (project == null)
                 return NotFound(new { message = "Project not found" });
 
-            // Delete associated images
-            await _imageRepo.DeleteByOwnerAsync("Project", id, ct);
+            // Delete associated images (thumb and full variants)
+            await _imageRepo.DeleteAsync(ImageOwnerType.Project, objectId, ImageVariant.Thumb, ct);
+            await _imageRepo.DeleteAsync(ImageOwnerType.Project, objectId, ImageVariant.Full, ct);
 
             // Delete project
             await _projectRepo.DeleteAsync(objectId, ct);
@@ -113,7 +115,7 @@ public class ProjectAdminController : ControllerBase
     }
 
     [HttpPost("{id}/image")]
-    public async Task<IActionResult> UploadProjectImage(string id, [FromForm] IFormFile file, [FromQuery] string variant = "thumb", CancellationToken ct = default)
+    public async Task<IActionResult> UploadProjectImage(string id, IFormFile file, [FromQuery] string variant = "thumb", CancellationToken ct = default)
     {
         try
         {
@@ -137,18 +139,20 @@ public class ProjectAdminController : ControllerBase
             await file.CopyToAsync(memoryStream, ct);
             var imageData = memoryStream.ToArray();
 
-            // Create or update image
-            var image = new Image
-            {
-                OwnerType = "Project",
-                OwnerId = id,
-                Variant = variant,
-                Data = imageData,
-                ContentType = file.ContentType,
-                UploadedAt = DateTime.UtcNow
-            };
+            // Determine variant
+            var imageVariant = variant.ToLower() == "full" ? ImageVariant.Full : ImageVariant.Thumb;
 
-            await _imageRepo.UpsertAsync(image, ct);
+            // Save image using existing repository method
+            await _imageRepo.SetImageAsync(
+                ImageOwnerType.Project,
+                objectId,
+                imageVariant,
+                file.ContentType,
+                imageData,
+                null,
+                null,
+                ct
+            );
 
             return Ok(new { message = "Image uploaded successfully", imageUrl = $"/api/portfolio/projects/{id}/image/{variant}" });
         }

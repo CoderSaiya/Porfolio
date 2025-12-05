@@ -18,9 +18,6 @@ public class User : BaseDocument
     [BsonElement("role")]
     public string Role { get; set; } = "Admin";
     
-    [BsonElement("createdAt")]
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    
     [BsonElement("lastLoginAt")]
     public DateTime? LastLoginAt { get; set; }
     

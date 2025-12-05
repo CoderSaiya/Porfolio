@@ -25,6 +25,10 @@ export const ADMIN_ROUTES: Routes = [
             {
                 path: 'projects/edit/:id',
                 loadComponent: () => import('./pages/projects/project-form.component').then(m => m.ProjectFormComponent)
+            },
+            {
+                path: 'skills',
+                loadComponent: () => import('./pages/skills/skills-admin.component').then(m => m.SkillsAdminComponent)
             }
         ]
     }

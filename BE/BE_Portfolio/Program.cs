@@ -116,8 +116,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var mongo = scope.ServiceProvider.GetRequiredService<IMongoDbContext>();
-    // await mongo.EnsureIndexesAsync();
-    // await mongo.EnsureSeedAsync();
+    await mongo.EnsureIndexesAsync();
+    await mongo.EnsureSeedAsync();
     // await ImageSeeder.SeedProjectImagesAsync(scope.ServiceProvider);
 }
 
