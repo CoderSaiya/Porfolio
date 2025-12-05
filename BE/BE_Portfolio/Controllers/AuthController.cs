@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var result = await _authService.LoginAsync(request.Username, request.Password, ct);
+            var result = await _authService.LoginAsync(request.Username, request.Password, Response, ct);
             return Ok(result);
         }
         catch (UnauthorizedAccessException)

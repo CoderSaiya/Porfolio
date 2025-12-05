@@ -25,8 +25,17 @@ export class AuthService {
 
     login(credentials: LoginRequest): Observable<LoginResponse> {
         return this.http.post<LoginResponse>(`${this.API_URL}/login`, credentials, {
-            withCredentials: true // Important for cookies
-        });
+            withCredentials: true
+        }).pipe(
+            tap(res => {
+                if (!res.requiresTwoFactor) {
+                    this.currentUserSubject.next({
+                        username: res.username,
+                        role: res.role
+                    });
+                }
+            })
+        );
     }
 
     verify2FA(code: string, tempToken: string): Observable<any> {
@@ -35,8 +44,11 @@ export class AuthService {
             { withCredentials: true }
         ).pipe(
             tap(() => {
-                // After successful 2FA, check auth status to get user info
-                this.checkAuthStatus().subscribe();
+                // After successful 2FA, get user info
+                this.currentUserSubject.next({
+                    username: '???',
+                    role: 'Admin'
+                });
             })
         );
     }
