@@ -35,6 +35,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - COMPlus_GCHeapHardLimitPercent=50
       - DOTNET_EnableDiagnostics=0
+      
+      - RabbitMqSettings__HostName=rabbitmq-portfolio
     ports:
       - "5002:8082"
     depends_on:

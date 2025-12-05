@@ -1,0 +1,141 @@
+.skills-admin {
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--foreground-secondary);
+      font-size: 0.875rem;
+    }
+  }
+}
+
+.categories-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.category-card {
+  padding: 1.5rem;
+  cursor: move;
+  transition: all var(--transition-base);
+
+  &.cdk-drag-preview {
+    opacity: 0.8;
+    box-shadow: var(--shadow-xl);
+  }
+
+  &.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  .drag-handle {
+    cursor: grab;
+    color: var(--foreground-secondary);
+    padding: 0.5rem;
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    lucide-icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .category-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .icon-preview {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--muted);
+
+      lucide-icon {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    h3 {
+      margin: 0 0 0.25rem 0;
+      font-size: 1.125rem;
+      font-weight: 700;
+    }
+
+    .skill-count {
+      font-size: 0.875rem;
+      color: var(--foreground-secondary);
+    }
+  }
+
+  .category-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+.skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.skill-item {
+  display: grid;
+  grid-template-columns: 200px 1fr 60px;
+  align-items: center;
+  gap: 1rem;
+
+  .skill-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .skill-level-bar {
+    height: 8px;
+    background: var(--muted);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+
+    .skill-level-fill {
+      height: 100%;
+      transition: width var(--transition-base);
+      border-radius: var(--radius-sm);
+    }
+  }
+
+  .skill-level-text {
+    text-align: right;
+    font-size: 0.875rem;
+    color: var(--foreground-secondary);
+    font-weight: 600;
+  }
+}

@@ -1,0 +1,127 @@
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    background: var(--background);
+}
+
+.admin-sidebar {
+    width: 260px;
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+
+    .sidebar-header {
+        padding: 2rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+
+        .logo {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--foreground);
+        }
+    }
+
+    .sidebar-nav {
+        flex: 1;
+        padding: 1.5rem 0;
+        overflow-y: auto;
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: var(--foreground-secondary);
+            text-decoration: none;
+            transition: all var(--transition-base);
+            border-left: 3px solid transparent;
+
+            lucide-icon {
+                width: 20px;
+                height: 20px;
+            }
+
+            span {
+                font-size: 0.9375rem;
+                font-weight: 500;
+            }
+
+            &:hover {
+                background: var(--muted);
+                color: var(--foreground);
+            }
+
+            &.active {
+                background: var(--muted);
+                color: var(--accent);
+                border-left-color: var(--accent);
+
+                lucide-icon {
+                    color: var(--accent);
+                }
+            }
+        }
+    }
+
+    .sidebar-footer {
+        padding: 1.5rem;
+        border-top: 1px solid var(--border);
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--foreground-secondary);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: 0.9375rem;
+
+            lucide-icon {
+                width: 18px;
+                height: 18px;
+            }
+
+            &:hover {
+                background: rgba(239, 68, 68, 0.1);
+                border-color: #ef4444;
+                color: #ef4444;
+            }
+        }
+    }
+}
+
+.admin-content {
+    flex: 1;
+    padding: 2.5rem;
+    overflow-y: auto;
+    max-width: calc(100vw - 260px);
+}
+
+// Responsive
+@media (max-width: 968px) {
+    .admin-sidebar {
+        width: 220px;
+    }
+
+    .admin-content {
+        max-width: calc(100vw - 220px);
+        padding: 1.5rem;
+    }
+}
+
+// Light theme adjustments
+[data-theme="light"] {
+    .admin-sidebar {
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+    }
+}

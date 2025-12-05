@@ -1,0 +1,77 @@
+<div class="skills-admin">
+  <div class="page-header">
+    <div>
+      <h1>Skills <span class="accent">Management</span></h1>
+      <p class="subtitle">Manage skill categories - Drag to reorder</p>
+    </div>
+    <a routerLink="/admin/skills/new" class="btn btn--primary">
+      <lucide-icon name="Plus"></lucide-icon>
+      New Category
+    </a>
+  </div>
+
+  <div class="error-banner" *ngIf="error">
+    <lucide-icon name="AlertCircle"></lucide-icon>
+    {{ error }}
+  </div>
+
+  <div class="categories-container" cdkDropList (cdkDropListDropped)="drop($event)">
+    <div *ngFor="let category of categories" cdkDrag class="category-card card">
+      <div class="category-header">
+        <div class="drag-handle" cdkDragHandle>
+          <lucide-icon name="GripVertical"></lucide-icon>
+        </div>
+        <div class="category-info">
+          <div class="icon-preview" [style.color]="category.color">
+            <lucide-icon [name]="category.icon"></lucide-icon>
+          </div>
+          <div>
+            <h3>{{ category.title }}</h3>
+            <span class="skill-count">{{ category.skills.length }} skills</span>
+          </div>
+        </div>
+        <div class="category-actions">
+          <a [routerLink]="['/admin/skills/edit', category.id]" class="btn btn--icon btn--ghost">
+            <lucide-icon name="Edit"></lucide-icon>
+          </a>
+          <button (click)="confirmDelete(category)" class="btn btn--icon btn--ghost btn--danger">
+            <lucide-icon name="Trash2"></lucide-icon>
+          </button>
+        </div>
+      </div>
+      
+      <div class="skills-list">
+        <div *ngFor="let skill of category.skills" class="skill-item">
+          <span class="skill-name">{{ skill.name }}</span>
+          <div class="skill-level-bar">
+            <div class="skill-level-fill" [style.width.%]="skill.level" [style.background-color]="category.color"></div>
+          </div>
+          <span class="skill-level-text">{{ skill.level }}%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading skills...</p>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal-overlay" *ngIf="categoryToDelete" (click)="cancelDelete()">
+  <div class="modal card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <lucide-icon name="AlertTriangle" class="warning-icon"></lucide-icon>
+      <h2>Delete Category</h2>
+    </div>
+    <div class="modal-body">
+      <p>Delete <strong>{{ categoryToDelete.title }}</strong>?</p>
+      <p class="warning-text">This will delete all skills in this category.</p>
+    </div>
+    <div class="modal-actions">
+      <button (click)="cancelDelete()" class="btn btn--outline">Cancel</button>
+      <button (click)="deleteCategory()" class="btn btn--danger">Delete</button>
+    </div>
+  </div>
+</div>
