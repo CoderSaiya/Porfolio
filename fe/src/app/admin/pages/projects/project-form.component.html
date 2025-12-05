@@ -1,6 +1,6 @@
 <div class="project-form">
     <div class="page-header">
-        <h1>{{ isEdit ? 'Edit' : 'New' }} <span class="accent">Project</span></h1>
+        <h1>{{ isEdit ? 'Chỉnh Sửa' : 'Tạo Mới' }} <span class="accent">Dự Án</span></h1>
     </div>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-card card">
@@ -10,11 +10,11 @@
         </div>
 
         <div class="form-section">
-            <h2>Basic Information</h2>
+            <h2>Thông Tin Cơ Bản</h2>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="title">Title *</label>
+                    <label for="title">Tiêu Đề *</label>
                     <input id="title" type="text" formControlName="title" (blur)="generateSlug()" class="form-input" />
                 </div>
 
@@ -25,32 +25,32 @@
             </div>
 
             <div class="form-group">
-                <label for="description">Description</label>
+                <label for="description">Mô Tả</label>
                 <textarea id="description" formControlName="description" class="form-input" rows="4"></textarea>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="duration">Duration (months) *</label>
+                    <label for="duration">Thời Gian (tháng) *</label>
                     <input id="duration" type="number" formControlName="duration" class="form-input" min="1" />
                 </div>
 
                 <div class="form-group">
-                    <label for="teamSize">Team Size *</label>
+                    <label for="teamSize">Số Người *</label>
                     <input id="teamSize" type="number" formControlName="teamSize" class="form-input" min="1" />
                 </div>
 
                 <div class="form-group checkbox-group">
                     <label class="checkbox-label">
                         <input type="checkbox" formControlName="highlight" />
-                        <span>Highlight Project</span>
+                        <span>Dự Án Nổi Bật</span>
                     </label>
                 </div>
             </div>
         </div>
 
         <div class="form-section">
-            <h2>Links</h2>
+            <h2>Liên Kết</h2>
 
             <div class="form-row">
                 <div class="form-group">
@@ -68,16 +68,16 @@
 
         <div class="form-section">
             <div class="section-header">
-                <h2>Technologies</h2>
+                <h2>Công Nghệ</h2>
                 <button type="button" (click)="addTechnology()" class="btn btn--sm btn--outline">
                     <lucide-icon name="Plus"></lucide-icon>
-                    Add Technology
+                    Thêm Công Nghệ
                 </button>
             </div>
 
             <div class="dynamic-list" formArrayName="technologies">
                 <div class="dynamic-item" *ngFor="let tech of technologies.controls; let i = index">
-                    <input type="text" [formControlName]="i" class="form-input" placeholder="e.g., Angular, Node.js" />
+                    <input type="text" [formControlName]="i" class="form-input" placeholder="Ví dụ: Angular, Node.js" />
                     <button type="button" (click)="removeTechnology(i)" class="btn btn--icon btn--ghost btn--danger">
                         <lucide-icon name="X"></lucide-icon>
                     </button>
@@ -87,16 +87,17 @@
 
         <div class="form-section">
             <div class="section-header">
-                <h2>Features</h2>
+                <h2>Tính Năng</h2>
                 <button type="button" (click)="addFeature()" class="btn btn--sm btn--outline">
                     <lucide-icon name="Plus"></lucide-icon>
-                    Add Feature
+                    Thêm Tính Năng
                 </button>
             </div>
 
             <div class="dynamic-list" formArrayName="features">
                 <div class="dynamic-item" *ngFor="let feature of features.controls; let i = index">
-                    <input type="text" [formControlName]="i" class="form-input" placeholder="e.g., Real-time chat" />
+                    <input type="text" [formControlName]="i" class="form-input"
+                        placeholder="Ví dụ: Chat thời gian thực" />
                     <button type="button" (click)="removeFeature(i)" class="btn btn--icon btn--ghost btn--danger">
                         <lucide-icon name="X"></lucide-icon>
                     </button>
@@ -105,9 +106,9 @@
         </div>
 
         <div class="form-actions">
-            <button type="button" routerLink="/admin/projects" class="btn btn--outline">Cancel</button>
+            <button type="button" routerLink="/admin/projects" class="btn btn--outline">Hủy</button>
             <button type="submit" class="btn btn--primary" [disabled]="form.invalid || loading">
-                <span *ngIf="!loading">{{ isEdit ? 'Update' : 'Create' }} Project</span>
+                <span *ngIf="!loading">{{ isEdit ? 'Cập Nhật' : 'Tạo Mới' }} Dự Án</span>
                 <span *ngIf="loading" class="spinner"></span>
             </button>
         </div>
