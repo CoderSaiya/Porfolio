@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap, catchError, of, map } from 'rxjs';
+import { BehaviorSubject, Observable, tap, catchError, of, map, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
 import { LoginRequest, LoginResponse, Verify2FARequest, Setup2FAResponse, AuthUser } from '../models/auth.model';
 import { environment } from '../../../environments/environment';
@@ -25,8 +25,17 @@ export class AuthService {
 
     login(credentials: LoginRequest): Observable<LoginResponse> {
         return this.http.post<LoginResponse>(`${this.API_URL}/login`, credentials, {
-            withCredentials: true // Important for cookies
-        });
+            withCredentials: true
+        }).pipe(
+            tap(res => {
+                if (!res.requiresTwoFactor) {
+                    this.currentUserSubject.next({
+                        username: res.username,
+                        role: res.role
+                    });
+                }
+            })
+        );
     }
 
     verify2FA(code: string, tempToken: string): Observable<any> {
@@ -34,10 +43,8 @@ export class AuthService {
             { code } as Verify2FARequest,
             { withCredentials: true }
         ).pipe(
-            tap(() => {
-                // After successful 2FA, check auth status to get user info
-                this.checkAuthStatus().subscribe();
-            })
+            // After successful 2FA, get user info
+            switchMap(() => this.checkAuthStatus())
         );
     }
 
@@ -88,9 +95,17 @@ export class AuthService {
 
     // Check if user is authenticated by attempting a protected request
     private checkAuthStatus(): Observable<AuthUser | null> {
-        // This would call a protected endpoint to verify the JWT cookie
-        // For now, we'll return null - implement when you have a /me endpoint
-        return of(null);
+        return this.http.get<AuthUser>(`${this.API_URL}/me`, {
+            withCredentials: true
+        }).pipe(
+            tap(user => {
+                this.currentUserSubject.next(user);
+            }),
+            catchError(() => {
+                this.currentUserSubject.next(null);
+                return of(null);
+            })
+        );
     }
 
     getCurrentUser(): AuthUser | null {
