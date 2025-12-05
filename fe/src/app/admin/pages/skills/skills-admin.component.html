@@ -1,12 +1,12 @@
 <div class="skills-admin">
   <div class="page-header">
     <div>
-      <h1>Skills <span class="accent">Management</span></h1>
-      <p class="subtitle">Manage skill categories - Drag to reorder</p>
+      <h1>Quản lý <span class="accent">Kỹ năng</span></h1>
+      <p class="subtitle">Quản lý danh mục kỹ năng - Kéo thả để sắp xếp</p>
     </div>
     <a routerLink="/admin/skills/new" class="btn btn--primary">
       <lucide-icon name="Plus"></lucide-icon>
-      New Category
+      Tạo danh mục mới
     </a>
   </div>
 
@@ -27,19 +27,19 @@
           </div>
           <div>
             <h3>{{ category.title }}</h3>
-            <span class="skill-count">{{ category.skills.length }} skills</span>
+            <span class="skill-count">{{ category.skills.length }} kỹ năng</span>
           </div>
         </div>
         <div class="category-actions">
-          <a [routerLink]="['/admin/skills/edit', category.id]" class="btn btn--icon btn--ghost">
+          <a [routerLink]="['/admin/skills/edit', category.id]" class="btn btn--icon btn--ghost" title="Chỉnh sửa">
             <lucide-icon name="Edit"></lucide-icon>
           </a>
-          <button (click)="confirmDelete(category)" class="btn btn--icon btn--ghost btn--danger">
+          <button (click)="confirmDelete(category)" class="btn btn--icon btn--ghost btn--danger" title="Xóa">
             <lucide-icon name="Trash2"></lucide-icon>
           </button>
         </div>
       </div>
-      
+
       <div class="skills-list">
         <div *ngFor="let skill of category.skills" class="skill-item">
           <span class="skill-name">{{ skill.name }}</span>
@@ -54,7 +54,7 @@
 
   <div class="loading-state" *ngIf="loading">
     <div class="spinner"></div>
-    <p>Loading skills...</p>
+    <p>Đang tải kỹ năng...</p>
   </div>
 </div>
 
@@ -63,15 +63,15 @@
   <div class="modal card" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <lucide-icon name="AlertTriangle" class="warning-icon"></lucide-icon>
-      <h2>Delete Category</h2>
+      <h2>Xóa danh mục</h2>
     </div>
     <div class="modal-body">
-      <p>Delete <strong>{{ categoryToDelete.title }}</strong>?</p>
-      <p class="warning-text">This will delete all skills in this category.</p>
+      <p>Xóa <strong>{{ categoryToDelete.title }}</strong>?</p>
+      <p class="warning-text">Điều này sẽ xóa tất cả kỹ năng trong danh mục này.</p>
     </div>
     <div class="modal-actions">
-      <button (click)="cancelDelete()" class="btn btn--outline">Cancel</button>
-      <button (click)="deleteCategory()" class="btn btn--danger">Delete</button>
+      <button (click)="cancelDelete()" class="btn btn--outline">Hủy</button>
+      <button (click)="deleteCategory()" class="btn btn--danger">Xóa</button>
     </div>
   </div>
 </div>

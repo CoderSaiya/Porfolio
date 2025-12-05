@@ -1,12 +1,12 @@
 <div class="projects-admin">
     <div class="page-header">
         <div>
-            <h1>Projects <span class="accent">Management</span></h1>
-            <p class="subtitle">Create, edit, and manage your portfolio projects</p>
+            <h1>Quản lý <span class="accent">Dự án</span></h1>
+            <p class="subtitle">Tạo, chỉnh sửa và quản lý các dự án của bạn</p>
         </div>
         <a routerLink="/admin/projects/new" class="btn btn--primary">
             <lucide-icon name="Plus"></lucide-icon>
-            New Project
+            Tạo dự án mới
         </a>
     </div>
 
@@ -19,13 +19,13 @@
         <table *ngIf="projects.length > 0">
             <thead>
                 <tr>
-                    <th>Title</th>
+                    <th>Tiêu đề</th>
                     <th>Slug</th>
-                    <th>Highlight</th>
-                    <th>Duration</th>
-                    <th>Team</th>
-                    <th>Technologies</th>
-                    <th class="actions-col">Actions</th>
+                    <th>Nổi bật</th>
+                    <th>Thời gian</th>
+                    <th>Nhóm</th>
+                    <th>Công nghệ</th>
+                    <th class="actions-col">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,11 +40,11 @@
                     <td><code class="slug">{{ project.slug }}</code></td>
                     <td>
                         <span class="badge" [class.badge--highlight]="project.highlight">
-                            {{ project.highlight ? 'Yes' : 'No' }}
+                            {{ project.highlight ? 'Có' : 'Không' }}
                         </span>
                     </td>
-                    <td>{{ project.duration }} months</td>
-                    <td>{{ project.teamSize }} {{ project.teamSize === 1 ? 'person' : 'people' }}</td>
+                    <td>{{ project.duration }} tháng</td>
+                    <td>{{ project.teamSize }} {{ project.teamSize === 1 ? 'người' : 'người' }}</td>
                     <td>
                         <div class="tech-tags">
                             <span class="tech-tag" *ngFor="let tech of project.technologies.slice(0, 3)">{{ tech
@@ -57,11 +57,11 @@
                     <td class="actions-col">
                         <div class="actions">
                             <a [routerLink]="['/admin/projects/edit', project.id]" class="btn btn--icon btn--ghost"
-                                title="Edit">
+                                title="Chỉnh sửa">
                                 <lucide-icon name="Edit"></lucide-icon>
                             </a>
                             <button (click)="confirmDelete(project)" class="btn btn--icon btn--ghost btn--danger"
-                                title="Delete">
+                                title="Xóa">
                                 <lucide-icon name="Trash2"></lucide-icon>
                             </button>
                         </div>
@@ -72,18 +72,18 @@
 
         <div class="empty-state" *ngIf="projects.length === 0">
             <lucide-icon name="FolderOpen" [size]="48"></lucide-icon>
-            <h3>No projects yet</h3>
-            <p>Get started by creating your first project</p>
+            <h3>Chưa có dự án nào</h3>
+            <p>Bắt đầu bằng cách tạo dự án đầu tiên của bạn</p>
             <a routerLink="/admin/projects/new" class="btn btn--primary">
                 <lucide-icon name="Plus"></lucide-icon>
-                Create Project
+                Tạo dự án
             </a>
         </div>
     </div>
 
     <div class="loading-state" *ngIf="loading">
         <div class="spinner"></div>
-        <p>Loading projects...</p>
+        <p>Đang tải dự án...</p>
     </div>
 </div>
 
@@ -92,15 +92,15 @@
     <div class="modal card" (click)="$event.stopPropagation()">
         <div class="modal-header">
             <lucide-icon name="AlertTriangle" class="warning-icon"></lucide-icon>
-            <h2>Delete Project</h2>
+            <h2>Xóa dự án</h2>
         </div>
         <div class="modal-body">
-            <p>Are you sure you want to delete <strong>{{ projectToDelete.title }}</strong>?</p>
-            <p class="warning-text">This action cannot be undone.</p>
+            <p>Bạn có chắc chắn muốn xóa <strong>{{ projectToDelete.title }}</strong>?</p>
+            <p class="warning-text">Hành động này không thể hoàn tác.</p>
         </div>
         <div class="modal-actions">
-            <button (click)="cancelDelete()" class="btn btn--outline">Cancel</button>
-            <button (click)="deleteProject()" class="btn btn--danger">Delete</button>
+            <button (click)="cancelDelete()" class="btn btn--outline">Hủy</button>
+            <button (click)="deleteProject()" class="btn btn--danger">Xóa</button>
         </div>
     </div>
 </div>
