@@ -39,7 +39,7 @@ export interface PaginatedResult<T> {
     providedIn: 'root'
 })
 export class MessageAdminService {
-    private apiUrl = `${environment.apiUrl}/admin/messages`;
+    private apiUrl = `${environment.apiUrl}/api/admin/messages`;
 
     constructor(private http: HttpClient) { }
 
