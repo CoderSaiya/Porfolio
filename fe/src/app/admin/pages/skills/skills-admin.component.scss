@@ -1,4 +1,8 @@
+@import '../../styles/admin-shared';
+
 .skills-admin {
+  animation: slideDown 0.3s ease-out;
+
   .page-header {
     display: flex;
     justify-content: space-between;
@@ -31,12 +35,18 @@
   transition: all var(--transition-base);
 
   &.cdk-drag-preview {
-    opacity: 0.8;
-    box-shadow: var(--shadow-xl);
+    opacity: 0.9;
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    transform: rotate(2deg);
   }
 
   &.cdk-drag-animating {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  &.cdk-drag-placeholder {
+    opacity: 0.4;
+    border-style: dashed;
   }
 }
 
@@ -50,6 +60,12 @@
     cursor: grab;
     color: var(--foreground-secondary);
     padding: 0.5rem;
+    transition: all var(--transition-fast);
+
+    &:hover {
+      color: var(--accent);
+      transform: scale(1.1);
+    }
 
     &:active {
       cursor: grabbing;
@@ -75,10 +91,16 @@
       align-items: center;
       justify-content: center;
       background: var(--muted);
+      transition: all var(--transition-base);
+      box-shadow: 0 0 15px currentColor;
 
       lucide-icon {
         width: 24px;
         height: 24px;
+      }
+
+      &:hover {
+        transform: scale(1.1) rotate(5deg);
       }
     }
 
@@ -114,6 +136,11 @@
   align-items: center;
   gap: 1rem;
 
+  @media (max-width: 768px) {
+    grid-template-columns: 150px 1fr 50px;
+    gap: 0.75rem;
+  }
+
   .skill-name {
     font-size: 0.875rem;
     font-weight: 500;
@@ -122,13 +149,31 @@
   .skill-level-bar {
     height: 8px;
     background: var(--muted);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-full);
     overflow: hidden;
+    position: relative;
 
     .skill-level-fill {
       height: 100%;
-      transition: width var(--transition-base);
-      border-radius: var(--radius-sm);
+      transition: width var(--transition-slow);
+      border-radius: var(--radius-full);
+      box-shadow: 0 0 10px currentColor;
+      position: relative;
+      overflow: hidden;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.3) 50%,
+            transparent 100%);
+        animation: shimmer 2s infinite;
+      }
     }
   }
 
@@ -137,5 +182,15 @@
     font-size: 0.875rem;
     color: var(--foreground-secondary);
     font-weight: 600;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
   }
 }

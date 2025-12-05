@@ -1,3 +1,5 @@
+@import '../styles/admin-shared';
+
 .admin-layout {
     display: flex;
     min-height: 100vh;
@@ -7,12 +9,14 @@
 .admin-sidebar {
     width: 260px;
     background: var(--card);
-    border-right: 1px solid var(--border);
+    border-right: 1px solid var(--card-border);
     display: flex;
     flex-direction: column;
     position: sticky;
     top: 0;
     height: 100vh;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-md);
 
     .sidebar-header {
         padding: 2rem 1.5rem;
@@ -40,10 +44,24 @@
             text-decoration: none;
             transition: all var(--transition-base);
             border-left: 3px solid transparent;
+            position: relative;
+
+            &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 3px;
+                background: var(--accent);
+                transform: scaleY(0);
+                transition: transform var(--transition-base);
+            }
 
             lucide-icon {
                 width: 20px;
                 height: 20px;
+                transition: transform var(--transition-base);
             }
 
             span {
@@ -54,6 +72,11 @@
             &:hover {
                 background: var(--muted);
                 color: var(--foreground);
+                padding-left: 1.75rem;
+
+                lucide-icon {
+                    transform: scale(1.1);
+                }
             }
 
             &.active {
@@ -61,8 +84,13 @@
                 color: var(--accent);
                 border-left-color: var(--accent);
 
+                &::before {
+                    transform: scaleY(1);
+                }
+
                 lucide-icon {
                     color: var(--accent);
+                    transform: scale(1.1);
                 }
             }
         }
@@ -93,8 +121,9 @@
 
             &:hover {
                 background: rgba(239, 68, 68, 0.1);
-                border-color: #ef4444;
-                color: #ef4444;
+                border-color: var(--error);
+                color: var(--error);
+                transform: translateX(-4px);
             }
         }
     }
@@ -105,6 +134,7 @@
     padding: 2.5rem;
     overflow-y: auto;
     max-width: calc(100vw - 260px);
+    background: var(--background);
 }
 
 // Responsive
