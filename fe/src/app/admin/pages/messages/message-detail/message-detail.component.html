@@ -1,0 +1,42 @@
+<div class="message-detail">
+    <a routerLink="/admin/messages" class="back-link">
+        <lucide-icon [img]="ArrowLeftIcon"></lucide-icon>
+        Quay Lại Hộp Thư
+    </a>
+
+    <div *ngIf="loading" class="loading-state">
+        Đang tải tin nhắn...
+    </div>
+
+    <div *ngIf="message" class="card message-card">
+        <!-- Header -->
+        <div class="message-header">
+            <div class="header-info">
+                <h1>{{ message.subject }}</h1>
+                <div class="message-meta">
+                    <span class="sender-name">{{ message.name }}</span>
+                    <span class="sender-email">&lt;{{ message.email }}&gt;</span>
+                    <span class="separator">•</span>
+                    <span class="timestamp">{{ message.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button (click)="markAsRead(message.status === 0)" class="btn btn--icon btn--ghost"
+                    [title]="message.status === 0 ? 'Đánh Dấu Đã Đọc' : 'Đánh Dấu Chưa Đọc'">
+                    <lucide-icon [img]="message.status === 0 ? MailOpenIcon : MailIcon"></lucide-icon>
+                </button>
+                <a [href]="'mailto:' + message.email + '?subject=Re: ' + message.subject"
+                    class="btn btn--icon btn--ghost" title="Trả Lời Qua Email">
+                    <lucide-icon [img]="ReplyIcon"></lucide-icon>
+                </a>
+                <button (click)="deleteMessage()" class="btn btn--icon btn--danger" title="Xóa">
+                    <lucide-icon [img]="TrashIcon"></lucide-icon>
+                </button>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="message-body">{{ message.message }}</div>
+    </div>
+</div>

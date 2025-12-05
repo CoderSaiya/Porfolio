@@ -1,0 +1,100 @@
+<div class="profile-admin">
+    <div class="page-header">
+        <h1>Chỉnh Sửa Hồ Sơ</h1>
+        <button (click)="onSubmit()" [disabled]="loading || profileForm.invalid" class="btn btn--primary">
+            <lucide-icon [img]="SaveIcon"></lucide-icon>
+            Lưu Thay Đổi
+        </button>
+    </div>
+
+    <div class="profile-grid" [formGroup]="profileForm">
+        <!-- Left Column: Avatar & Stats -->
+        <div class="avatar-section">
+            <!-- Avatar Upload -->
+            <div class="card avatar-card">
+                <label class="avatar-wrapper">
+                    <img [src]="avatarPreview || 'assets/placeholder-avatar.png'" alt="Avatar">
+                    <div class="avatar-overlay">
+                        <lucide-icon [img]="UploadIcon"></lucide-icon>
+                    </div>
+                    <input type="file" (change)="onFileSelected($event)" accept="image/*">
+                </label>
+                <p class="avatar-hint">Nhấp để tải lên ảnh đại diện mới</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="card stats-card">
+                <h3>Thống Kê</h3>
+
+                <div class="stat-group">
+                    <label>Số Năm Kinh Nghiệm</label>
+                    <input type="number" formControlName="yearsExperience">
+                </div>
+
+                <div class="stat-group">
+                    <label>Dự Án Hoàn Thành</label>
+                    <input type="number" formControlName="projectsCompleted">
+                </div>
+
+                <div class="stat-group">
+                    <label>Cà Phê</label>
+                    <input type="number" formControlName="coffees">
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Main Info -->
+        <div class="info-section">
+            <div class="card info-card">
+                <h3>Thông Tin Cơ Bản</h3>
+
+                <div class="form-group">
+                    <label>Họ Tên</label>
+                    <input type="text" formControlName="fullName">
+                </div>
+
+                <div class="form-group">
+                    <label>Tiêu Đề</label>
+                    <input type="text" formControlName="headline">
+                </div>
+
+                <div class="form-group">
+                    <label>Địa Điểm</label>
+                    <input type="text" formControlName="location">
+                </div>
+
+                <div class="form-group">
+                    <label>Giới Thiệu</label>
+                    <textarea formControlName="about" rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Social Links -->
+            <div class="card social-links-card">
+                <div class="social-header">
+                    <h3>Liên Kết Mạng Xã Hội</h3>
+                    <button type="button" (click)="addSocialLink()" title="Thêm liên kết">
+                        <lucide-icon [img]="PlusIcon"></lucide-icon>
+                    </button>
+                </div>
+
+                <div formArrayName="socialLinks" class="social-links-list">
+                    <div *ngFor="let link of socialLinks.controls; let i=index" [formGroupName]="i"
+                        class="social-link-item">
+                        <select formControlName="platform">
+                            <option [value]="1">Facebook</option>
+                            <option [value]="2">Github</option>
+                            <option [value]="3">LinkedIn</option>
+                            <option [value]="4">Twitter</option>
+                            <option [value]="5">Instagram</option>
+                        </select>
+                        <input type="text" formControlName="url" placeholder="URL">
+                        <button type="button" (click)="removeSocialLink(i)" title="Xóa">
+                            <lucide-icon [img]="TrashIcon"></lucide-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

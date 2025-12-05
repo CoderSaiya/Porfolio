@@ -1,0 +1,94 @@
+@import '../../../styles/admin-shared';
+
+.message-detail {
+    max-width: 900px;
+    margin: 0 auto;
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--foreground-secondary);
+        text-decoration: none;
+        margin-bottom: 1.5rem;
+        transition: all var(--transition-base);
+        font-size: 0.875rem;
+
+        lucide-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        &:hover {
+            color: var(--foreground);
+        }
+    }
+
+    .message-card {
+        overflow: hidden;
+
+        .message-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1.5rem;
+
+            .header-info {
+                flex: 1;
+
+                h1 {
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                    color: var(--foreground);
+                    margin: 0 0 1rem 0;
+                }
+
+                .message-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    flex-wrap: wrap;
+                    font-size: 0.875rem;
+
+                    .sender-name {
+                        font-weight: 600;
+                        color: var(--accent);
+                    }
+
+                    .sender-email {
+                        color: var(--foreground-secondary);
+                    }
+
+                    .separator {
+                        color: var(--muted-foreground);
+                    }
+
+                    .timestamp {
+                        color: var(--foreground-secondary);
+                    }
+                }
+            }
+
+            .header-actions {
+                display: flex;
+                gap: 0.5rem;
+            }
+        }
+
+        .message-body {
+            padding: 2rem;
+            color: var(--foreground-secondary);
+            white-space: pre-wrap;
+            line-height: 1.7;
+            font-size: 0.9375rem;
+        }
+    }
+
+    .loading-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--foreground-secondary);
+    }
+}
