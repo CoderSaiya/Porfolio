@@ -11,15 +11,16 @@ namespace BE_Portfolio.Controllers.Admin;
 [ApiController]
 [Route("api/admin/projects")]
 [Authorize(Roles = "Admin")]
-public class ProjectAdminController : ControllerBase
+public class ProjectAdminController(IProjectRepository projectRepo, IImageRepository imageRepo) : ControllerBase
 {
-    private readonly IProjectRepository _projectRepo;
-    private readonly IImageRepository _imageRepo;
-
-    public ProjectAdminController(IProjectRepository projectRepo, IImageRepository imageRepo)
+    [HttpGet("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetProject([FromRoute] string id, CancellationToken ct)
     {
-        _projectRepo = projectRepo;
-        _imageRepo = imageRepo;
+        var objId = ObjectId.Parse(id);
+        var prj = await projectRepo.GetByIdAsync(objId, ct);
+
+        return Ok(prj);
     }
 
     [HttpPost]
@@ -31,7 +32,7 @@ public class ProjectAdminController : ControllerBase
             {
                 Title = dto.Title,
                 Slug = dto.Slug,
-                Description = dto.Description,
+                Description = dto.Description ?? "",
                 Highlight = dto.Highlight,
                 Duration = dto.Duration,
                 TeamSize = dto.TeamSize,
@@ -43,7 +44,7 @@ public class ProjectAdminController : ControllerBase
                 ImageUrl = $"/api/portfolio/projects/{ObjectId.GenerateNewId()}/image/thumb" // Placeholder
             };
 
-            await _projectRepo.CreateAsync(project, ct);
+            await projectRepo.CreateAsync(project, ct);
 
             return CreatedAtAction(nameof(CreateProject), new { id = project.Id }, project);
         }
@@ -61,7 +62,7 @@ public class ProjectAdminController : ControllerBase
             if (!ObjectId.TryParse(id, out var objectId))
                 return BadRequest(new { message = "Invalid project ID" });
 
-            var project = await _projectRepo.GetByIdAsync(objectId, ct);
+            var project = await projectRepo.GetByIdAsync(objectId, ct);
             if (project == null)
                 return NotFound(new { message = "Project not found" });
 
@@ -77,7 +78,7 @@ public class ProjectAdminController : ControllerBase
             if (dto.Technologies != null) project.Technologies = dto.Technologies;
             if (dto.Features != null) project.Features = dto.Features;
 
-            await _projectRepo.UpdateAsync(project, ct);
+            await projectRepo.UpdateAsync(project, ct);
 
             return Ok(project);
         }
@@ -95,16 +96,16 @@ public class ProjectAdminController : ControllerBase
             if (!ObjectId.TryParse(id, out var objectId))
                 return BadRequest(new { message = "Invalid project ID" });
 
-            var project = await _projectRepo.GetByIdAsync(objectId, ct);
+            var project = await projectRepo.GetByIdAsync(objectId, ct);
             if (project == null)
                 return NotFound(new { message = "Project not found" });
 
             // Delete associated images (thumb and full variants)
-            await _imageRepo.DeleteAsync(ImageOwnerType.Project, objectId, ImageVariant.Thumb, ct);
-            await _imageRepo.DeleteAsync(ImageOwnerType.Project, objectId, ImageVariant.Full, ct);
+            await imageRepo.DeleteAsync(ImageOwnerType.Project, objectId, ImageVariant.Thumb, ct);
+            await imageRepo.DeleteAsync(ImageOwnerType.Project, objectId, ImageVariant.Full, ct);
 
             // Delete project
-            await _projectRepo.DeleteAsync(objectId, ct);
+            await projectRepo.DeleteAsync(objectId, ct);
 
             return Ok(new { message = "Project deleted successfully" });
         }
@@ -122,7 +123,7 @@ public class ProjectAdminController : ControllerBase
             if (!ObjectId.TryParse(id, out var objectId))
                 return BadRequest(new { message = "Invalid project ID" });
 
-            var project = await _projectRepo.GetByIdAsync(objectId, ct);
+            var project = await projectRepo.GetByIdAsync(objectId, ct);
             if (project == null)
                 return NotFound(new { message = "Project not found" });
 
@@ -143,7 +144,7 @@ public class ProjectAdminController : ControllerBase
             var imageVariant = variant.ToLower() == "full" ? ImageVariant.Full : ImageVariant.Thumb;
 
             // Save image using existing repository method
-            await _imageRepo.SetImageAsync(
+            await imageRepo.SetImageAsync(
                 ImageOwnerType.Project,
                 objectId,
                 imageVariant,
