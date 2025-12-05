@@ -15,11 +15,11 @@ export class AdminLayoutComponent {
     private authService = inject(AuthService);
 
     menuItems = [
-        { label: 'Dashboard', icon: 'LayoutDashboard', route: '/admin/dashboard' },
-        { label: 'Projects', icon: 'FolderGit2', route: '/admin/projects' },
-        { label: 'Skills', icon: 'Code', route: '/admin/skills' },
-        { label: 'Messages', icon: 'Mail', route: '/admin/messages' },
-        { label: 'Profile', icon: 'User', route: '/admin/profile' }
+        { label: 'Tổng quan', icon: 'LayoutDashboard', route: '/admin/dashboard' },
+        { label: 'Dự án', icon: 'FolderGit2', route: '/admin/projects' },
+        { label: 'Kỹ năng', icon: 'Code', route: '/admin/skills' },
+        { label: 'Tin nhắn', icon: 'Mail', route: '/admin/messages' },
+        { label: 'Hồ sơ', icon: 'User', route: '/admin/profile' }
     ];
 
     logout() {

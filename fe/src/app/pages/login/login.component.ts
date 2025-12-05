@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -12,29 +12,27 @@ import { LucideAngularModule } from 'lucide-angular';
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
     private fb = inject(FormBuilder);
     private authService = inject(AuthService);
     private router = inject(Router);
     private route = inject(ActivatedRoute);
 
-    loginForm: FormGroup;
-    twoFactorForm: FormGroup;
-
+    loginForm!: FormGroup;
+    twoFAForm!: FormGroup;
     loading = false;
-    error: string | null = null;
-    showTwoFactor = false;
+    errorMessage: string | null = null;
+    requiresTwoFactor = false;
     tempToken: string | null = null;
-    username: string = '';
 
-    constructor() {
+    ngOnInit() {
         this.loginForm = this.fb.group({
-            username: ['', [Validators.required]],
-            password: ['', [Validators.required]]
+            username: ['', Validators.required],
+            password: ['', Validators.required]
         });
 
-        this.twoFactorForm = this.fb.group({
-            code: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]]
+        this.twoFAForm = this.fb.group({
+            code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]]
         });
     }
 
@@ -42,50 +40,50 @@ export class LoginComponent {
         if (this.loginForm.invalid) return;
 
         this.loading = true;
-        this.error = null;
+        this.errorMessage = null;
 
-        const { username, password } = this.loginForm.value;
-
-        this.authService.login({ username, password }).subscribe({
+        this.authService.login(this.loginForm.value).subscribe({
             next: (response) => {
-                this.username = response.username;
-
                 if (response.requiresTwoFactor) {
-                    this.showTwoFactor = true;
+                    this.requiresTwoFactor = true;
                     this.tempToken = response.tempToken;
                 } else {
-                    // No 2FA - redirect immediately
-                    this.redirectAfterLogin();
+                    this.navigateToReturnUrl();
                 }
                 this.loading = false;
             },
             error: (err) => {
-                this.error = err.error?.message || 'Login failed. Please check your credentials.';
+                this.errorMessage = 'Tên đăng nhập hoặc mật khẩu không đúng';
                 this.loading = false;
             }
         });
     }
 
     onVerify2FA() {
-        if (this.twoFactorForm.invalid || !this.tempToken) return;
+        if (this.twoFAForm.invalid || !this.tempToken) return;
 
         this.loading = true;
-        this.error = null;
+        this.errorMessage = null;
 
-        const { code } = this.twoFactorForm.value;
-
-        this.authService.verify2FA(code, this.tempToken).subscribe({
+        this.authService.verify2FA(this.twoFAForm.value.code, this.tempToken).subscribe({
             next: () => {
-                this.redirectAfterLogin();
+                this.navigateToReturnUrl();
             },
             error: (err) => {
-                this.error = err.error?.message || 'Invalid 2FA code';
+                this.errorMessage = 'Mã xác thực không đúng';
                 this.loading = false;
             }
         });
     }
 
-    private redirectAfterLogin() {
+    cancelTwoFactor() {
+        this.requiresTwoFactor = false;
+        this.tempToken = null;
+        this.twoFAForm.reset();
+        this.errorMessage = null;
+    }
+
+    private navigateToReturnUrl() {
         const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin';
         this.router.navigate([returnUrl]);
     }
