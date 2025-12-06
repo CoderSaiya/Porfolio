@@ -65,8 +65,11 @@
         <div class="form-section">
             <h2>Nội Dung *</h2>
             <div class="form-group">
-                <label for="content">Nội dung (Markdown/HTML)</label>
-                <textarea id="content" formControlName="content"></textarea>
+                <label for="content">Nội dung</label>
+                <quill-editor formControlName="content" [modules]="quillModules"
+                    (onEditorCreated)="onEditorCreated($event)" [styles]="{height: '400px'}"
+                    placeholder="Nhập nội dung bài viết...">
+                </quill-editor>
             </div>
         </div>
 
@@ -74,17 +77,21 @@
             <div class="section-header">
                 <h2>Tags</h2>
                 <button type="button" (click)="addTag()" class="btn btn--sm btn--outline">
-                    <lucide-icon name="Plus"></lucide-icon>
+                    <lucide-icon [img]="PlusIcon"></lucide-icon>
                     Thêm Tag
                 </button>
             </div>
 
             <div class="dynamic-list" formArrayName="tags">
                 <div class="dynamic-item" *ngFor="let tag of tags.controls; let i = index">
-                    <input type="text" [formControlName]="i" placeholder="Ví dụ: Angular, .NET" />
-                    <button type="button" (click)="removeTag(i)" class="btn btn--icon btn--ghost btn--danger">
+                    <input type="text" [formControlName]="i" placeholder="Ví dụ: Angular, .NET" class="tag-input" />
+                    <button type="button" (click)="removeTag(i)"
+                        class="btn btn--icon btn--ghost btn--danger remove-btn">
                         <lucide-icon [img]="XIcon"></lucide-icon>
                     </button>
+                </div>
+                <div *ngIf="tags.length === 0" class="empty-state">
+                    <p>Chưa có tag nào. Nhấn "Thêm Tag" để bắt đầu.</p>
                 </div>
             </div>
         </div>

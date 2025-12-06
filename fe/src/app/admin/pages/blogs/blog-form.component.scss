@@ -141,4 +141,247 @@
             }
         }
     }
+
+    // Enhanced Tags Styling
+    .dynamic-list {
+        .tag-input {
+            @extend .form-input;
+            transition: all 0.2s ease;
+
+            &:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            }
+        }
+
+        .remove-btn {
+            transition: all 0.2s ease;
+
+            &:hover {
+                background: rgba(239, 68, 68, 0.1);
+                transform: scale(1.1);
+            }
+        }
+
+        .empty-state {
+            padding: 2rem;
+            text-align: center;
+            color: var(--foreground-secondary);
+            background: var(--background-secondary);
+            border-radius: var(--radius-md);
+            border: 1px dashed var(--border);
+
+            p {
+                margin: 0;
+                font-size: 0.875rem;
+            }
+        }
+    }
+
+    // Quill Editor Dark Theme Styling
+    ::ng-deep {
+        .quill-editor {
+            background: var(--background);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: border-color 0.2s ease;
+
+            &:focus-within {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            }
+        }
+
+        .ql-toolbar.ql-snow {
+            background: var(--background-secondary);
+            border: none;
+            border-bottom: 1px solid var(--border);
+            padding: 0.75rem;
+
+            .ql-stroke {
+                stroke: var(--foreground-secondary);
+            }
+
+            .ql-fill {
+                fill: var(--foreground-secondary);
+            }
+
+            .ql-picker-label {
+                color: var(--foreground-secondary);
+            }
+
+            button:hover,
+            button.ql-active {
+                .ql-stroke {
+                    stroke: var(--primary);
+                }
+
+                .ql-fill {
+                    fill: var(--primary);
+                }
+            }
+
+            button:hover {
+                background: rgba(99, 102, 241, 0.1);
+                border-radius: 4px;
+            }
+
+            button.ql-active {
+                background: rgba(99, 102, 241, 0.15);
+                border-radius: 4px;
+            }
+
+            .ql-picker {
+                color: var(--foreground-secondary);
+
+                &:hover .ql-picker-label {
+                    color: var(--primary);
+                }
+
+                &.ql-expanded .ql-picker-label {
+                    color: var(--primary);
+                }
+            }
+
+            .ql-picker-options {
+                background: var(--background-secondary);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-sm);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+                padding: 0.5rem 0;
+            }
+
+            .ql-picker-item {
+                color: var(--foreground);
+
+                &:hover {
+                    background: rgba(99, 102, 241, 0.1);
+                    color: var(--primary);
+                }
+            }
+
+            .ql-color-picker,
+            .ql-icon-picker {
+                .ql-picker-item {
+                    &:hover {
+                        border-color: var(--primary);
+                    }
+                }
+            }
+        }
+
+        .ql-container.ql-snow {
+            background: var(--background);
+            border: none;
+            font-family: inherit;
+            font-size: 1rem;
+
+            .ql-editor {
+                color: var(--foreground);
+                min-height: 400px;
+                padding: 1rem;
+
+                &.ql-blank::before {
+                    color: var(--foreground-secondary);
+                    font-style: normal;
+                    opacity: 0.6;
+                }
+
+                h1,
+                h2,
+                h3,
+                h4,
+                h5,
+                h6 {
+                    color: var(--foreground);
+                }
+
+                a {
+                    color: var(--primary);
+                }
+
+                code {
+                    background: var(--background-secondary);
+                    color: var(--accent);
+                    padding: 0.125rem 0.25rem;
+                    border-radius: 3px;
+                }
+
+                pre {
+                    background: var(--background-secondary);
+                    color: var(--foreground);
+                    border-radius: var(--radius-sm);
+                    padding: 1rem;
+                    border: 1px solid var(--border);
+                }
+
+                blockquote {
+                    border-left: 3px solid var(--primary);
+                    color: var(--foreground-secondary);
+                }
+
+                img {
+                    max-width: 100%;
+                    height: auto;
+                    border-radius: var(--radius-sm);
+                    margin: 0.5rem 0;
+                }
+            }
+
+            .ql-tooltip {
+                background: var(--background-secondary);
+                border: 1px solid var(--border);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+                color: var(--foreground);
+                border-radius: var(--radius-sm);
+
+                input[type="text"] {
+                    background: var(--background);
+                    border: 1px solid var(--border);
+                    color: var(--foreground);
+                    padding: 0.5rem;
+                    border-radius: var(--radius-sm);
+
+                    &:focus {
+                        outline: none;
+                        border-color: var(--primary);
+                    }
+                }
+
+                a.ql-action,
+                a.ql-remove {
+                    color: var(--primary);
+
+                    &:hover {
+                        color: var(--accent);
+                    }
+                }
+
+                .ql-preview {
+                    color: var(--foreground-secondary);
+                }
+            }
+        }
+
+        // Scrollbar styling for editor
+        .ql-editor {
+            &::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: var(--background-secondary);
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: var(--border);
+                border-radius: 4px;
+
+                &:hover {
+                    background: var(--foreground-secondary);
+                }
+            }
+        }
+    }
 }

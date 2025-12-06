@@ -4,12 +4,14 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray } fr
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { BlogAdminService } from '../../services/blog-admin.service';
 import { BlogCategoryService, BlogCategory } from '../../services/blog-category.service';
-import { LucideAngularModule, Save, X } from 'lucide-angular';
+import { LucideAngularModule, Save, X, Plus } from 'lucide-angular';
+import { QuillModule } from 'ngx-quill';
+import Quill from 'quill';
 
 @Component({
     selector: 'app-blog-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule],
+    imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule, QuillModule],
     templateUrl: './blog-form.component.html',
     styleUrls: ['./blog-form.component.scss']
 })
@@ -25,6 +27,27 @@ export class BlogFormComponent implements OnInit {
 
     readonly SaveIcon = Save;
     readonly XIcon = X;
+    readonly PlusIcon = Plus;
+
+    // Quill editor configuration
+    quillModules = {
+        toolbar: {
+            container: [
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                [{ 'font': [] }],
+                [{ 'size': ['small', false, 'large', 'huge'] }],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'align': [] }],
+                ['link', 'image'],
+                ['clean']
+            ],
+            handlers: {
+                image: this.imageHandler.bind(this)
+            }
+        }
+    };
 
     constructor(
         private fb: FormBuilder,
@@ -179,5 +202,33 @@ export class BlogFormComponent implements OnInit {
                 this.loading = false;
             }
         });
+    }
+
+    imageHandler() {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = async () => {
+            const file = input.files?.[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const base64 = e.target?.result as string;
+                    const quillEditor = (window as any).quillEditor;
+                    if (quillEditor) {
+                        const range = quillEditor.getSelection(true);
+                        quillEditor.insertEmbed(range.index, 'image', base64);
+                        quillEditor.setSelection(range.index + 1);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+    }
+
+    onEditorCreated(quill: Quill) {
+        (window as any).quillEditor = quill;
     }
 }

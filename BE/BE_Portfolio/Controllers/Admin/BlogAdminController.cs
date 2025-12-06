@@ -26,7 +26,22 @@ public class BlogAdminController : ControllerBase
         var posts = await _postRepo.GetAllAsync(filter, ct);
         var total = await _postRepo.CountAsync(filter, ct);
 
-        return Ok(new { data = posts, total });
+        var dtos = posts.Select(p => new BlogResponseDto(
+            p.Id.ToString(),
+            p.Title,
+            p.Slug,
+            p.Summary,
+            p.Content,
+            p.FeaturedImage ?? "undefined",
+            p.CategoryId.ToString() ?? "undefined",
+            p.Tags,
+            p.Published,
+            p.PublishedAt,
+            p.ViewCount,
+            p.CreatedAt,
+            p.UpdateDate));
+
+        return Ok(new { data = dtos, total });
     }
 
     [HttpGet("{id}")]
@@ -36,7 +51,22 @@ public class BlogAdminController : ControllerBase
         if (post == null)
             return NotFound(new { message = "Blog post not found" });
 
-        return Ok(post);
+        var dto = new BlogResponseDto(
+            post.Id.ToString(),
+            post.Title,
+            post.Slug,
+            post.Summary,
+            post.Content,
+            post.FeaturedImage ?? "undefined",
+            post.CategoryId.ToString() ?? "undefined",
+            post.Tags,
+            post.Published,
+            post.PublishedAt,
+            post.ViewCount,
+            post.CreatedAt,
+            post.UpdateDate
+        );
+        return Ok(dto);
     }
 
     [HttpPost]
@@ -75,23 +105,35 @@ public class BlogAdminController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateBlog(string id, [FromBody] UpdateBlogPostDTO dto, CancellationToken ct)
+    public async Task<IActionResult> UpdateBlog(
+        string id,
+        [FromForm] UpdateBlogPostDTO dto,
+        IFormFile? file,
+        CancellationToken ct)
     {
         var existing = await _postRepo.GetByIdAsync(id, ct);
         if (existing == null)
             return NotFound(new { message = "Blog post not found" });
 
-        if (!string.IsNullOrEmpty(dto.Title)) existing.Title = dto.Title;
-        if (!string.IsNullOrEmpty(dto.Slug)) existing.Slug = dto.Slug;
-        if (!string.IsNullOrEmpty(dto.Summary)) existing.Summary = dto.Summary;
-        if (!string.IsNullOrEmpty(dto.Content)) existing.Content = dto.Content;
-        if (dto.FeaturedImage != null) existing.FeaturedImage = dto.FeaturedImage;
+        if (!string.IsNullOrWhiteSpace(dto.Title)) existing.Title = dto.Title;
+        if (!string.IsNullOrWhiteSpace(dto.Slug)) existing.Slug = dto.Slug;
+        if (!string.IsNullOrWhiteSpace(dto.Summary)) existing.Summary = dto.Summary;
+        if (!string.IsNullOrWhiteSpace(dto.Content)) existing.Content = dto.Content;
         if (dto.Tags != null) existing.Tags = dto.Tags;
         if (dto.Published.HasValue) existing.Published = dto.Published.Value;
 
-        if (!string.IsNullOrEmpty(dto.CategoryId) && ObjectId.TryParse(dto.CategoryId, out var catId))
+        if (!string.IsNullOrEmpty(dto.CategoryId) &&
+            ObjectId.TryParse(dto.CategoryId, out var catId))
         {
             existing.CategoryId = catId;
+        }
+        
+        if (file != null && file.Length > 0)
+        {
+            using var ms = new MemoryStream();
+            await file.CopyToAsync(ms, ct);
+            var base64 = Convert.ToBase64String(ms.ToArray());
+            existing.FeaturedImage = $"data:{file.ContentType};base64,{base64}";
         }
 
         await _postRepo.UpdateAsync(existing, ct);

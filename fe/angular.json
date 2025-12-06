@@ -27,13 +27,16 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               {
-              "glob": "**/*",
-              "input": "public"
+                "glob": "**/*",
+                "input": "public"
               },
               "src/favicon.ico",
               "src/assets"
             ],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "node_modules/quill/dist/quill.snow.css",
+              "src/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -100,6 +103,7 @@
               }
             ],
             "styles": [
+              "node_modules/quill/dist/quill.snow.css",
               "src/styles.scss"
             ],
             "scripts": []
