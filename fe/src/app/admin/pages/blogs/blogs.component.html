@@ -1,0 +1,96 @@
+<div class="blogs-admin card">
+    <div class="page-header">
+        <h1>Quản Lý Blog</h1>
+        <a routerLink="/admin/blogs/new" class="btn btn--primary">
+            <lucide-icon [img]="PlusIcon"></lucide-icon>
+            Tạo Bài Viết Mới
+        </a>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-bar card">
+        <div class="search-wrapper">
+            <lucide-icon [img]="SearchIcon"></lucide-icon>
+            <input type="text" [(ngModel)]="filter.search" (keyup.enter)="onSearch()"
+                placeholder="Tìm kiếm theo tiêu đề...">
+        </div>
+
+        <select [(ngModel)]="filter.categoryId" (change)="onFilterChange()">
+            <option [value]="undefined">Tất Cả Danh Mục</option>
+            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+        </select>
+
+        <select [(ngModel)]="filter.published" (change)="onFilterChange()">
+            <option [value]="undefined">Tất Cả Trạng Thái</option>
+            <option [value]="true">Đã Xuất Bản</option>
+            <option [value]="false">Bản Nháp</option>
+        </select>
+    </div>
+
+    <!-- Table -->
+    <div class="blogs-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Tiêu Đề</th>
+                    <th>Danh Mục</th>
+                    <th>Trạng Thái</th>
+                    <th>Lượt Xem</th>
+                    <th>Ngày Tạo</th>
+                    <th class="actions-col">Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let blog of blogs">
+                    <td class="title-col">
+                        <div class="title-text">{{ blog.title }}</div>
+                    </td>
+                    <td>
+                        {{ getCategoryName(blog.categoryId) }}
+                    </td>
+                    <td>
+                        <span class="status-badge" [class.published]="blog.published" [class.draft]="!blog.published">
+                            {{ blog.published ? 'Đã Xuất Bản' : 'Bản Nháp' }}
+                        </span>
+                    </td>
+                    <td>{{ blog.viewCount }}</td>
+                    <td>{{ blog.createdAt | date:'dd/MM/yyyy' }}</td>
+                    <td class="actions-col">
+                        <div class="row-actions">
+                            <button (click)="togglePublish(blog)" class="btn btn--icon btn--ghost"
+                                [title]="blog.published ? 'Gỡ Xuất Bản' : 'Xuất Bản'">
+                                <lucide-icon [img]="EyeIcon"></lucide-icon>
+                            </button>
+                            <a [routerLink]="['/admin/blogs/edit', blog.id]" class="btn btn--icon btn--ghost"
+                                title="Chỉnh Sửa">
+                                <lucide-icon [img]="EditIcon"></lucide-icon>
+                            </a>
+                            <button (click)="deleteBlog(blog.id, blog.title)"
+                                class="btn btn--icon btn--ghost btn--danger" title="Xóa">
+                                <lucide-icon [img]="TrashIcon"></lucide-icon>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr *ngIf="blogs.length === 0 && !loading">
+                    <td colspan="6" class="empty-state">
+                        Chưa có bài viết nào.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="total > 0">
+        <div class="pagination-info">
+            Hiển thị {{ (filter.page - 1) * filter.pageSize + 1 }} đến {{ Math.min(filter.page * filter.pageSize, total)
+            }} trong tổng số {{ total }} bài viết
+        </div>
+        <div class="pagination-buttons">
+            <button *ngFor="let p of pages" (click)="onPageChange(p)" [class.active]="p === filter.page">
+                {{ p }}
+            </button>
+        </div>
+    </div>
+</div>

@@ -41,6 +41,18 @@ export const ADMIN_ROUTES: Routes = [
             {
                 path: 'messages/:id',
                 loadComponent: () => import('./pages/messages/message-detail/message-detail.component').then(m => m.MessageDetailComponent)
+            },
+            {
+                path: 'blogs',
+                loadComponent: () => import('./pages/blogs/blogs.component').then(m => m.BlogsComponent)
+            },
+            {
+                path: 'blogs/new',
+                loadComponent: () => import('./pages/blogs/blog-form.component').then(m => m.BlogFormComponent)
+            },
+            {
+                path: 'blogs/edit/:id',
+                loadComponent: () => import('./pages/blogs/blog-form.component').then(m => m.BlogFormComponent)
             }
         ]
     }

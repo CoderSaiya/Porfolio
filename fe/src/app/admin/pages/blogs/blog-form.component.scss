@@ -1,0 +1,125 @@
+@import '../../styles/admin-shared';
+
+.blog-form {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        animation: slideDown 0.3s ease-out;
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--foreground);
+        }
+    }
+
+    .form-card {
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+
+            &:last-of-type {
+                border-bottom: none;
+            }
+
+            h2 {
+                font-size: 1.125rem;
+                font-weight: 700;
+                margin: 0 0 1.5rem 0;
+                color: var(--foreground);
+            }
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+
+            @media (max-width: 768px) {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+
+            label {
+                display: block;
+                font-size: 0.875rem;
+                font-weight: 500;
+                color: var(--foreground-secondary);
+                margin-bottom: 0.5rem;
+            }
+
+            input,
+            textarea,
+            select {
+                @extend .form-input;
+            }
+
+            textarea {
+                min-height: 300px;
+                resize: vertical;
+            }
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+
+            .checkbox-label {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                cursor: pointer;
+
+                input[type="checkbox"] {
+                    width: auto;
+                }
+            }
+        }
+    }
+
+    .dynamic-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+
+        .dynamic-item {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+
+            input {
+                flex: 1;
+            }
+        }
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+
+        h2 {
+            margin: 0;
+        }
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        padding-top: 1.5rem;
+    }
+}
