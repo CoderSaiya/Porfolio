@@ -28,6 +28,14 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent),
   },
   {
+    path: "blog",
+    loadComponent: () => import('./pages/blog-list/blog-list.component').then(m => m.BlogListComponent)
+  },
+  {
+    path: "blog/:slug",
+    loadComponent: () => import('./pages/blog-detail/blog-detail.component').then(m => m.BlogDetailComponent)
+  },
+  {
     path: "admin",
     canActivate: [authGuard],
     loadChildren: () => import('./admin/admin.routes').then(m => m.ADMIN_ROUTES),

@@ -1,0 +1,97 @@
+<div class="categories-page card">
+    <div class="page-header">
+        <h1>Quản Lý Danh Mục Blog</h1>
+    </div>
+
+    <!-- Create Form -->
+    <div class="create-form card">
+        <h2>Tạo Danh Mục Mới</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Tên Danh Mục *</label>
+                <input type="text" [(ngModel)]="newCategory.name" (input)="onNameChange()" placeholder="Ví dụ: Angular"
+                    class="form-input">
+            </div>
+            <div class="form-group">
+                <label>Slug *</label>
+                <input type="text" [(ngModel)]="newCategory.slug" placeholder="auto-generated" class="form-input">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Mô Tả</label>
+                <input type="text" [(ngModel)]="newCategory.description" placeholder="Mô tả ngắn" class="form-input">
+            </div>
+            <div class="form-group">
+                <label>Thứ Tự</label>
+                <input type="number" [(ngModel)]="newCategory.order" class="form-input">
+            </div>
+        </div>
+        <button (click)="createCategory()" class="btn btn--primary" [disabled]="!newCategory.name">
+            <lucide-icon [img]="PlusIcon"></lucide-icon>
+            Tạo Danh Mục
+        </button>
+    </div>
+
+    <!-- Categories List -->
+    <div class="categories-list">
+        <h2>Danh Sách Danh Mục</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tên</th>
+                    <th>Slug</th>
+                    <th>Mô Tả</th>
+                    <th>Thứ Tự</th>
+                    <th class="actions-col">Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let cat of categories">
+                    <ng-container *ngIf="editingId !== cat.id">
+                        <td>{{ cat.name }}</td>
+                        <td><code>{{ cat.slug }}</code></td>
+                        <td>{{ cat.description || '-' }}</td>
+                        <td>{{ cat.order }}</td>
+                        <td class="actions-col">
+                            <button (click)="startEdit(cat)" class="btn btn--icon btn--ghost">
+                                <lucide-icon [img]="EditIcon"></lucide-icon>
+                            </button>
+                            <button (click)="deleteCategory(cat.id, cat.name)"
+                                class="btn btn--icon btn--ghost btn--danger">
+                                <lucide-icon [img]="TrashIcon"></lucide-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <ng-container *ngIf="editingId === cat.id">
+                        <td>
+                            <input type="text" [(ngModel)]="editCategory.name" (input)="onNameChange()"
+                                class="form-input">
+                        </td>
+                        <td>
+                            <input type="text" [(ngModel)]="editCategory.slug" class="form-input">
+                        </td>
+                        <td>
+                            <input type="text" [(ngModel)]="editCategory.description" class="form-input">
+                        </td>
+                        <td>
+                            <input type="number" [(ngModel)]="editCategory.order" class="form-input"
+                                style="width: 80px">
+                        </td>
+                        <td class="actions-col">
+                            <button (click)="saveEdit()" class="btn btn--icon btn--ghost btn--success">
+                                <lucide-icon [img]="SaveIcon"></lucide-icon>
+                            </button>
+                            <button (click)="cancelEdit()" class="btn btn--icon btn--ghost">
+                                <lucide-icon [img]="XIcon"></lucide-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                </tr>
+                <tr *ngIf="categories.length === 0">
+                    <td colspan="5" class="empty-state">Chưa có danh mục nào</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

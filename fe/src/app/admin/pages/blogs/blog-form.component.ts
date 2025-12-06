@@ -20,6 +20,8 @@ export class BlogFormComponent implements OnInit {
     loading = false;
     categories: BlogCategory[] = [];
     error: string | null = null;
+    selectedFile: File | null = null;
+    imagePreview: string | null = null;
 
     readonly SaveIcon = Save;
     readonly XIcon = X;
@@ -106,6 +108,10 @@ export class BlogFormComponent implements OnInit {
                     published: blog.published
                 });
 
+                if (blog.featuredImage) {
+                    this.imagePreview = blog.featuredImage;
+                }
+
                 if (blog.tags && blog.tags.length > 0) {
                     blog.tags.forEach((tag: string) => {
                         this.tags.push(this.fb.control(tag, Validators.required));
@@ -122,30 +128,55 @@ export class BlogFormComponent implements OnInit {
         });
     }
 
+    onImageSelected(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+            this.selectedFile = input.files[0];
+
+            // Preview image
+            const reader = new FileReader();
+            reader.onload = (e: any) => {
+                this.imagePreview = e.target.result;
+            };
+            reader.readAsDataURL(this.selectedFile);
+        }
+    }
+
     onSubmit() {
-        if (this.form.invalid) return;
+        // if (this.form.invalid) return;
 
         this.loading = true;
         this.error = null;
 
-        const formValue = this.form.value;
-        const blogData = {
-            ...formValue,
-            tags: this.tags.value.filter((t: string) => t.trim())
-        };
+        const formData = new FormData();
+
+        formData.append("Title", this.form.value.title);
+        formData.append("Slug", this.form.value.slug);
+        formData.append("Summary", this.form.value.summary);
+        formData.append("Content", this.form.value.content);
+        formData.append("Published", this.form.value.published);
+        formData.append("CategoryId", this.form.value.categoryId || "");
+
+        // Append tags
+        this.tags.value.forEach((t: string) => formData.append("Tags", t));
+
+        // Append file
+        if (this.selectedFile) {
+            formData.append("File", this.selectedFile);
+        }
 
         const request$ = this.isEdit
-            ? this.blogService.updateBlog(this.blogId!, blogData)
-            : this.blogService.createBlog(blogData);
+            ? this.blogService.updateBlogFormData(this.blogId!, formData)
+            : this.blogService.createBlog(formData);
 
         request$.subscribe({
             next: () => {
-                this.router.navigate(['/admin/blogs']);
+                this.router.navigate(["/admin/blogs"]);
             },
-            error: (err) => {
-                this.error = 'Không thể lưu bài viết';
-                this.loading = false;
+            error: err => {
                 console.error(err);
+                this.error = "Không thể lưu blog";
+                this.loading = false;
             }
         });
     }

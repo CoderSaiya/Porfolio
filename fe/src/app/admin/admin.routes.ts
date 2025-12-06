@@ -53,6 +53,10 @@ export const ADMIN_ROUTES: Routes = [
             {
                 path: 'blogs/edit/:id',
                 loadComponent: () => import('./pages/blogs/blog-form.component').then(m => m.BlogFormComponent)
+            },
+            {
+                path: 'blog-categories',
+                loadComponent: () => import('./pages/blogs/blog-categories.component').then(m => m.BlogCategoriesComponent)
             }
         ]
     }

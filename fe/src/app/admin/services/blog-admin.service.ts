@@ -76,7 +76,7 @@ export class BlogAdminService {
         return this.http.get<BlogPost>(`${this.apiUrl}/${id}`, { withCredentials: true });
     }
 
-    createBlog(data: CreateBlogDTO): Observable<BlogPost> {
+    createBlog(data: FormData): Observable<BlogPost> {
         return this.http.post<BlogPost>(this.apiUrl, data, { withCredentials: true });
     }
 
@@ -84,7 +84,21 @@ export class BlogAdminService {
         return this.http.put<BlogPost>(`${this.apiUrl}/${id}`, data, { withCredentials: true });
     }
 
+    updateBlogFormData(id: string, data: FormData): Observable<BlogPost> {
+        return this.http.put<BlogPost>(`${this.apiUrl}/${id}`, data, { withCredentials: true });
+    }
+
     deleteBlog(id: string): Observable<{ message: string }> {
         return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`, { withCredentials: true });
+    }
+
+    uploadFeaturedImage(id: string, file: File): Observable<{ message: string; imageUrl: string }> {
+        const formData = new FormData();
+        formData.append('file', file);
+        return this.http.post<{ message: string; imageUrl: string }>(
+            `${this.apiUrl}/${id}/image`,
+            formData,
+            { withCredentials: true }
+        );
     }
 }

@@ -40,12 +40,21 @@ public class BlogAdminController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateBlog([FromBody] CreateBlogPostDTO dto, CancellationToken ct)
+    public async Task<IActionResult> CreateBlog([FromForm] CreateBlogPostDTO dto, IFormFile? file, CancellationToken ct)
     {
         ObjectId? categoryId = null;
         if (!string.IsNullOrEmpty(dto.CategoryId) && ObjectId.TryParse(dto.CategoryId, out var catId))
         {
             categoryId = catId;
+        }
+
+        string? featuredImageData = null;
+        if (file != null && file.Length > 0)
+        {
+            using var ms = new MemoryStream();
+            await file.CopyToAsync(ms, ct);
+            var base64 = Convert.ToBase64String(ms.ToArray());
+            featuredImageData = $"data:{file.ContentType};base64,{base64}";
         }
 
         var post = new BlogPost
@@ -54,7 +63,7 @@ public class BlogAdminController : ControllerBase
             Slug = dto.Slug,
             Summary = dto.Summary,
             Content = dto.Content,
-            FeaturedImage = dto.FeaturedImage,
+            FeaturedImage = featuredImageData,
             CategoryId = categoryId,
             Tags = dto.Tags ?? new List<string>(),
             Published = dto.Published
@@ -153,5 +162,28 @@ public class BlogAdminController : ControllerBase
         await _categoryRepo.DeleteAsync(id, ct);
 
         return Ok(new { message = "Category deleted successfully" });
+    }
+
+    [HttpPost("{id}/image")]
+    public async Task<IActionResult> UploadImage(string id, IFormFile file, CancellationToken ct)
+    {
+        var blog = await _postRepo.GetByIdAsync(id, ct);
+        if (blog == null)
+            return NotFound(new { message = "Blog post not found" });
+
+        if (file == null || file.Length == 0)
+            return BadRequest(new { message = "No file uploaded" });
+
+        // Convert to base64
+        using var ms = new MemoryStream();
+        await file.CopyToAsync(ms, ct);
+        var base64 = Convert.ToBase64String(ms.ToArray());
+        var dataUrl = $"data:{file.ContentType};base64,{base64}";
+
+        // Update blog featured image
+        blog.FeaturedImage = dataUrl;
+        await _postRepo.UpdateAsync(blog, ct);
+
+        return Ok(new { message = "Image uploaded successfully", imageUrl = dataUrl });
     }
 }

@@ -19,6 +19,8 @@ export class AdminLayoutComponent {
         { label: 'Dự án', icon: 'FolderGit2', route: '/admin/projects' },
         { label: 'Kỹ năng', icon: 'Code', route: '/admin/skills' },
         { label: 'Tin nhắn', icon: 'Mail', route: '/admin/messages' },
+        { label: 'Blog', icon: 'FileText', route: '/admin/blogs' },
+        { label: 'Danh Mục Blog', icon: 'FolderOpen', route: '/admin/blog-categories' },
         { label: 'Hồ sơ', icon: 'User', route: '/admin/profile' }
     ];
 
