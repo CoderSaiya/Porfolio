@@ -18,9 +18,22 @@ public class MessagesAdminController(IContactMessageRepository repo) : Controlle
         var messages = await repo.ListAsync(filter.Status, filter.SearchTerm, filter.Page, filter.PageSize, ct);
         var total = await repo.CountAsync(filter.Status, filter.SearchTerm, ct);
 
+        var dto = messages.Select(m => new MessageResponseDTO(
+            m.Id.ToString(),
+            m.Name,
+            m.Email,
+            m.Subject,
+            m.Message,
+            m.Status,
+            m.Ip,
+            m.UserAgent,
+            m.ReadAt,
+            m.CreatedAt
+        ));
+
         return Ok(new
         {
-            Data = messages,
+            Data = dto,
             Total = total,
             Page = filter.Page,
             PageSize = filter.PageSize
@@ -32,7 +45,19 @@ public class MessagesAdminController(IContactMessageRepository repo) : Controlle
     {
         var msg = await repo.GetByIdAsync(id, ct);
         if (msg == null) return NotFound();
-        return Ok(msg);
+
+        var dto = new MessageResponseDTO(
+            msg.Id.ToString(),
+            msg.Name,
+            msg.Email,
+            msg.Subject,
+            msg.Message,
+            msg.Status,
+            msg.Ip,
+            msg.UserAgent,
+            msg.ReadAt,
+            msg.CreatedAt);
+        return Ok(dto);
     }
 
     [HttpPut("{id}/status")]

@@ -21,3 +21,16 @@ public record BulkDeleteDTO
 {
     public List<string> Ids { get; init; } = new();
 }
+
+public record MessageResponseDTO(
+    string Id,
+    string Name,
+    string Email,
+    string Subject,
+    string Message,
+    MessageStatus Status,
+    string? Ip,
+    string? UserAgent,
+    DateTime? ReadAt,
+    DateTime CreatedAt
+);
