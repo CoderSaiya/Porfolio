@@ -44,6 +44,22 @@
     color: var(--accent-foreground);
     box-shadow: var(--shadow-sm);
   }
+
+  &--route {
+    border: 1px solid var(--border);
+
+    &:hover {
+      border-color: var(--primary);
+      background: rgba(99, 102, 241, 0.1);
+    }
+  }
+}
+
+.nav__divider {
+  width: 1px;
+  height: 1.5rem;
+  background: var(--border);
+  margin: 0 0.25rem;
 }
 
 .nav__actions {
@@ -153,6 +169,12 @@
   box-shadow: var(--shadow-lg);
 }
 
+.nav__sheet-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0.5rem 0;
+}
+
 .nav__sheetBtn {
   width: 100%;
   text-align: left;
@@ -172,8 +194,17 @@
     color: var(--accent);
   }
 
-  & --active {
+  &--active {
     background: var(--accent);
     color: var(--accent-foreground);
+  }
+
+  &--route {
+    border: 1px solid transparent;
+
+    &:hover {
+      border-color: var(--primary);
+      background: rgba(99, 102, 241, 0.1);
+    }
   }
 }

@@ -1,0 +1,36 @@
+<section id="blogs" class="blogs-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                Blog <span class="accent">Mới nhất</span>
+            </h2>
+            <p class="section-subtitle">Các bài viết chia sẽ kinh nghiệm</p>
+        </div>
+
+        <div class="blogs-masonry" *ngIf="!loading && blogs.length > 0">
+            <article *ngFor="let blog of blogs" class="blog-card" (click)="navigateToBlog(blog.slug)">
+                <div class="blog-card__image">
+                    <img [src]="blog.featuredImage || defaultImage" [alt]="blog.title" loading="lazy">
+                    <div class="blog-card__overlay"></div>
+                    <h3 class="blog-card__title">{{ blog.title }}</h3>
+                </div>
+            </article>
+        </div>
+
+        <div class="loading-state" *ngIf="loading">
+            <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6]"></div>
+        </div>
+
+        <div class="empty-state" *ngIf="!loading && blogs.length === 0">
+            <lucide-icon name="FileText" [size]="48"></lucide-icon>
+            <p>Không có bài viết nào</p>
+        </div>
+
+        <div class="section-footer" *ngIf="!loading && blogs.length > 0">
+            <button class="btn btn--primary" (click)="viewAllBlogs()">
+                Xem tất cả
+                <lucide-icon name="ArrowRight" [size]="20"></lucide-icon>
+            </button>
+        </div>
+    </div>
+</section>

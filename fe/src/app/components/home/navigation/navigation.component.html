@@ -5,6 +5,12 @@
       {{ item.label }}
     </button>
 
+    <div class="nav__divider"></div>
+
+    <button *ngFor="let item of routeItems" (click)="navigateTo(item.route!)" class="nav__btn nav__btn--route">
+      {{ item.label }}
+    </button>
+
     <div class="nav__actions">
       <a href="https://www.buymeacoffee.com/codersaiya" target="_blank" class="nav__coffee"
         aria-label="Buy me a coffee">
@@ -38,6 +44,14 @@
     <button *ngFor="let item of navItems; index as i" (click)="scrollTo(item.id)"
       class="nav__sheetBtn stagger-animation" [style.--stagger]="i"
       [class.nav__sheetBtn--active]="activeSection===item.id">
+      <lucide-icon [name]="item.icon"></lucide-icon>
+      <span>{{ item.label }}</span>
+    </button>
+
+    <div class="nav__sheet-divider"></div>
+
+    <button *ngFor="let item of routeItems; index as i" (click)="navigateTo(item.route!)"
+      class="nav__sheetBtn nav__sheetBtn--route stagger-animation" [style.--stagger]="navItems.length + i">
       <lucide-icon [name]="item.icon"></lucide-icon>
       <span>{{ item.label }}</span>
     </button>

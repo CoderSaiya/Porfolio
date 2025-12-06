@@ -1,9 +1,16 @@
 import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Menu, X, Code, User, Briefcase, Mail, Sun, Moon, Coffee } from 'lucide-angular';
+import { Router } from '@angular/router';
+import { LucideAngularModule, Menu, X, Code, User, Briefcase, Mail, Sun, Moon, Coffee, BookOpen, LogIn } from 'lucide-angular';
 import { ThemeService } from '../../../core/services/theme.service';
 
-interface NavItem { id: string; label: string; icon: string; }
+interface NavItem {
+  id: string;
+  label: string;
+  icon: string;
+  type?: 'scroll' | 'route';
+  route?: string;
+}
 
 @Component({
   selector: 'app-navigation',
@@ -17,14 +24,22 @@ export class NavigationComponent {
   activeSection: string = 'hero';
 
   navItems: NavItem[] = [
-    { id: 'hero', label: 'Trang chủ', icon: 'Code' },
-    { id: 'about', label: 'Giới thiệu', icon: 'User' },
-    { id: 'skills', label: 'Kỹ năng', icon: 'Briefcase' },
-    { id: 'projects', label: 'Dự án', icon: 'Briefcase' },
-    { id: 'contact', label: 'Liên hệ', icon: 'Mail' },
+    { id: 'hero', label: 'Trang chủ', icon: 'Code', type: 'scroll' },
+    { id: 'about', label: 'Giới thiệu', icon: 'User', type: 'scroll' },
+    { id: 'skills', label: 'Kỹ năng', icon: 'Briefcase', type: 'scroll' },
+    { id: 'projects', label: 'Dự án', icon: 'Briefcase', type: 'scroll' },
+    { id: 'blogs', label: 'Blog', icon: 'BookOpen', type: 'scroll' },
+    { id: 'contact', label: 'Liên hệ', icon: 'Mail', type: 'scroll' },
   ];
 
-  constructor(public themeService: ThemeService) { }
+  routeItems: NavItem[] = [
+    { id: 'login', label: 'Đăng nhập', icon: 'LogIn', type: 'route', route: '/login' },
+  ];
+
+  constructor(
+    public themeService: ThemeService,
+    private router: Router
+  ) { }
 
   @HostListener('window:scroll')
   onScroll() {
@@ -43,6 +58,19 @@ export class NavigationComponent {
     if (typeof document === 'undefined') return;
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     this.isOpen = false;
+  }
+
+  navigateTo(route: string) {
+    this.router.navigate([route]);
+    this.isOpen = false;
+  }
+
+  handleNavClick(item: NavItem) {
+    if (item.type === 'route' && item.route) {
+      this.navigateTo(item.route);
+    } else {
+      this.scrollTo(item.id);
+    }
   }
 
   toggleTheme() {

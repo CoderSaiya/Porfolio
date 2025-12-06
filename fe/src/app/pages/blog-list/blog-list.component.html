@@ -1,77 +1,115 @@
-<section class="blog-section">
+<section class="blog-page">
+    <!-- Back to Home Button -->
+    <a routerLink="/" class="back-home-btn">
+        <lucide-icon name="Home" [size]="20"></lucide-icon>
+        <span>Trang chủ</span>
+    </a>
+
     <div class="container">
-        <div class="section-header">
-            <h1 class="section-title">
-                Blog & <span class="gradient-text">Bài Viết</span>
-            </h1>
-            <p class="section-subtitle">Chia sẻ kiến thức và kinh nghiệm lập trình</p>
+        <!-- Hero Header -->
+        <div class="hero-header">
+            <p class="hero-label">BLOG CỦA TÔI</p>
+            <h1 class="hero-title">Câu Chuyện & Ý Tưởng</h1>
+            <p class="hero-subtitle">Chia sẻ kiến thức và kinh nghiệm lập trình.</p>
         </div>
 
-        <!-- Category Filter -->
-        <div class="categories-filter">
-            <button class="category-btn" [class.active]="!selectedCategoryId" (click)="filterByCategory(undefined)">
-                Tất Cả
+        <!-- Search Bar -->
+        <div class="search-section">
+            <lucide-icon name="Search" [size]="20" class="search-icon"></lucide-icon>
+            <input type="text" placeholder="Tìm kiếm bài viết..." [(ngModel)]="searchQuery" (input)="onSearch()"
+                class="search-input">
+        </div>
+
+        <!-- Filter Tabs (Categories) -->
+        <div class="filter-tabs">
+            <button class="filter-tab" [class.active]="!selectedCategoryId" (click)="filterByCategory(undefined)">
+                Tất cả
             </button>
-            <button *ngFor="let cat of categories" class="category-btn" [class.active]="selectedCategoryId === cat.id"
+            <button *ngFor="let cat of categories" class="filter-tab" [class.active]="selectedCategoryId === cat.id"
                 (click)="filterByCategory(cat.id)">
                 {{ cat.name }}
             </button>
         </div>
 
-        <!-- Blog Grid -->
-        <div class="blog-grid" *ngIf="!loading && blogs.length > 0">
-            <article *ngFor="let blog of blogs" class="blog-card">
-                <a [routerLink]="['/blog', blog.slug]" class="blog-link">
-                    <div class="blog-image" *ngIf="blog.featuredImage">
-                        <img [src]="blog.featuredImage" [alt]="blog.title" loading="lazy">
-                    </div>
-                    <div class="blog-image placeholder" *ngIf="!blog.featuredImage">
-                        <div class="placeholder-icon">📝</div>
-                    </div>
-
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span class="blog-date">{{ blog.publishedAt || blog.createdAt | date:'dd/MM/yyyy' }}</span>
-                            <span class="blog-category" *ngIf="blog.categoryId">{{ getCategoryName(blog.categoryId)
-                                }}</span>
-                            <span class="blog-views">👁 {{ blog.viewCount }}</span>
+        <!-- Recent Posts Section -->
+        <section class="recent-posts-section" *ngIf="recentPosts.length > 0">
+            <h2 class="section-heading">Những bài gần đây</h2>
+            <div class="recent-posts-grid">
+                <!-- Featured Post (Large) -->
+                <article class="featured-post" *ngIf="recentPosts[0]">
+                    <a [routerLink]="['/blog', recentPosts[0].slug]" class="post-link">
+                        <div class="post-image">
+                            <img [src]="recentPosts[0].featuredImage || defaultImage" [alt]="recentPosts[0].title"
+                                loading="lazy">
                         </div>
-
-                        <h3 class="blog-title">{{ blog.title }}</h3>
-                        <p class="blog-summary">{{ blog.summary }}</p>
-
-                        <div class="blog-tags" *ngIf="blog.tags && blog.tags.length > 0">
-                            <span *ngFor="let tag of blog.tags.slice(0, 3)" class="tag">{{ tag }}</span>
+                        <div class="post-content">
+                            <div class="post-meta">
+                                <span class="post-date">{{ formatDate(recentPosts[0].publishedAt ||
+                                    recentPosts[0].createdAt) }}</span>
+                                <span class="post-category" *ngIf="recentPosts[0].categoryId">{{
+                                    getCategoryName(recentPosts[0].categoryId) }}</span>
+                            </div>
+                            <h3 class="post-title">{{ recentPosts[0].title }}</h3>
+                            <p class="post-summary">{{ recentPosts[0].summary }}</p>
                         </div>
-                    </div>
-                </a>
-            </article>
-        </div>
+                    </a>
+                </article>
+
+                <!-- Sidebar Posts (Small) -->
+                <aside class="sidebar-posts">
+                    <article class="sidebar-post" *ngFor="let post of recentPosts.slice(1, 4)">
+                        <a [routerLink]="['/blog', post.slug]" class="post-link">
+                            <div class="post-image-small">
+                                <img [src]="post.featuredImage || defaultImage" [alt]="post.title" loading="lazy">
+                            </div>
+                            <div class="post-content-small">
+                                <div class="post-meta">
+                                    <span class="post-date">{{ formatDate(post.publishedAt || post.createdAt) }}</span>
+                                    <span class="post-category" *ngIf="post.categoryId">{{
+                                        getCategoryName(post.categoryId) }}</span>
+                                </div>
+                                <h4 class="post-title-small">{{ post.title }}</h4>
+                            </div>
+                        </a>
+                    </article>
+                </aside>
+            </div>
+        </section>
+
+        <!-- All Blog Posts Section -->
+        <section class="all-posts-section" *ngIf="allPosts.length > 0">
+            <h2 class="section-heading">Tất cả bài viết</h2>
+            <div class="masonry-grid">
+                <article class="masonry-post" *ngFor="let post of allPosts">
+                    <a [routerLink]="['/blog', post.slug]" class="post-link">
+                        <div class="post-image">
+                            <img [src]="post.featuredImage || defaultImage" [alt]="post.title" loading="lazy">
+                            <div class="post-overlay"></div>
+                            <h3 class="post-title-overlay">{{ post.title }}</h3>
+                        </div>
+                        <div class="post-info">
+                            <div class="post-meta-bottom">
+                                <span class="post-category" *ngIf="post.categoryId">{{ getCategoryName(post.categoryId)
+                                    }}</span>
+                                <span class="post-date">{{ formatDate(post.publishedAt || post.createdAt) }}</span>
+                            </div>
+                            <span class="post-read-link">Đọc</span>
+                        </div>
+                    </a>
+                </article>
+            </div>
+        </section>
 
         <!-- Empty State -->
-        <div class="empty-state" *ngIf="!loading && blogs.length === 0">
-            <p>Chưa có bài viết nào.</p>
+        <div class="empty-state" *ngIf="!loading && filteredBlogs.length === 0">
+            <lucide-icon name="FileText" [size]="64"></lucide-icon>
+            <p>Không tìm thấy bài viết nào</p>
         </div>
 
         <!-- Loading State -->
         <div class="loading-state" *ngIf="loading">
             <div class="spinner"></div>
             <p>Đang tải...</p>
-        </div>
-
-        <!-- Pagination -->
-        <div class="pagination" *ngIf="totalPages > 1">
-            <button class="page-btn" [disabled]="page === 1" (click)="onPageChange(page - 1)">
-                ← Trước
-            </button>
-
-            <button *ngFor="let p of pages" class="page-btn" [class.active]="p === page" (click)="onPageChange(p)">
-                {{ p }}
-            </button>
-
-            <button class="page-btn" [disabled]="page === totalPages" (click)="onPageChange(page + 1)">
-                Sau →
-            </button>
         </div>
     </div>
 </section>
