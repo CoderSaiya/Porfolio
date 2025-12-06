@@ -47,6 +47,8 @@ public static class DependencyInjection
         services.AddScoped<IImageRepository, ImageRepository>();
         services.AddScoped<ISkillRepository, SkillRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IBlogPostRepository, BlogPostRepository>();
+        services.AddScoped<IBlogCategoryRepository, BlogCategoryRepository>();
         
         // Services
         services.AddScoped<PortfolioService>();

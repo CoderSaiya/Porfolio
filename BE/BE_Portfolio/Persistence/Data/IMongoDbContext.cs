@@ -13,6 +13,8 @@ public interface IMongoDbContext
     IMongoCollection<ContactMessage> ContactMessages { get; }
     IMongoCollection<Image> Images { get; }
     IMongoCollection<User> Users { get; }
+    IMongoCollection<BlogPost> BlogPosts { get; }
+    IMongoCollection<BlogCategory> BlogCategories { get; }
 
     Task EnsureIndexesAsync(CancellationToken ct = default);
     Task EnsureSeedAsync(CancellationToken ct = default);

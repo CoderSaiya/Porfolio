@@ -35,6 +35,12 @@ public class MongoDbContext : IMongoDbContext
     public IMongoCollection<User> Users
         => _db.GetCollection<User>(CollectionNames.Users);
 
+    public IMongoCollection<BlogPost> BlogPosts
+        => _db.GetCollection<BlogPost>(CollectionNames.BlogPosts);
+
+    public IMongoCollection<BlogCategory> BlogCategories
+        => _db.GetCollection<BlogCategory>(CollectionNames.BlogCategories);
+
     public async Task EnsureSeedAsync(CancellationToken ct = default)
     {
         // projects: slug unique, createdAt, highlight

@@ -8,4 +8,6 @@ public abstract class CollectionNames
     public const string Users = "users";
     public const string ContactMessages = "contact_messages";
     public const string Images = "images";
+    public const string BlogPosts = "blog_posts";
+    public const string BlogCategories = "blog_categories";
 }
