@@ -1,0 +1,45 @@
+<section class="blog-detail" *ngIf="blog && !loading">
+    <div class="container">
+        <!-- Back Button -->
+        <a routerLink="/blog" class="back-link">
+            ← Quay lại danh sách
+        </a>
+
+        <!-- Header -->
+        <header class="blog-header">
+            <h1 class="blog-title">{{ blog.title }}</h1>
+
+            <div class="blog-meta">
+                <span class="meta-item">
+                    📅 {{ blog.publishedAt || blog.createdAt | date:'dd/MM/yyyy' }}
+                </span>
+                <span class="meta-item">
+                    👁 {{ blog.viewCount }} lượt xem
+                </span>
+            </div>
+
+            <div class="blog-tags" *ngIf="blog.tags && blog.tags.length > 0">
+                <span *ngFor="let tag of blog.tags" class="tag">{{ tag }}</span>
+            </div>
+        </header>
+
+        <!-- Featured Image -->
+        <div class="featured-image" *ngIf="blog.featuredImage">
+            <img [src]="blog.featuredImage" [alt]="blog.title">
+        </div>
+
+        <!-- Summary -->
+        <div class="blog-summary">
+            <p>{{ blog.summary }}</p>
+        </div>
+
+        <!-- Content -->
+        <article class="blog-content" [innerHTML]="blog.content"></article>
+    </div>
+</section>
+
+<!-- Loading State -->
+<div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Đang tải bài viết...</p>
+</div>

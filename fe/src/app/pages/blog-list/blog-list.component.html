@@ -1,0 +1,77 @@
+<section class="blog-section">
+    <div class="container">
+        <div class="section-header">
+            <h1 class="section-title">
+                Blog & <span class="gradient-text">Bài Viết</span>
+            </h1>
+            <p class="section-subtitle">Chia sẻ kiến thức và kinh nghiệm lập trình</p>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="categories-filter">
+            <button class="category-btn" [class.active]="!selectedCategoryId" (click)="filterByCategory(undefined)">
+                Tất Cả
+            </button>
+            <button *ngFor="let cat of categories" class="category-btn" [class.active]="selectedCategoryId === cat.id"
+                (click)="filterByCategory(cat.id)">
+                {{ cat.name }}
+            </button>
+        </div>
+
+        <!-- Blog Grid -->
+        <div class="blog-grid" *ngIf="!loading && blogs.length > 0">
+            <article *ngFor="let blog of blogs" class="blog-card">
+                <a [routerLink]="['/blog', blog.slug]" class="blog-link">
+                    <div class="blog-image" *ngIf="blog.featuredImage">
+                        <img [src]="blog.featuredImage" [alt]="blog.title" loading="lazy">
+                    </div>
+                    <div class="blog-image placeholder" *ngIf="!blog.featuredImage">
+                        <div class="placeholder-icon">📝</div>
+                    </div>
+
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span class="blog-date">{{ blog.publishedAt || blog.createdAt | date:'dd/MM/yyyy' }}</span>
+                            <span class="blog-category" *ngIf="blog.categoryId">{{ getCategoryName(blog.categoryId)
+                                }}</span>
+                            <span class="blog-views">👁 {{ blog.viewCount }}</span>
+                        </div>
+
+                        <h3 class="blog-title">{{ blog.title }}</h3>
+                        <p class="blog-summary">{{ blog.summary }}</p>
+
+                        <div class="blog-tags" *ngIf="blog.tags && blog.tags.length > 0">
+                            <span *ngFor="let tag of blog.tags.slice(0, 3)" class="tag">{{ tag }}</span>
+                        </div>
+                    </div>
+                </a>
+            </article>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="!loading && blogs.length === 0">
+            <p>Chưa có bài viết nào.</p>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-state" *ngIf="loading">
+            <div class="spinner"></div>
+            <p>Đang tải...</p>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" *ngIf="totalPages > 1">
+            <button class="page-btn" [disabled]="page === 1" (click)="onPageChange(page - 1)">
+                ← Trước
+            </button>
+
+            <button *ngFor="let p of pages" class="page-btn" [class.active]="p === page" (click)="onPageChange(p)">
+                {{ p }}
+            </button>
+
+            <button class="page-btn" [disabled]="page === totalPages" (click)="onPageChange(page + 1)">
+                Sau →
+            </button>
+        </div>
+    </div>
+</section>
