@@ -4,11 +4,12 @@ import { CommentResponse } from '../../../../core/services/comment.service';
 import { AuthUser } from '../../../../core/models/auth.model';
 import { LucideAngularModule } from 'lucide-angular';
 import { CommentInputComponent } from '../comment-input/comment-input.component';
+import { AvatarComponent } from '../../../../shared/components/avatar/avatar.component';
 
 @Component({
     selector: 'app-comment-item',
     standalone: true,
-    imports: [CommonModule, LucideAngularModule, CommentInputComponent],
+    imports: [CommonModule, LucideAngularModule, CommentInputComponent, AvatarComponent],
     templateUrl: './comment-item.component.html',
     styleUrls: ['./comment-item.component.scss']
 })

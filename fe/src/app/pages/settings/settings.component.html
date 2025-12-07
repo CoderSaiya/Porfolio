@@ -10,7 +10,8 @@
             </h2>
 
             <div class="profile-info">
-                <img [src]="user?.avatarUrl || 'assets/default-avatar.png'" alt="Avatar" class="profile-avatar">
+                <app-avatar [avatarUrl]="user?.avatarUrl" [name]="user?.fullName || user?.username"
+                    size="lg"></app-avatar>
                 <div class="profile-details">
                     <p>{{ user?.fullName || user?.username }}</p>
                     <p>{{ user?.role }}</p>

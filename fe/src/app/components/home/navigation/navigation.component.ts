@@ -5,6 +5,7 @@ import { LucideAngularModule, Menu, X, Code, User, Briefcase, Mail, Sun, Moon, C
 import { ThemeService } from '../../../core/services/theme.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { AuthUser } from '../../../core/models/auth.model';
+import { AvatarComponent } from '../../../shared/components/avatar/avatar.component';
 
 interface NavItem {
   id: string;
@@ -17,7 +18,7 @@ interface NavItem {
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, AvatarComponent],
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss'],
 })

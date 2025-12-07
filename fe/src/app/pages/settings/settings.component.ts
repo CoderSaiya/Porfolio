@@ -4,11 +4,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../../core/services/auth.service';
 import { LucideAngularModule, Shield, User, LogOut } from 'lucide-angular';
 import { Setup2FAResponse, AuthUser } from '../../core/models/auth.model';
+import { AvatarComponent } from '../../shared/components/avatar/avatar.component';
 
 @Component({
     selector: 'app-settings',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+    imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, AvatarComponent],
     styleUrls: ['./settings.component.scss'],
     templateUrl: './settings.component.html'
 })

@@ -13,7 +13,7 @@
 
     <div class="nav__profile" *ngIf="user">
       <button (click)="showProfileMenu = !showProfileMenu" class="nav__btn nav__profile-btn">
-        <img [src]="user.avatarUrl || 'assets/default-avatar.png'" class="nav__avatar" alt="Avatar">
+        <app-avatar [avatarUrl]="user.avatarUrl" [name]="user.fullName || user.username" size="sm"></app-avatar>
         <span class="nav__username">{{ user.fullName || user.username }}</span>
       </button>
 
@@ -86,7 +86,7 @@
       <div class="nav__sheet-divider"></div>
 
       <div class="nav__mobile-profile">
-        <img [src]="user.avatarUrl || 'assets/default-avatar.png'" class="nav__mobile-avatar" alt="Avatar">
+        <app-avatar [avatarUrl]="user.avatarUrl" [name]="user.fullName || user.username" size="md"></app-avatar>
         <div class="nav__mobile-info">
           <p class="nav__mobile-name">{{ user.fullName || user.username }}</p>
           <p class="nav__mobile-role">{{ user.role }}</p>
