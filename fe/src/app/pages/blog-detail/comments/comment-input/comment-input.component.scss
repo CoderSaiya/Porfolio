@@ -8,7 +8,7 @@
     &--reply {
         margin-bottom: 1rem;
         padding: 0.75rem;
-        background: var(--background); // Slightly different bg for nesting
+        background: var(--background);
     }
 
     &__textarea {
@@ -34,42 +34,104 @@
         margin-top: 0.5rem;
         padding-top: 0.5rem;
         border-top: 1px solid var(--border);
+        gap: 0.5rem;
     }
 
     &__tools {
         position: relative;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
     }
 
     &__buttons {
         display: flex;
         gap: 0.5rem;
+        flex-shrink: 0;
     }
 }
 
-.btn-icon {
+// Emoji button with visible label
+.btn-emoji-labeled {
     background: transparent;
-    border: none;
+    border: 1px solid var(--border);
     color: var(--muted-foreground);
     cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 50%;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-md);
     transition: all 0.2s;
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
 
     &:hover {
         background: var(--muted);
         color: var(--accent);
+        border-color: var(--accent);
     }
+
+    &--active {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+// Emoji picker wrapper and container
+.emoji-picker-wrapper {
+    position: relative;
 }
 
 .emoji-picker-container {
     position: absolute;
-    bottom: 100%;
+    bottom: calc(100% + 10px);
     left: 0;
-    z-index: 100;
-    margin-bottom: 10px;
+    z-index: 1001;
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    max-height: 420px;
+    width: 352px;
+    overflow: auto;
+
+    // Override emoji-mart default styles for dark theme
+    ::ng-deep {
+        emoji-mart {
+            background: var(--card) !important;
+            border: none !important;
+            width: 100% !important;
+
+            .emoji-mart-bar {
+                display: none !important;
+            }
+
+            .emoji-mart-search {
+                display: none !important;
+            }
+
+            .emoji-mart-category-label span {
+                background: var(--card) !important;
+                color: var(--foreground) !important;
+                font-weight: 600 !important;
+            }
+
+            .emoji-mart-scroll {
+                overflow-y: auto !important;
+                max-height: 280px !important;
+            }
+
+            .emoji-mart-emoji:hover::before {
+                background: var(--muted) !important;
+            }
+        }
+    }
 }
 
 .emoji-picker-overlay {
@@ -78,7 +140,8 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 99;
+    z-index: 1000;
+    background: transparent;
 }
 
 .btn {
@@ -88,6 +151,7 @@
     cursor: pointer;
     border: none;
     transition: all 0.2s;
+    font-size: 0.9rem;
 
     &--primary {
         background: var(--accent);
@@ -95,6 +159,7 @@
 
         &:hover:not(:disabled) {
             opacity: 0.9;
+            transform: translateY(-1px);
         }
 
         &:disabled {

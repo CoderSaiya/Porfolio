@@ -1,6 +1,6 @@
 <div class="comment-item">
     <div class="comment-item__avatar">
-        <img [src]="comment.userAvatar || 'assets/default-avatar.png'" alt="Avatar">
+        <img [src]="comment.userAvatar || 'assets/default-avatar.png'" alt="Ảnh đại diện">
     </div>
 
     <div class="comment-item__content">
@@ -13,16 +13,16 @@
         </div>
 
         <div class="comment-item__actions">
-            <button class="action-btn" (click)="onReplyClick()">Reply</button>
+            <button class="action-btn" (click)="onReplyClick()">Trả lời</button>
 
             <ng-container *ngIf="currentUser && (currentUser.id === comment.userId || currentUser.role === 'Admin')">
-                <button class="action-btn action-btn--danger" (click)="onDeleteClick()">Delete</button>
+                <button class="action-btn action-btn--danger" (click)="onDeleteClick()">Xóa</button>
             </ng-container>
         </div>
 
         <!-- Reply Input -->
         <div *ngIf="isReplying" class="comment-item__reply-input">
-            <app-comment-input [isReply]="true" buttonLabel="Reply" (submitComment)="onSubmitReply($event)"
+            <app-comment-input [isReply]="true" buttonLabel="Trả lời" (submitComment)="onSubmitReply($event)"
                 (cancel)="isReplying = false">
             </app-comment-input>
         </div>

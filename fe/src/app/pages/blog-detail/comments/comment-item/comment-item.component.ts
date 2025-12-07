@@ -39,7 +39,7 @@ export class CommentItemComponent {
     }
 
     onDeleteClick() {
-        if (confirm('Are you sure you want to delete this comment?')) {
+        if (confirm('Bạn có chắc chắn muốn xóa bình luận này?')) {
             this.delete.emit(this.comment.id);
         }
     }

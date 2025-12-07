@@ -12,8 +12,8 @@ import { LucideAngularModule } from 'lucide-angular';
     styleUrls: ['./comment-input.component.scss']
 })
 export class CommentInputComponent {
-    @Input() placeholder: string = 'Write a comment...';
-    @Input() buttonLabel: string = 'Post';
+    @Input() placeholder: string = 'Viết một bình luận...';
+    @Input() buttonLabel: string = 'Đăng tải';
     @Input() isReply: boolean = false;
     @Output() submitComment = new EventEmitter<string>();
     @Output() cancel = new EventEmitter<void>();

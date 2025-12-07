@@ -20,8 +20,10 @@ export class AuthService {
     public isAuthenticated$ = this.currentUser$.pipe(map(user => !!user));
 
     constructor() {
-        // Try to restore session on init
-        this.checkAuthStatus().subscribe();
+        // Verify user silently in background if exists in storage
+        if (this.currentUserSubject.value) {
+            this.verifySession().subscribe();
+        }
     }
 
     login(credentials: LoginRequest): Observable<LoginResponse> {
@@ -62,12 +64,12 @@ export class AuthService {
             withCredentials: true
         }).pipe(
             tap(() => {
-                this.setCurrentUser(null);
+                this.clearUser();
                 this.router.navigate(['/login']);
             }),
             catchError(() => {
                 // Clear user even if request fails
-                this.setCurrentUser(null);
+                this.clearUser();
                 this.router.navigate(['/login']);
                 return of(null);
             })
@@ -102,7 +104,30 @@ export class AuthService {
         );
     }
 
-    // Check if user is authenticated by attempting a protected request
+    // Verify session silently in background (called on app init)
+    private verifySession(): Observable<AuthUser | null> {
+        return this.http.get<AuthUser>(`${this.API_URL}/me`, {
+            withCredentials: true
+        }).pipe(
+            tap(user => {
+                // Update with fresh data from server
+                this.setCurrentUser(user);
+            }),
+            catchError(() => {
+                // If /me fails, try to refresh token
+                return this.refreshToken().pipe(
+                    switchMap(() => this.http.get<AuthUser>(`${this.API_URL}/me`, { withCredentials: true })),
+                    tap(user => this.setCurrentUser(user)),
+                    catchError(() => {
+                        console.warn('Session verification failed, but keeping user from localStorage');
+                        return of(null);
+                    })
+                );
+            })
+        );
+    }
+
+    // Check authentication status (used after 2FA)
     private checkAuthStatus(): Observable<AuthUser | null> {
         return this.http.get<AuthUser>(`${this.API_URL}/me`, {
             withCredentials: true
@@ -116,7 +141,7 @@ export class AuthService {
                     switchMap(() => this.http.get<AuthUser>(`${this.API_URL}/me`, { withCredentials: true })),
                     tap(user => this.setCurrentUser(user)),
                     catchError(() => {
-                        this.setCurrentUser(null);
+                        this.clearUser();
                         return of(null);
                     })
                 );
@@ -132,9 +157,12 @@ export class AuthService {
         this.currentUserSubject.next(user);
         if (user) {
             this.saveToStorage(user);
-        } else {
-            this.removeFromStorage();
         }
+    }
+
+    private clearUser(): void {
+        this.currentUserSubject.next(null);
+        this.removeFromStorage();
     }
 
     private saveToStorage(user: AuthUser): void {

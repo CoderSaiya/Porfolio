@@ -1,28 +1,28 @@
 <div class="comment-section">
     <h3 class="comment-section__title">
-        Comments <span *ngIf="comments.length">({{ comments.length }})</span>
+        Bình luận <span *ngIf="comments.length">({{ comments.length }})</span>
     </h3>
 
     <!-- Main Input -->
     <div *ngIf="currentUser; else loginPrompt">
-        <app-comment-input placeholder="Write a comment..." buttonLabel="Post Comment"
+        <app-comment-input placeholder="Viết bình luận..." buttonLabel="Đăng bình luận"
             (submitComment)="onAddComment($event)">
         </app-comment-input>
     </div>
 
     <ng-template #loginPrompt>
         <div class="login-prompt">
-            <p>Please <a routerLink="/login">login</a> to leave a comment.</p>
+            <p>Làm ơn <a routerLink="/login">đăng nhập</a> để để lại bình luận.</p>
         </div>
     </ng-template>
 
     <!-- List -->
     <div class="comment-list">
-        <div *ngIf="loading" class="loading">Loading comments...</div>
+        <div *ngIf="loading" class="loading">Đang tải các bình luận...</div>
 
         <div *ngIf="!loading && comments.length === 0" class="empty-state">
             <lucide-icon name="message-square" class="icon"></lucide-icon>
-            <p>No comments yet. Be the first to share your thoughts!</p>
+            <p>Chưa có bình luận nào. Hãy là người đầu tiên để lại ý kiến!</p>
         </div>
 
         <app-comment-item *ngFor="let comment of comments" [comment]="comment" [currentUser]="currentUser"
