@@ -40,7 +40,23 @@ public class BlogController : ControllerBase
         // Increment view count
         await _postRepo.IncrementViewCountAsync(post.Id.ToString(), ct);
 
-        return Ok(post);
+        var dto = new BlogResponseDto(
+            post.Id.ToString(),
+            post.Title,
+            post.Slug,
+            post.Summary,
+            post.Content,
+            post.FeaturedImage ?? "",
+            post.CategoryId.ToString() ?? "",
+            post.Tags,
+            post.Published,
+            post.PublishedAt,
+            post.ViewCount,
+            post.CreatedAt,
+            post.UpdateDate
+        );
+
+        return Ok(dto);
     }
 
     [HttpGet("categories")]
