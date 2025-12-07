@@ -8,12 +8,19 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const router = inject(Router);
     const authService = inject(AuthService);
 
-    // Requests already include credentials via withCredentials
-    // Just handle errors
-    return next(req).pipe(
+    const authReq = req.clone({
+        withCredentials: true
+    });
+
+    return next(authReq).pipe(
         catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
-                // Unauthorized - clear auth state and redirect to login
+                // Ignore 401 for /me and /refresh to allow AuthService to handle auto-refresh/null user
+                if (req.url.includes('/me') || req.url.includes('/refresh')) {
+                    return throwError(() => error);
+                }
+
+                // For other requests, clear auth and redirect
                 authService.setCurrentUser(null);
                 router.navigate(['/login']);
             }
