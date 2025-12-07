@@ -13,8 +13,9 @@ export class AuthService {
     private router = inject(Router);
 
     private readonly API_URL = `${environment.apiUrl}/api/auth`;
+    private readonly USER_STORAGE_KEY = 'currentUser';
 
-    private currentUserSubject = new BehaviorSubject<AuthUser | null>(null);
+    private currentUserSubject = new BehaviorSubject<AuthUser | null>(this.loadFromStorage());
     public currentUser$ = this.currentUserSubject.asObservable();
     public isAuthenticated$ = this.currentUser$.pipe(map(user => !!user));
 
@@ -29,11 +30,14 @@ export class AuthService {
         }).pipe(
             tap(res => {
                 if (!res.requiresTwoFactor) {
-                    this.currentUserSubject.next({
+                    const user: AuthUser = {
                         id: res.id,
                         username: res.username,
-                        role: res.role
-                    });
+                        role: res.role,
+                        fullName: res.fullName,
+                        avatarUrl: res.avatarUrl
+                    };
+                    this.setCurrentUser(user);
                 }
             })
         );
@@ -58,12 +62,12 @@ export class AuthService {
             withCredentials: true
         }).pipe(
             tap(() => {
-                this.currentUserSubject.next(null);
+                this.setCurrentUser(null);
                 this.router.navigate(['/login']);
             }),
             catchError(() => {
                 // Clear user even if request fails
-                this.currentUserSubject.next(null);
+                this.setCurrentUser(null);
                 this.router.navigate(['/login']);
                 return of(null);
             })
@@ -104,15 +108,15 @@ export class AuthService {
             withCredentials: true
         }).pipe(
             tap(user => {
-                this.currentUserSubject.next(user);
+                this.setCurrentUser(user);
             }),
             catchError(() => {
                 // If /me fails (e.g. 401), try to refresh token
                 return this.refreshToken().pipe(
                     switchMap(() => this.http.get<AuthUser>(`${this.API_URL}/me`, { withCredentials: true })),
-                    tap(user => this.currentUserSubject.next(user)),
+                    tap(user => this.setCurrentUser(user)),
                     catchError(() => {
-                        this.currentUserSubject.next(null);
+                        this.setCurrentUser(null);
                         return of(null);
                     })
                 );
@@ -126,5 +130,36 @@ export class AuthService {
 
     setCurrentUser(user: AuthUser | null): void {
         this.currentUserSubject.next(user);
+        if (user) {
+            this.saveToStorage(user);
+        } else {
+            this.removeFromStorage();
+        }
+    }
+
+    private saveToStorage(user: AuthUser): void {
+        try {
+            localStorage.setItem(this.USER_STORAGE_KEY, JSON.stringify(user));
+        } catch (error) {
+            console.error('Error saving user to localStorage:', error);
+        }
+    }
+
+    private loadFromStorage(): AuthUser | null {
+        try {
+            const userJson = localStorage.getItem(this.USER_STORAGE_KEY);
+            return userJson ? JSON.parse(userJson) : null;
+        } catch (error) {
+            console.error('Error loading user from localStorage:', error);
+            return null;
+        }
+    }
+
+    private removeFromStorage(): void {
+        try {
+            localStorage.removeItem(this.USER_STORAGE_KEY);
+        } catch (error) {
+            console.error('Error removing user from localStorage:', error);
+        }
     }
 }
