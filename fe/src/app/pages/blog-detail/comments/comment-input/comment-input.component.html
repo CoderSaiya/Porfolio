@@ -1,0 +1,30 @@
+<div class="comment-input" [class.comment-input--reply]="isReply">
+    <textarea [(ngModel)]="content" [placeholder]="placeholder" class="comment-input__textarea" rows="2"></textarea>
+
+    <div class="comment-input__actions">
+        <div class="comment-input__tools">
+            <button type="button" class="btn-icon" (click)="toggleEmojiPicker()">
+                <lucide-icon name="smile" [size]="20"></lucide-icon>
+            </button>
+
+            <div *ngIf="showEmojiPicker" class="emoji-picker-container">
+                <!-- 
+          Binding logic for dark mode can be done via inputs if needed.
+          For now default.
+        -->
+                <emoji-mart (emojiClick)="addEmoji($event)" [darkMode]="true" title="Pick your emoji…" emoji="point_up">
+                </emoji-mart>
+
+                <!-- Overlay to close picker when clicking outside -->
+                <div class="emoji-picker-overlay" (click)="showEmojiPicker = false"></div>
+            </div>
+        </div>
+
+        <div class="comment-input__buttons">
+            <button *ngIf="isReply" type="button" class="btn btn--ghost" (click)="onCancel()">Cancel</button>
+            <button type="button" class="btn btn--primary" [disabled]="!content.trim()" (click)="onSubmit()">
+                {{ buttonLabel }}
+            </button>
+        </div>
+    </div>
+</div>

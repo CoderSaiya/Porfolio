@@ -10,4 +10,5 @@ public abstract class CollectionNames
     public const string Images = "images";
     public const string BlogPosts = "blog_posts";
     public const string BlogCategories = "blog_categories";
+    public const string Comments = "comments";
 }

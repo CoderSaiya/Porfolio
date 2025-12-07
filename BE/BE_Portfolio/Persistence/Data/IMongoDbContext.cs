@@ -15,6 +15,7 @@ public interface IMongoDbContext
     IMongoCollection<User> Users { get; }
     IMongoCollection<BlogPost> BlogPosts { get; }
     IMongoCollection<BlogCategory> BlogCategories { get; }
+    IMongoCollection<Comment> Comments { get; }
 
     Task EnsureIndexesAsync(CancellationToken ct = default);
     Task EnsureSeedAsync(CancellationToken ct = default);

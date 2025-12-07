@@ -70,6 +70,7 @@ public class AuthService(
         {
             var tempToken = GenerateTempToken(user);
             return new LoginResponseDTO(
+                Id: user.Id.ToString(),
                 RequiresTwoFactor: true,
                 TempToken: tempToken,
                 Username: user.Username,
@@ -88,6 +89,7 @@ public class AuthService(
         SetAuthCookies(response, accessToken, refreshToken);
         
         return new LoginResponseDTO(
+            Id: user.Id.ToString(),
             RequiresTwoFactor: false,
             TempToken: null,
             Username: user.Username,
@@ -309,6 +311,7 @@ public class AuthService(
          
          return new AuthUserDto
          {
+             Id = user.Id.ToString(),
              Username = user.Username,
              Role = user.Role,
              FullName = user.FullName,

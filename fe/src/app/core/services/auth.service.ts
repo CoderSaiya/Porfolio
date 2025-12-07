@@ -30,6 +30,7 @@ export class AuthService {
             tap(res => {
                 if (!res.requiresTwoFactor) {
                     this.currentUserSubject.next({
+                        id: res.id,
                         username: res.username,
                         role: res.role
                     });
@@ -106,13 +107,20 @@ export class AuthService {
                 this.currentUserSubject.next(user);
             }),
             catchError(() => {
-                this.currentUserSubject.next(null);
-                return of(null);
+                // If /me fails (e.g. 401), try to refresh token
+                return this.refreshToken().pipe(
+                    switchMap(() => this.http.get<AuthUser>(`${this.API_URL}/me`, { withCredentials: true })),
+                    tap(user => this.currentUserSubject.next(user)),
+                    catchError(() => {
+                        this.currentUserSubject.next(null);
+                        return of(null);
+                    })
+                );
             })
         );
     }
 
-    getCurrentUser(): AuthUser | null {
+    getCurrentUser(): AuthUser | null | undefined {
         return this.currentUserSubject.value;
     }
 

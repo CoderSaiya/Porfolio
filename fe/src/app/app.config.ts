@@ -12,7 +12,7 @@ import {
   Server, Database, Cloud, Wrench, GitBranch, CheckCircle2, Loader2, MailPlus, Home,
   Shield, AlertCircle, ArrowRight,
   Plus, Edit, Trash2, AlertTriangle, FolderOpen, FolderGit2, LayoutDashboard, LogOut,
-  GripVertical, FileText
+  GripVertical, FileText, Circle, Sun
 } from 'lucide-angular';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 
@@ -32,7 +32,7 @@ export const appConfig: ApplicationConfig = {
         Loader2, CheckCircle2, MailPlus, Home,
         Shield, AlertCircle, ArrowRight,
         Plus, Edit, Trash2, AlertTriangle, FolderOpen, FolderGit2, LayoutDashboard, LogOut,
-        GripVertical, FileText
+        GripVertical, FileText, Circle, Sun
       })
     ),
   ],

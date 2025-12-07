@@ -4,6 +4,7 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
+    id: string;
     requiresTwoFactor: boolean;
     tempToken: string | null;
     username: string;
@@ -23,6 +24,7 @@ export interface Setup2FAResponse {
 }
 
 export interface AuthUser {
+    id: string;
     username: string;
     role: string;
     fullName?: string;

@@ -1,7 +1,6 @@
 using System.Net;
 using System.Security.Claims;
 using System.Text.Json;
-using BE_Portfolio.DTOs.Admin;
 using BE_Portfolio.DTOs.Auth;
 using BE_Portfolio.Persistence.Repositories;
 using BE_Portfolio.Services.Auth;
@@ -35,6 +34,7 @@ public class AuthController(
 
         var authUser = new AuthUserDto
         {
+            Id = user.Id.ToString(),
             Username = user.Username,
             Role = user.Role,
             FullName = user.FullName,

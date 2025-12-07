@@ -35,6 +35,9 @@
 
         <!-- Content -->
         <article class="blog-content" [innerHTML]="blog.content"></article>
+
+        <!-- Comments -->
+        <app-comment-section [blogId]="blog.id" *ngIf="blog.id"></app-comment-section>
     </div>
 </section>
 

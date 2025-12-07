@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BlogService, BlogPost } from '../../core/services/blog.service';
 
+import { CommentSectionComponent } from './comments/comment-section/comment-section.component';
+
 @Component({
     selector: 'app-blog-detail',
     standalone: true,
-    imports: [CommonModule, RouterModule],
+    imports: [CommonModule, RouterModule, CommentSectionComponent],
     templateUrl: './blog-detail.component.html',
     styleUrls: ['./blog-detail.component.scss']
 })

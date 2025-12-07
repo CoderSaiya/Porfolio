@@ -1,0 +1,37 @@
+<div class="comment-item">
+    <div class="comment-item__avatar">
+        <img [src]="comment.userAvatar || 'assets/default-avatar.png'" alt="Avatar">
+    </div>
+
+    <div class="comment-item__content">
+        <div class="comment-item__bubble">
+            <div class="comment-item__header">
+                <span class="username">{{ comment.userName }}</span>
+                <span class="time">{{ comment.createdAt | date:'short' }}</span>
+            </div>
+            <p class="text">{{ comment.content }}</p>
+        </div>
+
+        <div class="comment-item__actions">
+            <button class="action-btn" (click)="onReplyClick()">Reply</button>
+
+            <ng-container *ngIf="currentUser && (currentUser.id === comment.userId || currentUser.role === 'Admin')">
+                <button class="action-btn action-btn--danger" (click)="onDeleteClick()">Delete</button>
+            </ng-container>
+        </div>
+
+        <!-- Reply Input -->
+        <div *ngIf="isReplying" class="comment-item__reply-input">
+            <app-comment-input [isReply]="true" buttonLabel="Reply" (submitComment)="onSubmitReply($event)"
+                (cancel)="isReplying = false">
+            </app-comment-input>
+        </div>
+
+        <!-- Nested Replies -->
+        <div *ngIf="comment.replies?.length" class="comment-item__replies">
+            <app-comment-item *ngFor="let reply of comment.replies" [comment]="reply" [currentUser]="currentUser"
+                (reply)="onNestedReply($event)" (delete)="onNestedDelete($event)">
+            </app-comment-item>
+        </div>
+    </div>
+</div>

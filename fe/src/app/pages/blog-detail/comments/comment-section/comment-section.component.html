@@ -1,0 +1,32 @@
+<div class="comment-section">
+    <h3 class="comment-section__title">
+        Comments <span *ngIf="comments.length">({{ comments.length }})</span>
+    </h3>
+
+    <!-- Main Input -->
+    <div *ngIf="currentUser; else loginPrompt">
+        <app-comment-input placeholder="Write a comment..." buttonLabel="Post Comment"
+            (submitComment)="onAddComment($event)">
+        </app-comment-input>
+    </div>
+
+    <ng-template #loginPrompt>
+        <div class="login-prompt">
+            <p>Please <a routerLink="/login">login</a> to leave a comment.</p>
+        </div>
+    </ng-template>
+
+    <!-- List -->
+    <div class="comment-list">
+        <div *ngIf="loading" class="loading">Loading comments...</div>
+
+        <div *ngIf="!loading && comments.length === 0" class="empty-state">
+            <lucide-icon name="message-square" class="icon"></lucide-icon>
+            <p>No comments yet. Be the first to share your thoughts!</p>
+        </div>
+
+        <app-comment-item *ngFor="let comment of comments" [comment]="comment" [currentUser]="currentUser"
+            (reply)="onReply($event)" (delete)="onDelete($event)">
+        </app-comment-item>
+    </div>
+</div>
