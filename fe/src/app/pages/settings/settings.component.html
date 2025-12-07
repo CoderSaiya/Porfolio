@@ -1,0 +1,90 @@
+<div class="settings-page">
+    <div class="settings-container">
+        <h1 class="settings-title">Settings</h1>
+
+        <!-- Profile Section -->
+        <div class="settings-card">
+            <h2 class="settings-card-header">
+                <lucide-icon name="user" class="settings-icon"></lucide-icon>
+                Profile
+            </h2>
+
+            <div class="profile-info">
+                <img [src]="user?.avatarUrl || 'assets/default-avatar.png'" alt="Avatar" class="profile-avatar">
+                <div class="profile-details">
+                    <p>{{ user?.fullName || user?.username }}</p>
+                    <p>{{ user?.role }}</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" [value]="user?.username" disabled>
+            </div>
+        </div>
+
+        <!-- Security Section -->
+        <div class="settings-card">
+            <h2 class="settings-card-header">
+                <lucide-icon name="shield" class="settings-icon"></lucide-icon>
+                Security
+            </h2>
+
+            <div class="security-item">
+                <div>
+                    <h3>Two-Factor Authentication</h3>
+                    <p>Secure your account with 2FA</p>
+                </div>
+                <button (click)="toggle2FA()" class="btn" [ngClass]="is2FAEnabled ? 'btn--danger' : 'btn--primary'">
+                    {{ is2FAEnabled ? 'Disable' : 'Enable' }}
+                </button>
+            </div>
+
+            <!-- Setup 2FA Step -->
+            <div *ngIf="showSetup" class="setup-section">
+                <h3>Setup 2FA</h3>
+
+                <div class="qr-container">
+                    <div class="qr-bg">
+                        <img [src]="setupData?.qrCodeDataUrl" alt="QR Code" width="192" height="192">
+                    </div>
+                    <p class="secret-code">{{ setupData?.secret }}</p>
+                </div>
+
+                <form [formGroup]="verifyForm" (ngSubmit)="enable2FA()" class="form-group"
+                    style="gap: 1rem; display: flex; flex-direction: column;">
+                    <div>
+                        <label>Verification Code</label>
+                        <input formControlName="code" type="text" maxlength="6" placeholder="000000">
+                    </div>
+                    <div class="actions">
+                        <button type="button" (click)="showSetup = false" class="btn btn-cancel">Cancel</button>
+                        <button type="submit" [disabled]="verifyForm.invalid || loading" class="btn btn-submit">
+                            Verify & Enable
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Recovery Codes -->
+            <div *ngIf="recoveryCodes.length > 0" class="recovery-codes">
+                <div class="header">
+                    <lucide-icon name="shield" class="icon"></lucide-icon>
+                    <div>
+                        <h3>2FA Enabled Successfully!</h3>
+                        <p>Please save these recovery codes in a safe place. You won't see them again.</p>
+                    </div>
+                </div>
+                <div class="codes-grid">
+                    <div *ngFor="let code of recoveryCodes">{{ code }}</div>
+                </div>
+                <button (click)="recoveryCodes = []" class="btn-done">Done</button>
+            </div>
+        </div>
+
+        <button (click)="logout()" class="btn-logout">
+            <lucide-icon name="log-out" class="settings-icon"></lucide-icon>
+            Sign Out
+        </button>
+    </div>
+</div>

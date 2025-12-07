@@ -1,14 +1,15 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { LucideAngularModule } from 'lucide-angular';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+    imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, RouterModule],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })
@@ -18,14 +19,21 @@ export class LoginComponent implements OnInit {
     private router = inject(Router);
     private route = inject(ActivatedRoute);
 
+    apiUrl = environment.apiUrl;
+
     loginForm!: FormGroup;
     twoFAForm!: FormGroup;
     loading = false;
     errorMessage: string | null = null;
     requiresTwoFactor = false;
     tempToken: string | null = null;
+    registered = false;
 
     ngOnInit() {
+        if (this.route.snapshot.queryParams['registered']) {
+            this.registered = true;
+        }
+
         this.loginForm = this.fb.group({
             username: ['', Validators.required],
             password: ['', Validators.required]
@@ -48,7 +56,7 @@ export class LoginComponent implements OnInit {
                     this.requiresTwoFactor = true;
                     this.tempToken = response.tempToken;
                 } else {
-                    this.navigateToReturnUrl();
+                    this.navigateToReturnUrl(response.role);
                 }
                 this.loading = false;
             },
@@ -67,7 +75,11 @@ export class LoginComponent implements OnInit {
 
         this.authService.verify2FA(this.twoFAForm.value.code, this.tempToken).subscribe({
             next: () => {
-                this.navigateToReturnUrl();
+                this.authService.currentUser$.subscribe(user => {
+                    if (user) {
+                        this.navigateToReturnUrl(user.role);
+                    }
+                });
             },
             error: (err) => {
                 this.errorMessage = 'Mã xác thực không đúng';
@@ -83,8 +95,17 @@ export class LoginComponent implements OnInit {
         this.errorMessage = null;
     }
 
-    private navigateToReturnUrl() {
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin';
+    loginWith(provider: string) {
+        window.location.href = `${this.apiUrl}/api/auth/external/${provider}/start`;
+    }
+
+    private navigateToReturnUrl(role: string) {
+        let defaultUrl = '/';
+        if (role === 'Admin') {
+            defaultUrl = '/admin';
+        }
+
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || defaultUrl;
         this.router.navigate([returnUrl]);
     }
 }

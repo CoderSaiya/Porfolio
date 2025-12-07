@@ -1,57 +1,92 @@
+using System.Net;
 using System.Security.Claims;
+using System.Text.Json;
 using BE_Portfolio.DTOs.Admin;
 using BE_Portfolio.DTOs.Auth;
 using BE_Portfolio.Persistence.Repositories;
 using BE_Portfolio.Services.Auth;
 using BE_Portfolio.Services.TwoFactor;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
+using AuthUserDto = BE_Portfolio.DTOs.Auth.AuthUserDto;
 
 namespace BE_Portfolio.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController : ControllerBase
+public class AuthController(
+    IAuthService authService,
+    IUserRepository userRepo,
+    ITwoFactorService twoFactorService,
+    IHostEnvironment env)
+    : ControllerBase
 {
-    private readonly IAuthService _authService;
-    private readonly IUserRepository _userRepo;
-    private readonly ITwoFactorService _twoFactorService;
-
-    public AuthController(
-        IAuthService authService,
-        IUserRepository userRepo,
-        ITwoFactorService twoFactorService)
-    {
-        _authService = authService;
-        _userRepo = userRepo;
-        _twoFactorService = twoFactorService;
-    }
-
     [HttpGet("me")]
     [Authorize]
-    public IActionResult Me()
+    public async Task<IActionResult> Me(CancellationToken ct)
     {
-        var username = User.FindFirst(ClaimTypes.Name)?.Value;
-        var role = User.FindFirst(ClaimTypes.Role)?.Value;
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null) return Unauthorized();
 
-        if (username == null)
-            return Unauthorized();
+        var user = await userRepo.GetByIdAsync(userId, ct);
+        if (user == null) return Unauthorized();
 
-        var user = new AuthUserDto
+        var authUser = new AuthUserDto
         {
-            Username = username,
-            Role = role ?? "User"
+            Username = user.Username,
+            Role = user.Role,
+            FullName = user.FullName,
+            AvatarUrl = user.AvatarUrl,
+            TwoFactorEnabled = user.TwoFactorEnabled
         };
 
-        return Ok(user);
+        return Ok(authUser);
     }
     
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterRequestDTO request, CancellationToken ct)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        try
+        {
+            var result = await authService.RegisterAsync(request, ct);
+            if (!result)
+                return BadRequest(new { message = "Username or Email already exists" });
+
+            return Ok(new { message = "Registration successful" });
+        }
+        catch (Exception ex)
+        {
+             return StatusCode(500, new { message = "An error occurred during registration", error = ex.Message });
+        }
+    }
+
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDTO request, CancellationToken ct)
     {
         try
         {
-            var result = await _authService.LoginAsync(request.Username, request.Password, Response, ct);
+            var result = await authService.LoginAsync(request.Username, request.Password, Response, ct);
+            
+            // Get user details to return FullName/Avatar
+            if (!result.RequiresTwoFactor) {
+                 var user = await userRepo.GetByUsernameAsync(result.Username, ct);
+                 if (user != null) {
+                     return Ok(new {
+                         result.RequiresTwoFactor,
+                         result.TempToken,
+                         result.Username,
+                         result.Role,
+                         FullName = user.FullName,
+                         AvatarUrl = user.AvatarUrl
+                     });
+                 }
+            }
+            
             return Ok(result);
         }
         catch (UnauthorizedAccessException)
@@ -64,12 +99,51 @@ public class AuthController : ControllerBase
         }
     }
 
+    [HttpGet("external/callback")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ExternalCallback(
+        [FromQuery] string? returnUrl,
+        [FromServices] IConfiguration cfg)
+    {
+        var result = await HttpContext.AuthenticateAsync("External");
+        if (!result.Succeeded)
+            return Redirect($"{cfg["FrontendBaseUrl"]}/auth/login?error=external_failed");
+
+        var principal = result.Principal!;
+        var email = principal.FindFirst(ClaimTypes.Email)?.Value;
+        var providerKey = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var provider = result.Ticket!.AuthenticationScheme; // "Google" | "GitHub"
+
+        if (string.IsNullOrEmpty(providerKey))
+            return Redirect($"{cfg["FrontendBaseUrl"]}/auth/login?error=missing_provider_key");
+
+        var user = await authService.FindOrCreateExternal(provider, providerKey, email, principal);
+        var issued = await authService.IssueTokensForUserAsync(user);
+
+        // Use SetAuthCookies for consistency
+        authService.SetAuthCookies(Response, issued.AccessToken, issued.RefreshToken);
+        
+        var userDto = await authService.GetCurrentUserAsync(user.Id.ToString());
+        var payload = new { user = userDto };
+        var json = JsonSerializer.Serialize(payload, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        var b64 = WebEncoders.Base64UrlEncode(System.Text.Encoding.UTF8.GetBytes(json));
+
+        // Redirect to success page
+        var successUrl = string.IsNullOrEmpty(returnUrl)
+            ? $"{cfg["FrontendBaseUrl"]}/auth/sso/success"
+            : returnUrl!;
+        var redirectWithPayload = $"{successUrl}#auth={b64}";
+
+        await HttpContext.SignOutAsync("External");
+        return Redirect(redirectWithPayload);
+    }
+
     [HttpPost("verify-2fa")]
     public async Task<IActionResult> Verify2FA([FromBody] Verify2FARequestDTO request, [FromQuery] string tempToken, CancellationToken ct)
     {
         try
         {
-            var success = await _authService.Verify2FAAndSetCookiesAsync(tempToken, request.Code, Response, ct);
+            var success = await authService.Verify2FAAndSetCookiesAsync(tempToken, request.Code, Response, ct);
             
             if (!success)
                 return Unauthorized(new { message = "Invalid 2FA code" });
@@ -92,7 +166,7 @@ public class AuthController : ControllerBase
             if (string.IsNullOrEmpty(refreshToken))
                 return Unauthorized(new { message = "No refresh token provided" });
 
-            var success = await _authService.RefreshTokenAsync(refreshToken, Response, ct);
+            var success = await authService.RefreshTokenAsync(refreshToken, Response, ct);
             
             if (!success)
                 return Unauthorized(new { message = "Invalid refresh token" });
@@ -109,7 +183,7 @@ public class AuthController : ControllerBase
     [Authorize]
     public IActionResult Logout()
     {
-        _authService.ClearAuthCookies(Response);
+        authService.ClearAuthCookies(Response);
         return Ok(new { message = "Logged out successfully" });
     }
 
@@ -123,15 +197,15 @@ public class AuthController : ControllerBase
             if (userId == null)
                 return Unauthorized();
 
-            var user = await _userRepo.GetByIdAsync(userId, ct);
+            var user = await userRepo.GetByIdAsync(userId, ct);
             if (user == null)
                 return NotFound();
 
             // Generate secret and QR code
-            var secret = _twoFactorService.GenerateSecret();
-            var qrCodeUri = _twoFactorService.GenerateQrCodeUri(user.Username, secret);
-            var qrCodeDataUrl = _twoFactorService.GenerateQrCodeDataUrl(qrCodeUri);
-            var recoveryCodes = _twoFactorService.GenerateRecoveryCodes();
+            var secret = twoFactorService.GenerateSecret();
+            var qrCodeUri = twoFactorService.GenerateQrCodeUri(user.Username, secret);
+            var qrCodeDataUrl = twoFactorService.GenerateQrCodeDataUrl(qrCodeUri);
+            var recoveryCodes = twoFactorService.GenerateRecoveryCodes();
 
             // Don't save yet - user needs to verify first
             var response = new Setup2FAResponseDTO(secret, qrCodeDataUrl, recoveryCodes);
@@ -154,14 +228,14 @@ public class AuthController : ControllerBase
                 return Unauthorized();
 
             // Validate the code with the provided secret
-            if (!_twoFactorService.ValidateCode(secret, request.Code))
+            if (!twoFactorService.ValidateCode(secret, request.Code))
                 return BadRequest(new { message = "Invalid 2FA code" });
 
             // Parse recovery codes
             var codes = recoveryCodes.Split(',').ToList();
 
             // Save 2FA settings
-            await _userRepo.Update2FASettingsAsync(userId, true, secret, codes, ct);
+            await userRepo.Update2FASettingsAsync(userId, true, secret, codes, ct);
 
             return Ok(new { message = "2FA enabled successfully" });
         }
@@ -181,16 +255,16 @@ public class AuthController : ControllerBase
             if (userId == null)
                 return Unauthorized();
 
-            var user = await _userRepo.GetByIdAsync(userId, ct);
+            var user = await userRepo.GetByIdAsync(userId, ct);
             if (user == null || !user.TwoFactorEnabled || string.IsNullOrEmpty(user.TwoFactorSecret))
                 return BadRequest(new { message = "2FA is not enabled" });
 
             // Verify current 2FA code before disabling
-            if (!_twoFactorService.ValidateCode(user.TwoFactorSecret, request.Code))
+            if (!twoFactorService.ValidateCode(user.TwoFactorSecret, request.Code))
                 return BadRequest(new { message = "Invalid 2FA code" });
 
             // Disable 2FA
-            await _userRepo.Update2FASettingsAsync(userId, false, null, new List<string>(), ct);
+            await userRepo.Update2FASettingsAsync(userId, false, null, new List<string>(), ct);
 
             return Ok(new { message = "2FA disabled successfully" });
         }
@@ -198,5 +272,27 @@ public class AuthController : ControllerBase
         {
             return StatusCode(500, new { message = "An error occurred while disabling 2FA", error = ex.Message });
         }
+    }
+
+    [HttpGet("external/{provider}/start")]
+    [AllowAnonymous]
+    public IActionResult External(
+        string provider,
+        [FromQuery] string? returnUrl,
+        [FromServices] IConfiguration cfg)
+    {
+        var providers = new[] { "google", "github" };
+        if (!providers.Contains(provider.ToLower()))
+            return BadRequest("Unsupported provider");
+
+        var fallbackReturn = $"{cfg["FrontendBaseUrl"]}/auth/sso/success";
+        var encoded = WebUtility.UrlEncode(returnUrl ?? fallbackReturn);
+
+        var redirectUri = $"/api/auth/external/callback?returnUrl={encoded}";
+        var props = new AuthenticationProperties { RedirectUri = redirectUri };
+
+        var scheme = provider.Equals("google", StringComparison.OrdinalIgnoreCase) ? "Google" : "GitHub";
+        // Không cần mảng; 1 scheme là đủ
+        return Challenge(props, scheme);
     }
 }

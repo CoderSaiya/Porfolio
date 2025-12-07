@@ -58,7 +58,29 @@ builder.Services.AddSwaggerGen(c =>
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
 var cookieSettings = builder.Configuration.GetSection("CookieSettings").Get<CookieSettings>();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddCookie("External", options =>
+    {
+        options.Cookie.Name = "external_auth";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+    })
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"] ?? "missing-client-id";
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"] ?? "missing-client-secret";
+        options.SignInScheme = "External";
+    })
+    .AddGitHub(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"] ?? "missing-client-id";
+        options.ClientSecret = builder.Configuration["Authentication:GitHub:ClientSecret"] ?? "missing-client-secret";
+        options.SignInScheme = "External";
+        options.Scope.Add("user:email");
+    })
     .AddJwtBearer(options =>
     {
         options.Events = new JwtBearerEvents

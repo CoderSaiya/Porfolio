@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { LucideAngularModule, Menu, X, Code, User, Briefcase, Mail, Sun, Moon, Coffee, BookOpen, LogIn } from 'lucide-angular';
 import { ThemeService } from '../../../core/services/theme.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { AuthUser } from '../../../core/models/auth.model';
 
 interface NavItem {
   id: string;
@@ -38,8 +40,32 @@ export class NavigationComponent {
 
   constructor(
     public themeService: ThemeService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private authService: AuthService
+  ) {
+    this.authService.currentUser$.subscribe(user => {
+      this.user = user;
+      this.updateRouteItems();
+    });
+  }
+
+  user: AuthUser | null = null;
+  showProfileMenu = false;
+
+  updateRouteItems() {
+    if (this.user) {
+      this.routeItems = []; // Remove Login button
+    } else {
+      this.routeItems = [
+        { id: 'login', label: 'Đăng nhập', icon: 'LogIn', type: 'route', route: '/login' },
+      ];
+    }
+  }
+
+  logout() {
+    this.authService.logout().subscribe();
+    this.showProfileMenu = false;
+  }
 
   @HostListener('window:scroll')
   onScroll() {

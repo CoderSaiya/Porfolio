@@ -12,6 +12,11 @@
             {{ errorMessage }}
         </div>
 
+        <div class="alert-success" *ngIf="registered">
+            <lucide-icon name="CheckCircle"></lucide-icon>
+            Đăng ký thành công! Vui lòng đăng nhập.
+        </div>
+
         <!-- Username/Password Form -->
         <form *ngIf="!requiresTwoFactor" [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
             <div class="form-group">
@@ -32,6 +37,25 @@
                 <span *ngIf="!loading">Đăng nhập</span>
                 <span *ngIf="loading" class="spinner"></span>
             </button>
+
+            <div class="divider">
+                <span>Hoặc tiếp tục với</span>
+            </div>
+
+            <div class="social-login">
+                <button type="button" (click)="loginWith('google')" class="btn btn--outline btn--google">
+                    <lucide-icon name="Chrome"></lucide-icon>
+                    Google
+                </button>
+                <button type="button" (click)="loginWith('github')" class="btn btn--outline btn--github">
+                    <lucide-icon name="Github"></lucide-icon>
+                    GitHub
+                </button>
+            </div>
+
+            <div class="auth-links">
+                <p>Chưa có tài khoản? <a routerLink="/register">Đăng ký ngay</a></p>
+            </div>
         </form>
 
         <!-- 2FA Form -->

@@ -5,6 +5,7 @@ namespace BE_Portfolio.Persistence.Repositories;
 public interface IUserRepository
 {
     Task<User?> GetByUsernameAsync(string username, CancellationToken ct = default);
+    Task<User?> GetByEmailAsync(string email, CancellationToken ct = default);
     Task<User?> GetByIdAsync(string id, CancellationToken ct = default);
     Task CreateAsync(User user, CancellationToken ct = default);
     Task UpdateRefreshTokenAsync(string userId, string? refreshToken, DateTime? expiryTime, CancellationToken ct = default);

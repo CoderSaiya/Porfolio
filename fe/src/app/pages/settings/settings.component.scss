@@ -1,0 +1,303 @@
+.settings-page {
+    min-height: 100vh;
+    background: black;
+    color: white;
+    padding: 6rem 1.5rem 1.5rem;
+}
+
+.settings-container {
+    max-width: 42rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.settings-title {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 700;
+}
+
+.settings-card {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.settings-card-header {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.settings-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-avatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.profile-details {
+    p:first-child {
+        font-weight: 500;
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+    }
+
+    p:last-child {
+        color: rgba(255, 255, 255, 0.6);
+    }
+}
+
+.form-group {
+    label {
+        display: block;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 0.25rem;
+    }
+
+    input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.5rem;
+        padding: 0.5rem 1rem;
+        color: white;
+
+        &[disabled] {
+            cursor: not-allowed;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        &:focus {
+            outline: none;
+            border-color: var(--primary, #6366f1);
+        }
+    }
+}
+
+.security-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    h3 {
+        font-weight: 500;
+    }
+
+    p {
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    cursor: pointer;
+    border: 1px solid;
+
+    &--primary {
+        background: rgba(99, 102, 241, 0.1);
+        color: #818cf8;
+        border-color: rgba(99, 102, 241, 0.2);
+
+        &:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+    }
+
+    &--danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #f87171;
+        border-color: rgba(239, 68, 68, 0.2);
+
+        &:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+    }
+}
+
+.setup-section {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    h3 {
+        font-weight: 500;
+        font-size: 1.125rem;
+    }
+
+    .qr-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+
+        .qr-bg {
+            background: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .secret-code {
+            text-align: center;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.6);
+            width: 100%;
+            word-break: break-all;
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+        }
+    }
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+
+    button {
+        flex: 1;
+    }
+
+    .btn-cancel {
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        border: none;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    }
+
+    .btn-submit {
+        background: #6366f1;
+        color: white;
+        border: none;
+
+        &:hover {
+            background: #4f46e5;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+}
+
+.recovery-codes {
+    padding: 1.5rem;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .header {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+
+        .icon {
+            color: #22c55e;
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        h3 {
+            font-weight: 500;
+            color: #22c55e;
+        }
+
+        p {
+            font-size: 0.875rem;
+            color: rgba(187, 247, 208, 0.8);
+            margin-top: 0.25rem;
+        }
+    }
+
+    .codes-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+
+        div {
+            font-family: monospace;
+            font-size: 0.875rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            text-align: center;
+            color: rgba(187, 247, 208, 0.9);
+        }
+    }
+
+    .btn-done {
+        width: 100%;
+        padding: 0.5rem;
+        font-size: 0.875rem;
+        background: transparent;
+        border: none;
+        color: #22c55e;
+        cursor: pointer;
+
+        &:hover {
+            color: #4ade80;
+        }
+    }
+}
+
+.btn-logout {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background: rgba(239, 68, 68, 0.2);
+    }
+}

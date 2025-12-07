@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -13,33 +14,53 @@ using MongoDB.Bson;
 
 namespace BE_Portfolio.Services.Auth;
 
-public class AuthService : IAuthService
+public class AuthService(
+    IUserRepository userRepo,
+    IPasswordHasher passwordHasher,
+    ITwoFactorService twoFactorService,
+    JwtSettings jwtSettings,
+    CookieSettings cookieSettings)
+    : IAuthService
 {
-    private readonly IUserRepository _userRepo;
-    private readonly IPasswordHasher _passwordHasher;
-    private readonly ITwoFactorService _twoFactorService;
-    private readonly JwtSettings _jwtSettings;
-    private readonly CookieSettings _cookieSettings;
-
-    public AuthService(
-        IUserRepository userRepo,
-        IPasswordHasher passwordHasher,
-        ITwoFactorService twoFactorService,
-        JwtSettings jwtSettings,
-        CookieSettings cookieSettings)
+    public async Task<bool> RegisterAsync(RegisterRequestDTO request, CancellationToken ct = default)
     {
-        _userRepo = userRepo;
-        _passwordHasher = passwordHasher;
-        _twoFactorService = twoFactorService;
-        _jwtSettings = jwtSettings;
-        _cookieSettings = cookieSettings;
+        var existingUser = await userRepo.GetByUsernameAsync(request.Username, ct);
+        if (existingUser != null)
+        {
+            return false; // User already exists
+        }
+
+        var existingEmail = await userRepo.GetByEmailAsync(request.Email, ct);
+        if (existingEmail != null)
+        {
+            return false;
+        }
+
+        var newUser = new User
+        {
+            Username = request.Username,
+            Email = request.Email,
+            PasswordHash = passwordHasher.HashPassword(request.Password),
+            FullName = request.FullName,
+            Role = "User"
+        };
+
+        try
+        {
+            await userRepo.CreateAsync(newUser, ct);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     public async Task<LoginResponseDTO> LoginAsync(string username, string password, HttpResponse response, CancellationToken ct = default)
     {
-        var user = await _userRepo.GetByUsernameAsync(username, ct);
+        var user = await userRepo.GetByUsernameAsync(username, ct);
         
-        if (user == null || !_passwordHasher.VerifyPassword(password, user.PasswordHash))
+        if (user == null || !passwordHasher.VerifyPassword(password, user.PasswordHash))
         {
             throw new UnauthorizedAccessException("Invalid credentials");
         }
@@ -60,9 +81,9 @@ public class AuthService : IAuthService
         var accessToken = GenerateAccessToken(user);
         var refreshToken = GenerateRefreshToken();
 
-        var refreshTokenExpiry = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays);
-        await _userRepo.UpdateRefreshTokenAsync(user.Id.ToString(), refreshToken, refreshTokenExpiry, ct);
-        await _userRepo.UpdateLastLoginAsync(user.Id.ToString(), ct);
+        var refreshTokenExpiry = DateTime.UtcNow.AddDays(jwtSettings.RefreshTokenExpirationDays);
+        await userRepo.UpdateRefreshTokenAsync(user.Id.ToString(), refreshToken, refreshTokenExpiry, ct);
+        await userRepo.UpdateLastLoginAsync(user.Id.ToString(), ct);
 
         SetAuthCookies(response, accessToken, refreshToken);
         
@@ -81,19 +102,19 @@ public class AuthService : IAuthService
             var userId = await GetUserIdFromTokenAsync(tempToken);
             if (userId == null) return false;
 
-            var user = await _userRepo.GetByIdAsync(userId, ct);
+            var user = await userRepo.GetByIdAsync(userId, ct);
             if (user == null || !user.TwoFactorEnabled || string.IsNullOrEmpty(user.TwoFactorSecret))
                 return false;
 
             // Validate TOTP code
-            if (!_twoFactorService.ValidateCode(user.TwoFactorSecret, code))
+            if (!twoFactorService.ValidateCode(user.TwoFactorSecret, code))
             {
                 // Check if it's a recovery code
-                if (!_twoFactorService.ValidateRecoveryCode(user, code))
+                if (!twoFactorService.ValidateRecoveryCode(user, code))
                     return false;
 
                 // Consume recovery code
-                await _userRepo.RemoveRecoveryCodeAsync(userId, code, ct);
+                await userRepo.RemoveRecoveryCodeAsync(userId, code, ct);
             }
 
             // Generate tokens
@@ -101,9 +122,9 @@ public class AuthService : IAuthService
             var refreshToken = GenerateRefreshToken();
 
             // Save refresh token to database
-            var refreshTokenExpiry = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays);
-            await _userRepo.UpdateRefreshTokenAsync(userId, refreshToken, refreshTokenExpiry, ct);
-            await _userRepo.UpdateLastLoginAsync(userId, ct);
+            var refreshTokenExpiry = DateTime.UtcNow.AddDays(jwtSettings.RefreshTokenExpirationDays);
+            await userRepo.UpdateRefreshTokenAsync(userId, refreshToken, refreshTokenExpiry, ct);
+            await userRepo.UpdateLastLoginAsync(userId, ct);
 
             // Set httpOnly cookies
             SetAuthCookies(response, accessToken, refreshToken);
@@ -121,7 +142,7 @@ public class AuthService : IAuthService
         try
         {
             // Find user by refresh token
-            var users = await _userRepo.GetByIdAsync("", ct); // We need to add FindByRefreshToken method
+            var users = await userRepo.GetByIdAsync("", ct); // We need to add FindByRefreshToken method
             // For now, we'll validate the token structure only
             
             if (string.IsNullOrEmpty(refreshToken))
@@ -141,7 +162,7 @@ public class AuthService : IAuthService
     public string GenerateAccessToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(_jwtSettings.Secret);
+        var key = Encoding.UTF8.GetBytes(jwtSettings.Secret);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -152,9 +173,9 @@ public class AuthService : IAuthService
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role)
             }),
-            Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes),
-            Issuer = _jwtSettings.Issuer,
-            Audience = _jwtSettings.Audience,
+            Expires = DateTime.UtcNow.AddMinutes(jwtSettings.AccessTokenExpirationMinutes),
+            Issuer = jwtSettings.Issuer,
+            Audience = jwtSettings.Audience,
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)
@@ -174,7 +195,7 @@ public class AuthService : IAuthService
 
     public void SetAuthCookies(HttpResponse response, string accessToken, string refreshToken)
     {
-        var sameSiteMode = _cookieSettings.SameSite.ToLower() switch
+        var sameSiteMode = cookieSettings.SameSite.ToLower() switch
         {
             "strict" => SameSiteMode.Strict,
             "lax" => SameSiteMode.Lax,
@@ -183,28 +204,28 @@ public class AuthService : IAuthService
         };
 
         // Access token cookie
-        response.Cookies.Append(_cookieSettings.AccessTokenCookieName, accessToken, new CookieOptions
+        response.Cookies.Append(cookieSettings.AccessTokenCookieName, accessToken, new CookieOptions
         {
-            HttpOnly = _cookieSettings.HttpOnly,
-            Secure = _cookieSettings.Secure,
+            HttpOnly = cookieSettings.HttpOnly,
+            Secure = cookieSettings.Secure,
             SameSite = sameSiteMode,
-            Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes)
+            Expires = DateTimeOffset.UtcNow.AddMinutes(jwtSettings.AccessTokenExpirationMinutes)
         });
 
         // Refresh token cookie
-        response.Cookies.Append(_cookieSettings.RefreshTokenCookieName, refreshToken, new CookieOptions
+        response.Cookies.Append(cookieSettings.RefreshTokenCookieName, refreshToken, new CookieOptions
         {
-            HttpOnly = _cookieSettings.HttpOnly,
-            Secure = _cookieSettings.Secure,
+            HttpOnly = cookieSettings.HttpOnly,
+            Secure = cookieSettings.Secure,
             SameSite = sameSiteMode,
-            Expires = DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays)
+            Expires = DateTimeOffset.UtcNow.AddDays(jwtSettings.RefreshTokenExpirationDays)
         });
     }
 
     public void ClearAuthCookies(HttpResponse response)
     {
-        response.Cookies.Delete(_cookieSettings.AccessTokenCookieName);
-        response.Cookies.Delete(_cookieSettings.RefreshTokenCookieName);
+        response.Cookies.Delete(cookieSettings.AccessTokenCookieName);
+        response.Cookies.Delete(cookieSettings.RefreshTokenCookieName);
     }
 
     public async Task<string?> GetUserIdFromTokenAsync(string token)
@@ -212,16 +233,16 @@ public class AuthService : IAuthService
         try
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(_jwtSettings.Secret);
+            var key = Encoding.UTF8.GetBytes(jwtSettings.Secret);
 
             var validationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = true,
-                ValidIssuer = _jwtSettings.Issuer,
+                ValidIssuer = jwtSettings.Issuer,
                 ValidateAudience = true,
-                ValidAudience = _jwtSettings.Audience,
+                ValidAudience = jwtSettings.Audience,
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
@@ -236,12 +257,71 @@ public class AuthService : IAuthService
             return null;
         }
     }
+    
+    public async Task<User> FindOrCreateExternal(string provider, string providerKey, string? email, ClaimsPrincipal principal)
+    {
+        User? user = null;
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            user = await userRepo.GetByEmailAsync(email);
+            if (user is not null) return user;
+        }
+        
+        if (string.IsNullOrWhiteSpace(email))
+            throw new ValidationException("Provider không trả về email. Vui lòng bật email public hoặc đăng nhập cách khác.");
+        
+        // Create user
+        var newUser = new User
+        {
+            Email = email,
+            Username = email!.Split('@')[0], // Generate simple username
+            PasswordHash = passwordHasher.HashPassword(Guid.NewGuid().ToString("N")),
+            AvatarUrl = principal.FindFirst("picture")?.Value ?? principal.FindFirst("avatar_url")?.Value
+        };
+        
+        var givenName = principal.FindFirst(ClaimTypes.GivenName)?.Value ?? "";
+        var surname = principal.FindFirst(ClaimTypes.Surname)?.Value ?? "";
+        var parts = new[] { givenName, surname }.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+        
+        newUser.FullName = string.Join(" ", parts);
+
+        await userRepo.CreateAsync(newUser);
+
+        return newUser;
+    }
+
+    public async Task<IssueTokenResponseDTO> IssueTokensForUserAsync(User user)
+    {
+        var accessToken = GenerateAccessToken(user);
+        var refreshToken = GenerateRefreshToken();
+        
+        var refreshTokenExpiry = DateTime.UtcNow.AddDays(jwtSettings.RefreshTokenExpirationDays);
+        await userRepo.UpdateRefreshTokenAsync(user.Id.ToString(), refreshToken, refreshTokenExpiry);
+        await userRepo.UpdateLastLoginAsync(user.Id.ToString());
+        
+        return new IssueTokenResponseDTO(accessToken, refreshToken, DateTimeOffset.UtcNow.AddMinutes(jwtSettings.AccessTokenExpirationMinutes));
+    }
+
+    public async Task<AuthUserDto> GetCurrentUserAsync(string userId, CancellationToken ct = default)
+    {
+         var user = await userRepo.GetByIdAsync(userId, ct);
+         if (user == null) throw new UnauthorizedAccessException();
+         
+         return new AuthUserDto
+         {
+             Username = user.Username,
+             Role = user.Role,
+             FullName = user.FullName,
+             AvatarUrl = user.AvatarUrl,
+             TwoFactorEnabled = user.TwoFactorEnabled
+         };
+    }
 
     private string GenerateTempToken(User user)
     {
         // Generate a short-lived temp token (5 minutes) for 2FA verification
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(_jwtSettings.Secret);
+        var key = Encoding.UTF8.GetBytes(jwtSettings.Secret);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -251,8 +331,8 @@ public class AuthService : IAuthService
                 new Claim("temp_2fa", "true")
             }),
             Expires = DateTime.UtcNow.AddMinutes(5),
-            Issuer = _jwtSettings.Issuer,
-            Audience = _jwtSettings.Audience,
+            Issuer = jwtSettings.Issuer,
+            Audience = jwtSettings.Audience,
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)

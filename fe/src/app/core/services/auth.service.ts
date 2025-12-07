@@ -38,6 +38,10 @@ export class AuthService {
         );
     }
 
+    register(data: any): Observable<any> {
+        return this.http.post(`${this.API_URL}/register`, data);
+    }
+
     verify2FA(code: string, tempToken: string): Observable<any> {
         return this.http.post(`${this.API_URL}/verify-2fa?tempToken=${tempToken}`,
             { code } as Verify2FARequest,

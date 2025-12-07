@@ -20,6 +20,12 @@ public class UserRepository : IUserRepository
         return await _context.Users.Find(filter).FirstOrDefaultAsync(ct);
     }
 
+    public async Task<User?> GetByEmailAsync(string email, CancellationToken ct = default)
+    {
+        var filter = Builders<User>.Filter.Eq(u => u.Email, email);
+        return await _context.Users.Find(filter).FirstOrDefaultAsync(ct);
+    }
+
     public async Task<User?> GetByIdAsync(string id, CancellationToken ct = default)
     {
         if (!ObjectId.TryParse(id, out var objId))

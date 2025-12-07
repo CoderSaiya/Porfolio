@@ -12,6 +12,12 @@ public class User : BaseDocument
     [BsonElement("email")]
     public string Email { get; set; } = null!;
     
+    [BsonElement("fullName")]
+    public string FullName { get; set; } = string.Empty;
+    
+    [BsonElement("avatarUrl")]
+    public string? AvatarUrl { get; set; }
+    
     [BsonElement("passwordHash")]
     public string PasswordHash { get; set; } = null!;
     

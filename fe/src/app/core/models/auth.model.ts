@@ -8,6 +8,8 @@ export interface LoginResponse {
     tempToken: string | null;
     username: string;
     role: string;
+    fullName?: string;
+    avatarUrl?: string;
 }
 
 export interface Verify2FARequest {
@@ -23,4 +25,7 @@ export interface Setup2FAResponse {
 export interface AuthUser {
     username: string;
     role: string;
+    fullName?: string;
+    avatarUrl?: string;
+    twoFactorEnabled?: boolean;
 }
