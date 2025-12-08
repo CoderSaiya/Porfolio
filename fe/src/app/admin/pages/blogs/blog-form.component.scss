@@ -327,6 +327,17 @@
                     border-radius: var(--radius-sm);
                     margin: 0.5rem 0;
                 }
+
+                // Fix for rogue pseudo-elements displaying format names (Bold, Italic, etc.)
+                strong, b, em, i, u, s, strike {
+                    &::before,
+                    &::after {
+                        content: none !important;
+                        display: none !important;
+                        width: 0 !important;
+                        height: 0 !important;
+                    }
+                }
             }
 
             .ql-tooltip {
