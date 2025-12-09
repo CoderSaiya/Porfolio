@@ -103,7 +103,10 @@ export class BlogsComponent implements OnInit {
     }
 
     togglePublish(blog: BlogPost) {
-        this.blogService.updateBlog(blog.id, { published: !blog.published }).subscribe(() => {
+        const formData = new FormData();
+        formData.append('Published', (!blog.published).toString());
+
+        this.blogService.updateBlogFormData(blog.id, formData).subscribe(() => {
             this.loadBlogs();
         });
     }
