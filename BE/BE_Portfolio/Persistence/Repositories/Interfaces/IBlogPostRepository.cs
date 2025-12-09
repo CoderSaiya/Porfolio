@@ -13,4 +13,5 @@ public interface IBlogPostRepository
     Task UpdateAsync(BlogPost post, CancellationToken ct = default);
     Task DeleteAsync(string id, CancellationToken ct = default);
     Task IncrementViewCountAsync(string id, CancellationToken ct = default);
+    Task<long> GetTotalViewsAsync(CancellationToken ct = default);
 }

@@ -13,4 +13,5 @@ public interface IProjectRepository
     Task UpdateAsync(Project doc, CancellationToken ct = default);
     Task DeleteAsync(ObjectId id, CancellationToken ct = default);
     Task DeleteAsync(string slug, CancellationToken ct = default);
+    Task<long> CountAsync(CancellationToken ct = default);
 }

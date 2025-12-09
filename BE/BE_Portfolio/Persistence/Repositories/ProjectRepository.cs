@@ -63,4 +63,9 @@ public class ProjectRepository(IMongoDbContext ctx) : IProjectRepository
         var filter = Builders<Project>.Filter.Eq(p => p.Slug, slug);
         await _projects.DeleteOneAsync(filter, cancellationToken: ct);
     }
+
+    public async Task<long> CountAsync(CancellationToken ct = default)
+    {
+        return await _projects.CountDocumentsAsync(Builders<Project>.Filter.Empty, cancellationToken: ct);
+    }
 }

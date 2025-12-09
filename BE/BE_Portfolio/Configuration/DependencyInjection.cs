@@ -61,6 +61,7 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<ITwoFactorService, TwoFactorService>();
         services.AddScoped<ICommentService, CommentService>();
+        services.AddScoped<IDashboardService, DashboardService>();
         
         // Email services
         services.AddSingleton<IMailSender, EmailSender>();

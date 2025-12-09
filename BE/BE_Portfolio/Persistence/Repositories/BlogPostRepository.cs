@@ -157,4 +157,13 @@ public class BlogPostRepository : IBlogPostRepository
         var update = Builders<BlogPost>.Update.Inc(x => x.ViewCount, 1);
         await _collection.UpdateOneAsync(x => x.Id == objectId, update, cancellationToken: ct);
     }
+
+    public async Task<long> GetTotalViewsAsync(CancellationToken ct = default)
+    {
+        var result = await _collection.Aggregate()
+            .Group(b => 1, g => new { TotalViews = g.Sum(x => x.ViewCount) })
+            .FirstOrDefaultAsync(ct);
+
+        return result?.TotalViews ?? 0;
+    }
 }

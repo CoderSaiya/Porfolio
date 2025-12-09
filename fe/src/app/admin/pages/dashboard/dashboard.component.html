@@ -10,10 +10,10 @@
         <div class="stat-card" style="--glow-color: var(--accent)">
             <div class="stat-content">
                 <span class="stat-label">Tổng Lượt Xem</span>
-                <span class="stat-value">124.5K</span>
+                <span class="stat-value">{{ data()?.stats?.totalViews | number }}</span>
                 <div class="stat-trend positive">
                     <lucide-icon name="TrendingUp" size="14"></lucide-icon>
-                    <span>+12.5% so với tháng trước</span>
+                    <span>Tính trên tất cả bài viết</span>
                 </div>
             </div>
             <div class="stat-icon">
@@ -24,7 +24,7 @@
         <div class="stat-card" style="--glow-color: var(--secondary)">
             <div class="stat-content">
                 <span class="stat-label">Tổng Dự Án</span>
-                <span class="stat-value">12</span>
+                <span class="stat-value">{{ data()?.stats?.totalProjects }}</span>
                 <div class="stat-trend neutral">
                     <span>Đã hoàn thành</span>
                 </div>
@@ -37,10 +37,10 @@
         <div class="stat-card" style="--glow-color: #22c55e">
             <div class="stat-content">
                 <span class="stat-label">Bài Viết Blog</span>
-                <span class="stat-value">48</span>
+                <span class="stat-value">{{ data()?.stats?.totalBlogs }}</span>
                 <div class="stat-trend positive">
-                    <lucide-icon name="TrendingUp" size="14"></lucide-icon>
-                    <span>+4 bài mới tuần này</span>
+                    <lucide-icon name="FileText" size="14"></lucide-icon>
+                    <span>Đang hoạt động</span>
                 </div>
             </div>
             <div class="stat-icon">
@@ -50,10 +50,10 @@
 
         <div class="stat-card" style="--glow-color: #f59e0b">
             <div class="stat-content">
-                <span class="stat-label">Tin Nhắn Mới</span>
-                <span class="stat-value">5</span>
+                <span class="stat-label">Tin Nhắn Liên Hệ</span>
+                <span class="stat-value">{{ data()?.stats?.totalMessages }}</span>
                 <div class="stat-trend negative">
-                    <span>Cần phản hồi ngay</span>
+                    <span>Cần phản hồi</span>
                 </div>
             </div>
             <div class="stat-icon">
@@ -76,7 +76,7 @@
             </div>
 
             <div class="bar-chart">
-                <div class="chart-column" *ngFor="let item of chartData">
+                <div class="chart-column" *ngFor="let item of data()?.chartData">
                     <div class="bar-wrapper" [attr.data-value]="item.value">
                         <div class="bar" [style.height.%]="(item.value / maxValue) * 100"></div>
                     </div>
@@ -93,7 +93,7 @@
             </div>
 
             <div class="activity-list">
-                <div class="activity-item" *ngFor="let activity of recentActivities">
+                <div class="activity-item" *ngFor="let activity of data()?.recentActivities">
                     <div class="activity-icon" [ngClass]="activity.type">
                         <lucide-icon [name]="activity.icon"></lucide-icon>
                     </div>
@@ -104,6 +104,10 @@
                         </p>
                         <span class="time">{{ activity.time }}</span>
                     </div>
+                </div>
+
+                <div *ngIf="!data()?.recentActivities?.length" class="empty-activity">
+                    <p>Chưa có hoạt động nào.</p>
                 </div>
             </div>
         </div>
