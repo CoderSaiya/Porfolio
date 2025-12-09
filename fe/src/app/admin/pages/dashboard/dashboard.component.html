@@ -1,0 +1,139 @@
+<div class="dashboard container-fluid">
+    <!-- Header -->
+    <header class="dashboard-header fade-in">
+        <h1>Tổng quan <span class="accent">Dashboard</span></h1>
+        <p>Chào mừng trở lại! Dưới đây là tình hình hoạt động của hệ thống.</p>
+    </header>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid slide-in-up">
+        <div class="stat-card" style="--glow-color: var(--accent)">
+            <div class="stat-content">
+                <span class="stat-label">Tổng Lượt Xem</span>
+                <span class="stat-value">124.5K</span>
+                <div class="stat-trend positive">
+                    <lucide-icon name="TrendingUp" size="14"></lucide-icon>
+                    <span>+12.5% so với tháng trước</span>
+                </div>
+            </div>
+            <div class="stat-icon">
+                <lucide-icon name="Users"></lucide-icon>
+            </div>
+        </div>
+
+        <div class="stat-card" style="--glow-color: var(--secondary)">
+            <div class="stat-content">
+                <span class="stat-label">Tổng Dự Án</span>
+                <span class="stat-value">12</span>
+                <div class="stat-trend neutral">
+                    <span>Đã hoàn thành</span>
+                </div>
+            </div>
+            <div class="stat-icon">
+                <lucide-icon name="FolderGit2"></lucide-icon>
+            </div>
+        </div>
+
+        <div class="stat-card" style="--glow-color: #22c55e">
+            <div class="stat-content">
+                <span class="stat-label">Bài Viết Blog</span>
+                <span class="stat-value">48</span>
+                <div class="stat-trend positive">
+                    <lucide-icon name="TrendingUp" size="14"></lucide-icon>
+                    <span>+4 bài mới tuần này</span>
+                </div>
+            </div>
+            <div class="stat-icon">
+                <lucide-icon name="FileText"></lucide-icon>
+            </div>
+        </div>
+
+        <div class="stat-card" style="--glow-color: #f59e0b">
+            <div class="stat-content">
+                <span class="stat-label">Tin Nhắn Mới</span>
+                <span class="stat-value">5</span>
+                <div class="stat-trend negative">
+                    <span>Cần phản hồi ngay</span>
+                </div>
+            </div>
+            <div class="stat-icon">
+                <lucide-icon name="MessageSquare"></lucide-icon>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="analytics-section slide-in-up" style="--stagger: 1">
+        <!-- Weekly Activity Chart -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <h3>Hoạt động tuần qua</h3>
+                <div class="chart-actions">
+                    <button class="btn btn--ghost btn--icon-only">
+                        <lucide-icon name="MoreHorizontal"></lucide-icon>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bar-chart">
+                <div class="chart-column" *ngFor="let item of chartData">
+                    <div class="bar-wrapper" [attr.data-value]="item.value">
+                        <div class="bar" [style.height.%]="(item.value / maxValue) * 100"></div>
+                    </div>
+                    <span class="label">{{ item.label }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Feed -->
+        <div class="card activity-card">
+            <div class="card-header">
+                <h3>Hoạt động gần đây</h3>
+                <a routerLink="/admin/logs" class="btn btn--ghost btn--sm">Xem tất cả</a>
+            </div>
+
+            <div class="activity-list">
+                <div class="activity-item" *ngFor="let activity of recentActivities">
+                    <div class="activity-icon" [ngClass]="activity.type">
+                        <lucide-icon [name]="activity.icon"></lucide-icon>
+                    </div>
+                    <div class="activity-content">
+                        <p>
+                            <strong>{{ activity.title }}</strong>
+                            {{ activity.description }}
+                        </p>
+                        <span class="time">{{ activity.time }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <h3 class="section-title fade-in" style="margin-bottom: 1.5rem">Thao tác nhanh</h3>
+    <div class="quick-actions slide-in-up" style="--stagger: 2">
+        <a routerLink="/admin/blogs/new" class="action-card">
+            <lucide-icon name="FileText"></lucide-icon>
+            <h3>Viết Blog Mới</h3>
+            <p>Tạo và xuất bản bài viết mới</p>
+        </a>
+
+        <a routerLink="/admin/projects/new" class="action-card">
+            <lucide-icon name="FolderGit2"></lucide-icon>
+            <h3>Thêm Dự Án</h3>
+            <p>Cập nhật portfolio dự án của bạn</p>
+        </a>
+
+        <a routerLink="/admin/messages" class="action-card">
+            <lucide-icon name="MessageSquare"></lucide-icon>
+            <h3>Xem Tin Nhắn</h3>
+            <p>Kiểm tra hộp thư liên hệ</p>
+        </a>
+
+        <a routerLink="/admin/profile" class="action-card">
+            <lucide-icon name="Settings"></lucide-icon>
+            <h3>Cấu Hình</h3>
+            <p>Chỉnh sửa thông tin cá nhân</p>
+        </a>
+    </div>
+</div>
