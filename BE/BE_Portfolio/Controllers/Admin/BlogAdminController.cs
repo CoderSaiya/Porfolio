@@ -1,4 +1,5 @@
 using BE_Portfolio.DTOs.Blog;
+using BE_Portfolio.Models.Domain;
 using BE_Portfolio.Models.Documents;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -21,10 +22,20 @@ public class BlogAdminController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetBlogs([FromQuery] BlogFilterDTO filter, CancellationToken ct)
+    public async Task<IActionResult> GetBlogs([FromQuery] BlogFilterQueryDto filter, CancellationToken ct)
     {
-        var posts = await _postRepo.GetAllAsync(filter, ct);
-        var total = await _postRepo.CountAsync(filter, ct);
+        var domainFilter = new BlogFilter
+        {
+            CategoryId = filter.CategoryId,
+            Tags = filter.Tags,
+            Search = filter.Search,
+            Published = filter.Published,
+            Page = filter.Page,
+            PageSize = filter.PageSize
+        };
+
+        var posts = await _postRepo.GetAllAsync(domainFilter, ct);
+        var total = await _postRepo.CountAsync(domainFilter, ct);
 
         var dtos = posts.Select(p => new BlogResponseDto(
             p.Id.ToString(),
@@ -70,7 +81,7 @@ public class BlogAdminController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateBlog([FromForm] CreateBlogPostDTO dto, IFormFile? file, CancellationToken ct)
+    public async Task<IActionResult> CreateBlog([FromForm] CreateBlogRequestDto dto, IFormFile? file, CancellationToken ct)
     {
         ObjectId? categoryId = null;
         if (!string.IsNullOrEmpty(dto.CategoryId) && ObjectId.TryParse(dto.CategoryId, out var catId))
@@ -107,7 +118,7 @@ public class BlogAdminController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateBlog(
         string id,
-        [FromForm] UpdateBlogPostDTO dto,
+        [FromForm] UpdateBlogRequestDto dto,
         IFormFile? file,
         CancellationToken ct)
     {
@@ -162,7 +173,7 @@ public class BlogAdminController : ControllerBase
     }
 
     [HttpPost("categories")]
-    public async Task<IActionResult> CreateCategory([FromBody] CreateBlogCategoryDTO dto, CancellationToken ct)
+    public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequestDto dto, CancellationToken ct)
     {
         var category = new BlogCategory
         {
@@ -178,7 +189,7 @@ public class BlogAdminController : ControllerBase
     }
 
     [HttpPut("categories/{id}")]
-    public async Task<IActionResult> UpdateCategory(string id, [FromBody] CreateBlogCategoryDTO dto, CancellationToken ct)
+    public async Task<IActionResult> UpdateCategory(string id, [FromBody] CreateCategoryRequestDto dto, CancellationToken ct)
     {
         var existing = await _categoryRepo.GetByIdAsync(id, ct);
         if (existing == null)

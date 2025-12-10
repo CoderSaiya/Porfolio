@@ -1,4 +1,4 @@
-using BE_Portfolio.DTOs.Blog;
+using BE_Portfolio.Models.Domain;
 using BE_Portfolio.Models.Documents;
 using BE_Portfolio.Persistence.Data;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
@@ -16,7 +16,7 @@ public class BlogPostRepository : IBlogPostRepository
         _collection = context.BlogPosts;
     }
 
-    public async Task<List<BlogPost>> GetAllAsync(BlogFilterDTO filter, CancellationToken ct = default)
+    public async Task<List<BlogPost>> GetAllAsync(BlogFilter filter, CancellationToken ct = default)
     {
         var builder = Builders<BlogPost>.Filter;
         var filters = new List<FilterDefinition<BlogPost>>();
@@ -59,7 +59,7 @@ public class BlogPostRepository : IBlogPostRepository
             .ToListAsync(ct);
     }
 
-    public async Task<long> CountAsync(BlogFilterDTO filter, CancellationToken ct = default)
+    public async Task<long> CountAsync(BlogFilter filter, CancellationToken ct = default)
     {
         var builder = Builders<BlogPost>.Filter;
         var filters = new List<FilterDefinition<BlogPost>>();

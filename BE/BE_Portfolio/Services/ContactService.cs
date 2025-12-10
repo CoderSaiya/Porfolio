@@ -1,4 +1,5 @@
 ﻿using BE_Portfolio.Models.Commons;
+using BE_Portfolio.Models.Domain;
 using BE_Portfolio.Models.Documents;
 using BE_Portfolio.Models.Specification;
 using BE_Portfolio.Models.ValueObjects;
@@ -36,7 +37,14 @@ public class ContactService(
 
 
     public Task<List<ContactMessage>> ListAsync(MessageStatus? status, int? limit, CancellationToken ct = default)
-        => repo.ListAsync(status, limit, ct);
+    {
+        var filter = new MessageFilter
+        {
+            Status = status,
+            PageSize = limit ?? 10
+        };
+        return repo.ListAsync(filter, ct);
+    }
 
     public Task SetStatusAsync(string id, MessageStatus status, CancellationToken ct = default)
         => repo.UpdateStatusAsync(id, status, ct);

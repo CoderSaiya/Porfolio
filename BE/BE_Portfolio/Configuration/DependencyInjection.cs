@@ -7,6 +7,7 @@ using BE_Portfolio.Services;
 using BE_Portfolio.Services.Auth;
 using BE_Portfolio.Services.Background;
 using BE_Portfolio.Services.Comment;
+using BE_Portfolio.Services.Common;
 using BE_Portfolio.Services.Interfaces;
 using BE_Portfolio.Services.TwoFactor;
 
@@ -69,6 +70,14 @@ public static class DependencyInjection
         
         // Background services
         services.AddHostedService<RabbitMqListener>();
+        
+        // Domain Services
+        services.AddScoped<IImageService, ImageService>();
+        services.AddScoped<IProjectService, ProjectService>();
+        services.AddScoped<IProfileService, ProfileService>();
+        services.AddScoped<ISkillService, SkillService>();
+        services.AddScoped<IDashboardService, DashboardService>();
+        services.AddScoped<ContactService>();
         
         return services;
     }

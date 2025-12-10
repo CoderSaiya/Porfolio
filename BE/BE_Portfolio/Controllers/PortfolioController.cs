@@ -1,4 +1,5 @@
-﻿using BE_Portfolio.DTOs;
+﻿using BE_Portfolio.DTOs.Common;
+using BE_Portfolio.DTOs.Project;
 using BE_Portfolio.Models.Documents;
 using BE_Portfolio.Models.ValueObjects;
 using BE_Portfolio.Services;
@@ -26,13 +27,13 @@ public class PortfolioController(PortfolioService svc) : Controller
     
     [HttpGet("projects")]
     [SwaggerOperation(Summary = "Lấy danh sách dự án", Description = "Có thể lọc theo highlight và giới hạn số lượng.")]
-    [ProducesResponseType(typeof(IEnumerable<ProjectListItemDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<ProjectItemDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProjects([FromQuery] bool? highlight, [FromQuery] int? limit, CancellationToken ct)
         => Ok(await svc.GetProjectsAsync(highlight, limit, ct));
     
     [HttpGet("projects/{slug}")]
     [SwaggerOperation(Summary = "Lấy chi tiết dự án", Description = "Tìm dự án theo slug SEO-friendly.")]
-    [ProducesResponseType(typeof(ProjectDetailDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProjectResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetProject([FromRoute] string slug, CancellationToken ct)
     {
@@ -50,7 +51,7 @@ public class PortfolioController(PortfolioService svc) : Controller
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UploadProjectImage(
         [FromRoute] string id,
-        [FromForm] UploadProjectImageReq req,
+        [FromForm] UploadProjectImageRequestDto req,
         CancellationToken ct)
     {
         if (!ObjectId.TryParse(id, out var objId))
@@ -86,7 +87,7 @@ public class PortfolioController(PortfolioService svc) : Controller
 
     [HttpGet("projects/{id}/image/{variant:alpha}/data-url")]
     [SwaggerOperation(Summary = "Lấy ảnh data-url", Description = "Trả về chuỗi Data URL (data:&lt;mime&gt;;base64,...)")]
-    [ProducesResponseType(typeof(ImageDataUrlRes), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ImageResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<IActionResult> GetProjectImageDataUrl(
@@ -103,7 +104,7 @@ public class PortfolioController(PortfolioService svc) : Controller
         var dataUrl = await svc.GetProjectImageDataUrlAsync(objId, vv, ct);
         return dataUrl is null
             ? NotFound()
-            : Ok(new ImageDataUrlRes(DataUrl: dataUrl));
+            : Ok(new ImageResponseDto(DataUrl: dataUrl));
     }
     
     [HttpDelete("projects/{id}/image/{variant:alpha}")]

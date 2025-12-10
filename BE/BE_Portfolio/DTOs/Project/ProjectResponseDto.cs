@@ -1,6 +1,6 @@
-﻿namespace BE_Portfolio.DTOs;
+﻿namespace BE_Portfolio.DTOs.Project;
 
-public sealed record ProjectListItemDto(
+public sealed record ProjectResponseDto(
     string Id,
     string Slug,
     string Title,
@@ -10,6 +10,8 @@ public sealed record ProjectListItemDto(
     int? TeamSize,
     IReadOnlyList<string> Technologies,
     IReadOnlyList<string> Features,
-    string? Thumb,
     string? Github,
-    string? Demo);
+    string? Demo,
+    string? Image,
+    string? Thumb
+);

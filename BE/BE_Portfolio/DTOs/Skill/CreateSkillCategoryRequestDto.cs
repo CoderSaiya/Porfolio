@@ -1,6 +1,6 @@
-namespace BE_Portfolio.DTOs.Admin;
+namespace BE_Portfolio.DTOs.Skill;
 
-public record CreateSkillCategoryDTO
+public record CreateSkillCategoryRequestDto
 {
     public string Title { get; init; } = null!;
     public string Icon { get; init; } = null!;

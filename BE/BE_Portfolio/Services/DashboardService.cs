@@ -1,5 +1,5 @@
-using BE_Portfolio.DTOs.Admin;
-using BE_Portfolio.DTOs.Blog;
+using BE_Portfolio.DTOs.Dashboard;
+using BE_Portfolio.Models.Domain;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
 
 namespace BE_Portfolio.Services;
@@ -25,9 +25,9 @@ public class DashboardService : IDashboardService
         var response = new DashboardResponseDto();
 
         // Parallel execution for Stats and Chart Data
-        var totalBlogsTask = _blogRepo.CountAsync(new BlogFilterDTO(), ct);
-        var totalProjectsTask = _projectRepo.CountAsync(ct);
-        var totalMessagesTask = _messageRepo.CountAsync(null, null, ct);
+        var totalBlogsTask = _blogRepo.CountAsync(new BlogFilter(), ct);
+        var totalProjectsTask = _projectRepo.CountAsync(null, ct);
+        var totalMessagesTask = _messageRepo.CountAsync(new MessageFilter(), ct);
         var totalViewsTask = _blogRepo.GetTotalViewsAsync(ct);
 
         await Task.WhenAll(totalBlogsTask, totalProjectsTask, totalMessagesTask, totalViewsTask);
@@ -38,7 +38,7 @@ public class DashboardService : IDashboardService
         response.Stats.TotalViews = totalViewsTask.Result;
 
         // Chart Data (Still mock for now as per requirement)
-        response.ChartData = new List<DashboardChartDto>
+        response.ChartData = new List<DashboardChartResponseDto>
         {
             new() { Label = "Mon", Value = 12 },
             new() { Label = "Tue", Value = 19 },
@@ -50,13 +50,13 @@ public class DashboardService : IDashboardService
         };
 
         // Parallel execution for Recent Activities
-        var recentBlogsTask = _blogRepo.GetAllAsync(new BlogFilterDTO { Page = 1, PageSize = 3 }, ct);
-        var recentProjectsTask = _projectRepo.GetAllAsync(null, 3, ct);
-        var recentMessagesTask = _messageRepo.ListAsync(null, 3, ct);
+        var recentBlogsTask = _blogRepo.GetAllAsync(new BlogFilter { Page = 1, PageSize = 3 }, ct);
+        var recentProjectsTask = _projectRepo.GetAllAsync(new ProjectFilter { Limit = 3 }, ct);
+        var recentMessagesTask = _messageRepo.ListAsync(new MessageFilter { PageSize = 3 }, ct);
 
         await Task.WhenAll(recentBlogsTask, recentProjectsTask, recentMessagesTask);
         
-        var recentBlogs = recentBlogsTask.Result.Select(b => new DashboardActivityDto
+        var recentBlogs = recentBlogsTask.Result.Select(b => new DashboardActivityResponseDto
         {
             Id = b.Id.ToString(),
             Type = "blog",
@@ -66,7 +66,7 @@ public class DashboardService : IDashboardService
             Icon = "FileText"
         });
 
-        var recentProjects = recentProjectsTask.Result.Select(p => new DashboardActivityDto
+        var recentProjects = recentProjectsTask.Result.Select(p => new DashboardActivityResponseDto
         {
             Id = p.Id.ToString(),
             Type = "project",
@@ -76,7 +76,7 @@ public class DashboardService : IDashboardService
             Icon = "FolderGit2"
         });
 
-        var recentMessages = recentMessagesTask.Result.Select(m => new DashboardActivityDto
+        var recentMessages = recentMessagesTask.Result.Select(m => new DashboardActivityResponseDto
         {
             Id = m.Id.ToString(),
             Type = "message",

@@ -1,6 +1,6 @@
-namespace BE_Portfolio.DTOs.Admin;
+namespace BE_Portfolio.DTOs.Skill;
 
-public record UpdateSkillCategoryDTO
+public record UpdateSkillCategoryRequestDto
 {
     public string? Title { get; init; }
     public string? Icon { get; init; }

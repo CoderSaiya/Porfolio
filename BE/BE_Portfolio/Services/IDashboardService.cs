@@ -1,4 +1,4 @@
-using BE_Portfolio.DTOs.Admin;
+using BE_Portfolio.DTOs.Dashboard;
 
 namespace BE_Portfolio.Services;
 

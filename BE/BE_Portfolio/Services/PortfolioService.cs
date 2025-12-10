@@ -1,5 +1,7 @@
-﻿using BE_Portfolio.DTOs;
+﻿using BE_Portfolio.DTOs.Common;
+using BE_Portfolio.DTOs.Project;
 using BE_Portfolio.Models.Documents;
+using BE_Portfolio.Models.Domain;
 using BE_Portfolio.Models.ValueObjects;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
 using MongoDB.Bson;
@@ -22,8 +24,12 @@ public class PortfolioService(
     public async Task<IEnumerable<SkillCategory>> GetSkillsAsync(CancellationToken ct = default)
         => await skills.GetAllAsync(ct);
 
-    public async Task<IEnumerable<ProjectListItemDto>> GetProjectsAsync(bool? highlightOnly, int? limit, CancellationToken ct = default)
-        => (await projects.GetAllAsync(highlightOnly, limit, ct)).Select(p => new ProjectListItemDto(
+    public async Task<IEnumerable<ProjectItemDto>> GetProjectsAsync(bool? highlightOnly, int? limit, CancellationToken ct = default)
+        => (await projects.GetAllAsync(new ProjectFilter
+        {
+            HighlightOnly = highlightOnly,
+            Limit = limit,
+        }, ct)).Select(p => new ProjectItemDto(
             Id:  p.Id.ToString(),
             Slug: p.Slug,
             Title: p.Title,
@@ -38,13 +44,13 @@ public class PortfolioService(
             Demo: p.Demo
         )).ToList();
 
-    public async Task<ProjectDetailDto?> GetProjectBySlugAsync(string slug, CancellationToken ct = default)
+    public async Task<ProjectResponseDto?> GetProjectBySlugAsync(string slug, CancellationToken ct = default)
     {
         var p = await projects.GetBySlugAsync(slug, ct);
         if (p is null)
             return null;
 
-        return new ProjectDetailDto(
+        return new ProjectResponseDto(
             Id: p.Id.ToString(),
             Slug: p.Slug,
             Title: p.Title,

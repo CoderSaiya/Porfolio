@@ -1,4 +1,4 @@
-using BE_Portfolio.DTOs.Admin;
+using BE_Portfolio.DTOs.Skill;
 using BE_Portfolio.Models.Documents;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +20,7 @@ public class SkillsAdminController : ControllerBase
     }
 
     [HttpPost("categories")]
-    public async Task<IActionResult> CreateCategory([FromBody] CreateSkillCategoryDTO dto, CancellationToken ct)
+    public async Task<IActionResult> CreateCategory([FromBody] CreateSkillCategoryRequestDto dto, CancellationToken ct)
     {
         try
         {
@@ -49,7 +49,7 @@ public class SkillsAdminController : ControllerBase
     }
 
     [HttpPut("categories/{id}")]
-    public async Task<IActionResult> UpdateCategory(string id, [FromBody] UpdateSkillCategoryDTO dto, CancellationToken ct)
+    public async Task<IActionResult> UpdateCategory(string id, [FromBody] UpdateSkillCategoryRequestDto dto, CancellationToken ct)
     {
         try
         {

@@ -1,6 +1,6 @@
-namespace BE_Portfolio.DTOs.Admin;
+namespace BE_Portfolio.DTOs.Project;
 
-public record UpdateProjectDTO
+public record UpdateProjectRequestDto
 {
     public string? Title { get; init; }
     public string? Slug { get; init; }

@@ -1,6 +1,6 @@
-namespace BE_Portfolio.DTOs.Admin;
+namespace BE_Portfolio.DTOs.Project;
 
-public record CreateProjectDTO
+public record CreateProjectRequestDto
 {
     public string Title { get; init; } = null!;
     public string Slug { get; init; } = null!;

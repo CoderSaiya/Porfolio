@@ -1,7 +1,8 @@
-using BE_Portfolio.DTOs.Admin;
+using BE_Portfolio.DTOs.Project;
 using BE_Portfolio.Models.Documents;
 using BE_Portfolio.Models.ValueObjects;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
+using BE_Portfolio.Services.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -11,7 +12,7 @@ namespace BE_Portfolio.Controllers.Admin;
 [ApiController]
 [Route("api/admin/projects")]
 [Authorize(Roles = "Admin")]
-public class ProjectAdminController(IProjectRepository projectRepo, IImageRepository imageRepo) : ControllerBase
+public class ProjectAdminController(IProjectRepository projectRepo, IImageService imageService) : ControllerBase
 {
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin")]
@@ -24,7 +25,7 @@ public class ProjectAdminController(IProjectRepository projectRepo, IImageReposi
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateProject([FromBody] CreateProjectDTO dto, CancellationToken ct)
+    public async Task<IActionResult> CreateProject([FromBody] CreateProjectRequestDto dto, CancellationToken ct)
     {
         try
         {
@@ -41,7 +42,7 @@ public class ProjectAdminController(IProjectRepository projectRepo, IImageReposi
                 Technologies = dto.Technologies,
                 Features = dto.Features,
                 CreatedAt = DateTime.UtcNow,
-                ImageUrl = $"/api/portfolio/projects/{ObjectId.GenerateNewId()}/image/thumb" // Placeholder
+                ImageUrl = $"/api/projects/{ObjectId.GenerateNewId()}/image/thumb" // Placeholder
             };
 
             await projectRepo.CreateAsync(project, ct);
@@ -55,7 +56,7 @@ public class ProjectAdminController(IProjectRepository projectRepo, IImageReposi
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateProject(string id, [FromBody] UpdateProjectDTO dto, CancellationToken ct)
+    public async Task<IActionResult> UpdateProject(string id, [FromBody] UpdateProjectRequestDto dto, CancellationToken ct)
     {
         try
         {
@@ -101,8 +102,8 @@ public class ProjectAdminController(IProjectRepository projectRepo, IImageReposi
                 return NotFound(new { message = "Project not found" });
 
             // Delete associated images (thumb and full variants)
-            await imageRepo.DeleteAsync(ImageOwnerType.Project, objectId, ImageVariant.Thumb, ct);
-            await imageRepo.DeleteAsync(ImageOwnerType.Project, objectId, ImageVariant.Full, ct);
+            await imageService.DeleteImageAsync(ImageOwnerType.Project, objectId.ToString(), ImageVariant.Thumb, ct);
+            await imageService.DeleteImageAsync(ImageOwnerType.Project, objectId.ToString(), ImageVariant.Full, ct);
 
             // Delete project
             await projectRepo.DeleteAsync(objectId, ct);
@@ -135,27 +136,12 @@ public class ProjectAdminController(IProjectRepository projectRepo, IImageReposi
             if (!allowedTypes.Contains(file.ContentType))
                 return BadRequest(new { message = "Invalid file type. Only JPEG, PNG, and WebP are allowed" });
 
-            // Read file to byte array
-            using var memoryStream = new MemoryStream();
-            await file.CopyToAsync(memoryStream, ct);
-            var imageData = memoryStream.ToArray();
-
             // Determine variant
             var imageVariant = variant.ToLower() == "full" ? ImageVariant.Full : ImageVariant.Thumb;
 
-            // Save image using existing repository method
-            await imageRepo.SetImageAsync(
-                ImageOwnerType.Project,
-                objectId,
-                imageVariant,
-                file.ContentType,
-                imageData,
-                null,
-                null,
-                ct
-            );
+            await imageService.ProcessAndSaveAsync(ImageOwnerType.Project, objectId.ToString(), imageVariant, file, ct);
 
-            return Ok(new { message = "Image uploaded successfully", imageUrl = $"/api/portfolio/projects/{id}/image/{variant}" });
+            return Ok(new { message = "Image uploaded successfully", imageUrl = $"/api/projects/{id}/image/{variant}" });
         }
         catch (Exception ex)
         {

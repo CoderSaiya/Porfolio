@@ -1,4 +1,5 @@
-﻿using BE_Portfolio.Models.Documents;
+﻿using BE_Portfolio.Models.Domain;
+using BE_Portfolio.Models.Documents;
 using BE_Portfolio.Models.ValueObjects;
 using BE_Portfolio.Persistence.Data;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
@@ -14,16 +15,18 @@ public class ContactMessageRepository(IMongoDbContext ctx) : IContactMessageRepo
     public async Task InsertAsync(ContactMessage doc, CancellationToken ct = default)
         => await ctx.ContactMessages.InsertOneAsync(doc, ct);
 
-    public async Task<List<ContactMessage>> ListAsync(MessageStatus? status, int? limit, CancellationToken ct = default)
+    public async Task<List<ContactMessage>> ListAsync(MessageFilter filter, CancellationToken ct = default)
     {
-        var filter = status.HasValue
-            ? Builders<ContactMessage>.Filter.Eq(x => x.Status, status.Value)
-            : Builders<ContactMessage>.Filter.Empty;
-
+        var dbFilter = BuildFilter(filter.Status, filter.SearchTerm);
         IFindFluent<ContactMessage, ContactMessage> find = ctx.ContactMessages
-            .Find(filter)
+            .Find(dbFilter)
             .SortByDescending(x => x.CreatedAt);
-        if (limit is > 0) find = find.Limit(limit);
+
+        if (filter.PageSize > 0)
+        {
+             find = find.Skip((filter.Page - 1) * filter.PageSize).Limit(filter.PageSize);
+        }
+        
         return await find.ToListAsync(ct);
     }
 
@@ -54,20 +57,10 @@ public class ContactMessageRepository(IMongoDbContext ctx) : IContactMessageRepo
         await ctx.ContactMessages.DeleteManyAsync(x => oids.Contains(x.Id), ct);
     }
 
-    public async Task<long> CountAsync(MessageStatus? status, string? searchTerm, CancellationToken ct = default)
+    public async Task<long> CountAsync(MessageFilter filter, CancellationToken ct = default)
     {
-        var filter = BuildFilter(status, searchTerm);
-        return await ctx.ContactMessages.CountDocumentsAsync(filter, cancellationToken: ct);
-    }
-
-    public async Task<List<ContactMessage>> ListAsync(MessageStatus? status, string? searchTerm, int page, int pageSize, CancellationToken ct = default)
-    {
-        var filter = BuildFilter(status, searchTerm);
-        return await ctx.ContactMessages.Find(filter)
-            .SortByDescending(x => x.CreatedAt)
-            .Skip((page - 1) * pageSize)
-            .Limit(pageSize)
-            .ToListAsync(ct);
+        var dbFilter = BuildFilter(filter.Status, filter.SearchTerm);
+        return await ctx.ContactMessages.CountDocumentsAsync(dbFilter, cancellationToken: ct);
     }
 
     private FilterDefinition<ContactMessage> BuildFilter(MessageStatus? status, string? searchTerm)

@@ -1,6 +1,6 @@
 namespace BE_Portfolio.DTOs.Blog;
 
-public record UpdateBlogPostDTO
+public record UpdateBlogRequestDto
 {
     public string? Title { get; init; }
     public string? Slug { get; init; }

@@ -1,4 +1,5 @@
 using BE_Portfolio.DTOs.Blog;
+using BE_Portfolio.Models.Domain;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,13 +19,21 @@ public class BlogController : ControllerBase
     }
 
     [HttpGet("posts")]
-    public async Task<IActionResult> GetPosts([FromQuery] BlogFilterDTO filter, CancellationToken ct)
+    public async Task<IActionResult> GetPosts([FromQuery] BlogFilterQueryDto filter, CancellationToken ct)
     {
         // Force published only for public API
-        filter = filter with { Published = true };
+        var domainFilter = new BlogFilter
+        {
+            CategoryId = filter.CategoryId,
+            Tags = filter.Tags,
+            Search = filter.Search,
+            Published = true,
+            Page = filter.Page,
+            PageSize = filter.PageSize
+        };
 
-        var posts = await _postRepo.GetAllAsync(filter, ct);
-        var total = await _postRepo.CountAsync(filter, ct);
+        var posts = await _postRepo.GetAllAsync(domainFilter, ct);
+        var total = await _postRepo.CountAsync(domainFilter, ct);
 
         return Ok(new { data = posts, total });
     }

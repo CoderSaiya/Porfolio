@@ -1,12 +1,12 @@
 using BE_Portfolio.Models.Documents;
-using BE_Portfolio.DTOs.Blog;
+using BE_Portfolio.Models.Domain;
 
 namespace BE_Portfolio.Persistence.Repositories.Interfaces;
 
 public interface IBlogPostRepository
 {
-    Task<List<BlogPost>> GetAllAsync(BlogFilterDTO filter, CancellationToken ct = default);
-    Task<long> CountAsync(BlogFilterDTO filter, CancellationToken ct = default);
+    Task<List<BlogPost>> GetAllAsync(BlogFilter filter, CancellationToken ct = default);
+    Task<long> CountAsync(BlogFilter filter, CancellationToken ct = default);
     Task<BlogPost?> GetByIdAsync(string id, CancellationToken ct = default);
     Task<BlogPost?> GetBySlugAsync(string slug, CancellationToken ct = default);
     Task CreateAsync(BlogPost post, CancellationToken ct = default);

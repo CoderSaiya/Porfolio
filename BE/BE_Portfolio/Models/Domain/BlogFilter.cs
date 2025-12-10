@@ -1,6 +1,6 @@
-namespace BE_Portfolio.DTOs.Blog;
+namespace BE_Portfolio.Models.Domain;
 
-public record BlogFilterDTO
+public record BlogFilter
 {
     public string? CategoryId { get; init; }
     public List<string>? Tags { get; init; }

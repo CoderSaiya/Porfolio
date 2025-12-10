@@ -1,4 +1,4 @@
-﻿using BE_Portfolio.DTOs;
+﻿using BE_Portfolio.DTOs.Contact;
 using BE_Portfolio.Models.Documents;
 using BE_Portfolio.Models.ValueObjects;
 using BE_Portfolio.Services;
@@ -15,7 +15,7 @@ public class ContactController(ContactService svc) : Controller
     [SwaggerOperation(Summary = "Gửi liên hệ", Description = "Lưu message vào Mongo (trạng thái NEW).")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Submit([FromBody] ContactCreateReq req, CancellationToken ct)
+    public async Task<IActionResult> Submit([FromBody] CreateContactRequestDto req, CancellationToken ct)
     {
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
 

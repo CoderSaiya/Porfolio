@@ -1,6 +1,6 @@
 namespace BE_Portfolio.DTOs.Blog;
 
-public record CreateBlogPostDTO
+public record CreateBlogRequestDto
 {
     public string Title { get; init; } = null!;
     public string Slug { get; init; } = null!;

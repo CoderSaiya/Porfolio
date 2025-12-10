@@ -1,4 +1,5 @@
-using BE_Portfolio.DTOs.Admin;
+using BE_Portfolio.DTOs.Contact;
+using BE_Portfolio.Models.Domain;
 using BE_Portfolio.Models.Documents;
 using BE_Portfolio.Models.ValueObjects;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
@@ -13,12 +14,20 @@ namespace BE_Portfolio.Controllers.Admin;
 public class MessagesAdminController(IContactMessageRepository repo) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<object>> GetMessages([FromQuery] MessageFilterDTO filter, CancellationToken ct)
+    public async Task<ActionResult<object>> GetMessages([FromQuery] MessageFilterQueryDto filter, CancellationToken ct)
     {
-        var messages = await repo.ListAsync(filter.Status, filter.SearchTerm, filter.Page, filter.PageSize, ct);
-        var total = await repo.CountAsync(filter.Status, filter.SearchTerm, ct);
+        var domainFilter = new MessageFilter
+        {
+            Status = filter.Status,
+            SearchTerm = filter.SearchTerm,
+            Page = filter.Page,
+            PageSize = filter.PageSize
+        };
 
-        var dto = messages.Select(m => new MessageResponseDTO(
+        var messages = await repo.ListAsync(domainFilter, ct);
+        var total = await repo.CountAsync(domainFilter, ct);
+
+        var dto = messages.Select(m => new ContactMessageResponseDto(
             m.Id.ToString(),
             m.Name,
             m.Email,
@@ -46,7 +55,7 @@ public class MessagesAdminController(IContactMessageRepository repo) : Controlle
         var msg = await repo.GetByIdAsync(id, ct);
         if (msg == null) return NotFound();
 
-        var dto = new MessageResponseDTO(
+        var dto = new ContactMessageResponseDto(
             msg.Id.ToString(),
             msg.Name,
             msg.Email,
@@ -61,7 +70,7 @@ public class MessagesAdminController(IContactMessageRepository repo) : Controlle
     }
 
     [HttpPut("{id}/status")]
-    public async Task<IActionResult> UpdateStatus(string id, [FromBody] UpdateMessageStatusDTO dto, CancellationToken ct)
+    public async Task<IActionResult> UpdateStatus(string id, [FromBody] UpdateMessageStatusRequestDto dto, CancellationToken ct)
     {
         var msg = await repo.GetByIdAsync(id, ct);
         if (msg == null) return NotFound();
@@ -78,7 +87,7 @@ public class MessagesAdminController(IContactMessageRepository repo) : Controlle
     }
 
     [HttpDelete("bulk")]
-    public async Task<IActionResult> BulkDelete([FromBody] BulkDeleteDTO dto, CancellationToken ct)
+    public async Task<IActionResult> BulkDelete([FromBody] BulkDeleteRequestDto dto, CancellationToken ct)
     {
         if (dto.Ids == null || !dto.Ids.Any()) return BadRequest("No IDs provided");
         await repo.BulkDeleteAsync(dto.Ids, ct);

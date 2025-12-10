@@ -1,8 +1,8 @@
 using BE_Portfolio.Models.ValueObjects;
 
-namespace BE_Portfolio.DTOs.Admin;
+namespace BE_Portfolio.DTOs.Profile;
 
-public record UpdateProfileDTO
+public record UpdateProfileRequestDto
 {
     public string? FullName { get; init; }
     public string? Headline { get; init; }

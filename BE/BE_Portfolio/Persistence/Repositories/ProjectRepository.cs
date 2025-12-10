@@ -1,4 +1,5 @@
-﻿using BE_Portfolio.Models.Documents;
+﻿using BE_Portfolio.Models.Domain;
+using BE_Portfolio.Models.Documents;
 using BE_Portfolio.Persistence.Data;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
 using MongoDB.Bson;
@@ -10,15 +11,15 @@ public class ProjectRepository(IMongoDbContext ctx) : IProjectRepository
 {
     private readonly IMongoCollection<Project> _projects = ctx.Projects;
 
-    public async Task<List<Project>> GetAllAsync(bool? highlightOnly, int? limit, CancellationToken ct = default)
+    public async Task<List<Project>> GetAllAsync(ProjectFilter filter, CancellationToken ct = default)
     {
-        var filter = highlightOnly == true
+        var dbFilter = filter.HighlightOnly == true
             ? Builders<Project>.Filter.Eq(x => x.Highlight, true)
             : Builders<Project>.Filter.Empty;
 
-        IFindFluent<Project, Project> find = _projects.Find(filter).SortByDescending(x => x.CreatedAt);
+        IFindFluent<Project, Project> find = _projects.Find(dbFilter).SortByDescending(x => x.CreatedAt);
 
-        if (limit is > 0) find = find.Limit(limit);
+        if (filter.Limit is > 0) find = find.Limit(filter.Limit);
         
         return await find.ToListAsync(ct);
     }
@@ -64,8 +65,13 @@ public class ProjectRepository(IMongoDbContext ctx) : IProjectRepository
         await _projects.DeleteOneAsync(filter, cancellationToken: ct);
     }
 
-    public async Task<long> CountAsync(CancellationToken ct = default)
+    public async Task<long> CountAsync(ProjectFilter? filter = null, CancellationToken ct = default)
     {
-        return await _projects.CountDocumentsAsync(Builders<Project>.Filter.Empty, cancellationToken: ct);
+        var dbFilter = Builders<Project>.Filter.Empty;
+        if (filter?.HighlightOnly == true)
+        {
+            dbFilter = Builders<Project>.Filter.Eq(x => x.Highlight, true);
+        }
+        return await _projects.CountDocumentsAsync(dbFilter, cancellationToken: ct);
     }
 }

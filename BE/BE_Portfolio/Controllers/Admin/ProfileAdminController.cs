@@ -1,4 +1,4 @@
-using BE_Portfolio.DTOs.Admin;
+using BE_Portfolio.DTOs.Profile;
 using BE_Portfolio.Models.Documents;
 using BE_Portfolio.Models.ValueObjects;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
@@ -32,7 +32,7 @@ public class ProfileAdminController(IProfileRepository profileRepo, PortfolioSer
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDTO dto, CancellationToken ct)
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequestDto dto, CancellationToken ct)
     {
         var profile = await profileRepo.GetProfileAsync(ct);
         if (profile == null)
