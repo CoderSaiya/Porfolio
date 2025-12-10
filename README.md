@@ -1,182 +1,126 @@
-# Portfolio Project
+# Portfolio Project - Nhat Cuong
 
-A full-stack portfolio application built with React, .NET API, and SQL Server.
+A full-stack personal portfolio application designed to showcase projects, blog posts, and programming skills. The system features a modern Frontend, a robust Backend, and integration with advanced technologies.
 
-![Main Page](./imgs/main-page.png)
+## Tech Stack
 
-## Table of Contents
-- [Prerequisites](#prerequisites)
-- [Database Setup](#database-setup)
-- [Backend Setup](#backend-setup)
-- [Frontend Setup](#frontend-setup)
-- [Running with ngrok (Optional)](#running-with-ngrok)
+The project is built on a powerful and modern technology stack:
 
-## Prerequisites
+### Frontend
+-   **Framework**: [Angular 19](https://angular.io/)
+-   **Styling**: SCSS, Responsive Design
+-   **Libraries**:
+    -   RxJS (Reactive Programming)
+    -   Lucide Angular (Icons)
+    -   Quill (Rich Text Editor)
+    -   Ngx Translate (Internationalization)
 
-Before you begin, ensure you have the following installed:
-- SQL Server 2019+
-- .NET 7.0 SDK or later
-- Node.js 16.0 or later
-- npm or yarn
-- ngrok (optional, for tunnel access)
+### Backend
+-   **Framework**: [ASP.NET Core 8 Web API](https://dotnet.microsoft.com/en-us/apps/aspnet)
+-   **Database**:
+    -   SQL Server (Main Database)
+    -   MongoDB (Logging/NoSQL storage)
+-   **ORM**: Entity Framework Core
+-   **Message Broker**: RabbitMQ
+-   **Authentication**: JWT, Google/GitHub OAuth
 
-## Database Setup
+### Infrastructure
+-   **Containerization**: Docker, Docker Compose
+-   **Tunneling**: Cloudflare Tunnel
 
-1. Open SQL Server Management Studio (SSMS)
-2. Connect to your SQL Server instance
-3. Execute the SQL script from `portfolioDB.sql`:
-```sql
-USE master
-GO
+---
 
--- Run the script content from portfolioDB.sql
-```
+## Features & Screenshots
 
-4. Update the connection string in `BE/appsettings.json`:
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=PortfolioDB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
-  }
-}
-```
+### 1. Home Page
+The main interface introducing the author and highlighted projects.
+![Home Page](./imgs/home-page.png)
 
-## Backend Setup
+### 2. Blog List
+A place to share knowledge and tech articles with search and filtering capabilities.
+![Blog List](./imgs/blog-list.png)
 
-1. Navigate to the backend directory:
-```bash
-cd BE
-```
+### 3. Blog Detail
+Detailed article view supporting comments and interactions.
+![Blog Detail](./imgs/blog-detail.png)
 
-2. Restore NuGet packages:
-```bash
-dotnet restore
-```
+![Blog Detail 2](./imgs/blog-detail-2.png)
 
-3. Build the project:
-```bash
-dotnet build
-```
+### 4. Projects List
+Showcase of completed projects.
+![Projects List](./imgs/projects-list.png)
 
-4. Run the API:
-```bash
-dotnet run
-```
+### 5. Admin Dashboard
+Content management area for administrators.
+![Admin Dashboard](./imgs/admin-dashboard.png)
 
-The API will start on `https://localhost:5001` and `http://localhost:5000`
+### 6. Settings
+Customize interface and personal information.
+![Settings](./imgs/settings.png)
 
-## Frontend Setup
+---
 
-1. Navigate to the frontend directory:
-```bash
-cd FE
-```
+## Installation & Setup
 
-2. Install dependencies:
-```bash
-npm install
-# or
-yarn install
-```
+### Prerequisites
+Ensure you have the following tools installed:
+-   [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+-   [Node.js](https://nodejs.org/) (v18 or later) & npm
+-   [Docker Desktop](https://www.docker.com/products/docker-desktop) (Recommended for running Database & RabbitMQ)
+-   [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) (If running locally without Docker)
 
-3. Update the API URL in `src/config.ts` or `.env`:
-```javascript
-// config.ts
-export const API_URL = 'https://localhost:5001';
+### 1. Backend Setup
 
-// or .env
-VITE_BASE_URL=https://localhost:7000
-```
+1.  Navigate to the Backend directory:
+    ```bash
+    cd BE
+    ```
 
-4. Start the development server:
-```bash
-npm run dev
-# or
-yarn dev
-```
+2.  Configure Database connection in `appsettings.json` (If not using Docker).
 
-The frontend will be available at `http://localhost:5173`
+3.  Run the application:
+    ```bash
+    dotnet restore
+    dotnet build
+    dotnet run --project BE_Portfolio
+    ```
+    The API will start at: `https://localhost:5001` (or the configured port).
 
-## Running with ngrok
+### 2. Frontend Setup
 
-If you want to expose your backend API to the internet:
+1.  Navigate to the Frontend directory:
+    ```bash
+    cd fe
+    ```
 
-1. Install ngrok if you haven't already:
-```bash
-npm install -g ngrok
-# or download from https://ngrok.com/download
-```
+2.  Install dependencies:
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
 
-2. Start your backend API first (follow Backend Setup steps)
+3.  Run the development server:
+    ```bash
+    npm start
+    # or
+    ng serve
+    ```
+    Access the application at: `http://localhost:4200`
 
-3. Start ngrok tunnel:
-```bash
-ngrok http https://localhost:5001
-```
+### 3. Run with Docker Compose (Recommended)
 
-4. Update your frontend API URL to use the ngrok URL:
-```javascript
-// config.js or .env
-export const API_URL = 'https://your-ngrok-url.ngrok.io/api';
-```
+If you want to run the entire system (Database, RabbitMQ, API) using Docker:
 
-5. Update CORS settings in `BE/Program.cs` (Optional):
-```csharp
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll",
-        builder =>
-        {
-            builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader();
-        });
-});
-```
+1.  At the root directory (containing `compose.yaml`):
+    ```bash
+    docker-compose up -d
+    ```
 
-## Additional Configuration
+2.  The system will automatically initialize the necessary services.
 
-### Environment Variables
-Create a `.env` file in the frontend directory:
-```bash
-VITE_API_URL=https://localhost:5001
-```
-
-### Production Build
-
-For frontend:
-```bash
-cd FE
-npm run build
-# or
-yarn build
-```
-
-For backend:
-```bash
-cd BE
-dotnet publish -c Release
-```
-
-## Troubleshooting
-
-1. If you encounter SSL certificate errors:
-```bash
-dotnet dev-certs https --clean
-dotnet dev-certs https --trust
-```
-
-2. If database connection fails:
-- Verify SQL Server is running
-- Check connection string
-- Ensure Windows Authentication is enabled
-
-3. If CORS errors occur:
-- Verify API URL in frontend config
-- Check CORS policy in backend
-- Ensure ngrok URL is properly configured if using ngrok
+---
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details
+This project is licensed under the MIT License. See the LICENSE file for details.
