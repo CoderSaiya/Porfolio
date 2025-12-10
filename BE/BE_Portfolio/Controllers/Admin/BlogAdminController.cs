@@ -1,4 +1,5 @@
 using BE_Portfolio.DTOs.Blog;
+using BE_Portfolio.Helpers;
 using BE_Portfolio.Models.Domain;
 using BE_Portfolio.Models.Documents;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
@@ -90,12 +91,9 @@ public class BlogAdminController : ControllerBase
         }
 
         string? featuredImageData = null;
-        if (file != null && file.Length > 0)
+        if (file != null)
         {
-            using var ms = new MemoryStream();
-            await file.CopyToAsync(ms, ct);
-            var base64 = Convert.ToBase64String(ms.ToArray());
-            featuredImageData = $"data:{file.ContentType};base64,{base64}";
+            featuredImageData = await TextHelper.ConvertFileToBase64Async(file, ct);
         }
 
         var post = new BlogPost
@@ -139,12 +137,9 @@ public class BlogAdminController : ControllerBase
             existing.CategoryId = catId;
         }
         
-        if (file != null && file.Length > 0)
+        if (file != null)
         {
-            using var ms = new MemoryStream();
-            await file.CopyToAsync(ms, ct);
-            var base64 = Convert.ToBase64String(ms.ToArray());
-            existing.FeaturedImage = $"data:{file.ContentType};base64,{base64}";
+            existing.FeaturedImage = await TextHelper.ConvertFileToBase64Async(file, ct);
         }
 
         await _postRepo.UpdateAsync(existing, ct);
@@ -228,10 +223,7 @@ public class BlogAdminController : ControllerBase
             return BadRequest(new { message = "No file uploaded" });
 
         // Convert to base64
-        using var ms = new MemoryStream();
-        await file.CopyToAsync(ms, ct);
-        var base64 = Convert.ToBase64String(ms.ToArray());
-        var dataUrl = $"data:{file.ContentType};base64,{base64}";
+        var dataUrl = await TextHelper.ConvertFileToBase64Async(file, ct);
 
         // Update blog featured image
         blog.FeaturedImage = dataUrl;

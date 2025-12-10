@@ -1,4 +1,5 @@
 using BE_Portfolio.DTOs.Dashboard;
+using BE_Portfolio.Helpers;
 using BE_Portfolio.Models.Domain;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
 
@@ -62,7 +63,7 @@ public class DashboardService : IDashboardService
             Type = "blog",
             Title = "New Blog: " + b.Title,
             Description = "Published in " + (string.IsNullOrEmpty(b.CategoryId?.ToString()) ? "General" : "Category"),
-            Time = GetTimeAgo(b.PublishedAt ?? b.CreatedAt),
+            Time = DateHelper.GetTimeAgo(b.PublishedAt ?? b.CreatedAt),
             Icon = "FileText"
         });
 
@@ -72,7 +73,7 @@ public class DashboardService : IDashboardService
             Type = "project",
             Title = "New Project: " + p.Title,
             Description = p.Description,
-            Time = GetTimeAgo(p.CreatedAt),
+            Time = DateHelper.GetTimeAgo(p.CreatedAt),
             Icon = "FolderGit2"
         });
 
@@ -82,7 +83,7 @@ public class DashboardService : IDashboardService
             Type = "message",
             Title = "New Message from " + m.Name,
             Description = m.Subject,
-            Time = GetTimeAgo(m.CreatedAt),
+            Time = DateHelper.GetTimeAgo(m.CreatedAt),
             Icon = "MessageSquare"
         });
 
@@ -94,14 +95,5 @@ public class DashboardService : IDashboardService
             .ToList();
 
         return response;
-    }
-
-    private static string GetTimeAgo(DateTime? date)
-    {
-        if (!date.HasValue) return "Recently";
-        var span = DateTime.UtcNow - date.Value;
-        if (span.TotalHours < 1) return $"{span.Minutes} minutes ago";
-        if (span.TotalHours < 24) return $"{Math.Floor(span.TotalHours)} hours ago";
-        return $"{Math.Floor(span.TotalDays)} days ago";
     }
 }

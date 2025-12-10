@@ -1,3 +1,4 @@
+using BE_Portfolio.Helpers;
 using BE_Portfolio.Models.ValueObjects;
 using BE_Portfolio.Persistence.Repositories.Interfaces;
 using MongoDB.Bson;
@@ -12,15 +13,10 @@ public class ImageService(IImageRepository imageRepo) : IImageService
 {
     public async Task ProcessAndSaveAsync(ImageOwnerType ownerType, string ownerId, ImageVariant variant, IFormFile file, CancellationToken ct = default)
     {
-        if (file is null || file.Length == 0)
-            throw new ArgumentException("File is empty", nameof(file));
+        FileHelper.ValidateImage(file);
 
         if (!ObjectId.TryParse(ownerId, out var parsedId))
             throw new ArgumentException("Invalid Owner ID", nameof(ownerId));
-
-        var allowed = new[] { "image/jpeg", "image/png", "image/webp", "image/avif" };
-        if (!allowed.Contains(file.ContentType, StringComparer.OrdinalIgnoreCase))
-            throw new InvalidOperationException($"Unsupported format: {file.ContentType}");
 
         await using var input = file.OpenReadStream();
         using var image = await Image.LoadAsync(input, ct);
